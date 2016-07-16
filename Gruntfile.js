@@ -5,26 +5,20 @@ module.exports = function (grunt) {
         pkg: grunt.file.readJSON('package.json'),
 
         banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - ' +
-        '<%= grunt.template.today("yyyy-mm-dd") %>\n' +
-        '<%= pkg.homepage ? "* " + pkg.homepage + "\\n" : "" %>' +
-        '* Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;' +
-        ' Licensed MIT %> */\n',
+            '<%= grunt.template.today("yyyy-mm-dd") %>\n' +
+            '<%= pkg.homepage ? "* " + pkg.homepage + "\\n" : "" %>' +
+            '* Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;' +
+            ' Licensed MIT %> */\n',
 
         // Task configuration.
-        concat: {
-            options: {
-                banner: '<%= banner %>',
-                stripBanners: true
-            },
-
-            dist: {
-                src: ['src/js/<%= pkg.name %>.js'],
-                dest: 'dist/<%= pkg.name %>.js'
-            },
-
-            css: {
-                src: ['src/css/<%= pkg.name %>.css'],
-                dest: 'dist/<%= pkg.name %>.css'
+        copy: {
+            main: {
+                expand: true,
+                cwd: 'src/',
+                src: '**',
+                dest: 'dist/',
+                flatten: true,
+                filter: 'isFile'
             }
         },
 
@@ -34,7 +28,7 @@ module.exports = function (grunt) {
             },
 
             dist: {
-                src: '<%= concat.dist.dest %>',
+                src: 'dist/<%= pkg.name %>.js',
                 dest: 'dist/<%= pkg.name %>.min.js'
             }
         },
@@ -102,6 +96,6 @@ module.exports = function (grunt) {
 
     require('load-grunt-tasks')(grunt);
 
-    grunt.registerTask('minify', ['concat', 'uglify', 'cssmin']);
+    grunt.registerTask('minify', ['copy', 'uglify', 'cssmin']);
     grunt.registerTask('default', ['jshint', 'qunit', 'minify']);
 };
