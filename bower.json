@@ -1,0 +1,29 @@
+{
+  "name": "moovie",
+  "description": "An advanced HTML5 video player for MooTools.",
+  "main": [
+    "dist/moovie.js",
+    "dist/moovie.css"
+  ],
+  "authors": [
+    "Nathan Bishop <nbish11@hotmail.com> (http://nathanbishop.name)"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "html5",
+    "mootools",
+    "playlist",
+    "subtitles"
+  ],
+  "homepage": "https://github.com/moovie/moovie",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "vendor",
+    "tests"
+  ],
+  "dependencies": {
+    "mootools": "^1.6.0",
+    "mootools-more": "^1.6.0"
+  }
+}
