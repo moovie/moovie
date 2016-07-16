@@ -45,7 +45,7 @@ var items = [
     {
         video: $('video-2')
     },
-    
+
     {
         video: $('video-3'),
         options: {
@@ -56,6 +56,16 @@ var items = [
 ];
 
 Moovie(items, options);
+```
+
+And in your HTML:
+
+```html
+<div id="video">
+    <div class="wrapper">
+        <video src="video.mp4" poster="video.png"></video>
+    </div>
+</div>
 ```
 
 ## Contributing
