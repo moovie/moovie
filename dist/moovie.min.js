@@ -457,7 +457,19 @@ var Moovie = function(videos, options) {
     controls.more.popup.set('tween', { duration: 150 });
 
     //
-    controls.wrapper.adopt(controls.play, controls.stop, controls.currentTime, controls.progress, controls.duration, controls.volume, controls.previous, controls.next, controls.settings, controls.more, controls.close);
+    controls.wrapper.adopt(
+        controls.play,
+        controls.stop,
+        controls.previous,
+        controls.next,
+        controls.currentTime,
+        controls.progress,
+        controls.duration,
+        controls.volume,
+        controls.settings,
+        controls.more,
+        controls.close
+    );
     controls.grab(controls.wrapper);
 
     controls.set('tween', { duration: 150 });
