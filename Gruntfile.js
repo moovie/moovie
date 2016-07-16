@@ -4,11 +4,11 @@ module.exports = function (grunt) {
         // Metadata.
         pkg: grunt.file.readJSON('package.json'),
 
-        banner: '/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> - ' +
+        banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - ' +
         '<%= grunt.template.today("yyyy-mm-dd") %>\n' +
         '<%= pkg.homepage ? "* " + pkg.homepage + "\\n" : "" %>' +
         '* Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;' +
-        ' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %> */\n',
+        ' Licensed MIT %> */\n',
 
         // Task configuration.
         concat: {
@@ -18,8 +18,13 @@ module.exports = function (grunt) {
             },
 
             dist: {
-                src: ['lib/<%= pkg.name %>.js'],
+                src: ['src/js/<%= pkg.name %>.js'],
                 dest: 'dist/<%= pkg.name %>.js'
+            },
+
+            css: {
+                src: ['src/css/<%= pkg.name %>.css'],
+                dest: 'dist/<%= pkg.name %>.css'
             }
         },
 
@@ -31,6 +36,18 @@ module.exports = function (grunt) {
             dist: {
                 src: '<%= concat.dist.dest %>',
                 dest: 'dist/<%= pkg.name %>.min.js'
+            }
+        },
+
+        cssmin: {
+            target: {
+                files: [{
+                    expand: true,
+                    cwd: 'dist',
+                    src: ['*.css'],
+                    dest: 'dist',
+                    ext: '.min.css'
+                }]
             }
         },
 
@@ -85,6 +102,6 @@ module.exports = function (grunt) {
 
     require('load-grunt-tasks')(grunt);
 
-    // Default task.
-    grunt.registerTask('default', ['jshint', 'qunit', 'concat', 'uglify']);
+    grunt.registerTask('minify', ['concat', 'uglify', 'cssmin']);
+    grunt.registerTask('default', ['jshint', 'qunit', 'minify']);
 };
