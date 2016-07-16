@@ -5,6 +5,7 @@
 ** Copyright 2010, Colin Aarts <http://colinaarts.com>
 ** Licensed under the MIT License
 */
+
 Element.implement({
     show: function () {
         this.setStyle('display', '');
@@ -945,8 +946,6 @@ var Moovie = function(videos, options) {
 
 
     // Init ====================================================================
-    container.addClass('Moovie');
-
     if(!video.autoplay) {
       overlay.update('play');
     }

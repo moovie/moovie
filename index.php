@@ -11,7 +11,7 @@
                 background-image: url("chrome://global/skin/media/imagedoc-darknoise.png");
             }
 
-            #video {
+            .moovie {
                 left: 50%;
                 position: absolute;
                 top: 50%;
@@ -22,7 +22,7 @@
         </style>
     </head>
     <body>
-        <div id="video">
+        <div class="moovie">
             <div class="wrapper">
                 <video src="http://colinaarts.com/assets/avatar.ogv" poster="http://colinaarts.com/assets/avatar.png" autobuffer controls>
                     <p>Your browser does not support the HTML 5 <code>video</code> element.</p>

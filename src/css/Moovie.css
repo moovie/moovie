@@ -390,41 +390,41 @@ span.info {
     border-radius:0;
 }
 
-#video > .wrapper {
+.moovie > .wrapper {
     position:relative;
 }
 
-#video p {
+.moovie p {
     text-indent:0;
 }
 
-#video .debug,
-#video .debug tr,
-#video .debug p {
+.moovie .debug,
+.moovie .debug tr,
+.moovie .debug p {
     background:#dddddd;
 }
 
-#video .debug table {
+.moovie .debug table {
     width:100%;
     border-spacing:5px;
 }
 
-#video .debug td:first-child {
+.moovie .debug td:first-child {
     width:1px;
 }
 
-#video .debug td + td {
+.moovie .debug td + td {
     font-weight:bold;
 }
 
-#video .debug p {
+.moovie .debug p {
     border-top:1px dotted #888888;
     margin:5px 0 0;
     padding:10px 5px 5px;
     text-indent:0;
 }
 
-#video .debug {
+.moovie .debug {
     font:.75em Monaco, monospace;
     width:198px;
     padding:10px;
@@ -436,20 +436,20 @@ span.info {
     overflow:hidden;
 }
 
-#video video {
+.moovie video {
     background:black;
     display:block;
     width:100%;
     height:250px;
 }
 
-#video .captions p i,
-#video .captions p em,
-#video .captions p cite {
+.moovie .captions p i,
+.moovie .captions p em,
+.moovie .captions p cite {
     font-family:OfficinaSansBookItalic, 'Lucida Sans Unicode', Arial, Helvetica, sans-serif;
 }
 
-#video .captions p {
+.moovie .captions p {
     font-size:1.3em;
     font-family:OfficinaSansBook, 'Lucida Sans Unicode', Arial, Helvetica, sans-serif;
     display:inline;
@@ -458,18 +458,18 @@ span.info {
     line-height:1;
 }
 
-#video .captions span.off-screen i,
-#video .captions span.off-screen em,
-#video .captions span.off-screen cite {
+.moovie .captions span.off-screen i,
+.moovie .captions span.off-screen em,
+.moovie .captions span.off-screen cite {
     font-family:OfficinaSansBook, 'Lucida Sans Unicode', Arial, Helvetica, sans-serif;
     font-style:normal;
 }
 
-#video .captions span.off-screen {
+.moovie .captions span.off-screen {
     font-family:OfficinaSansBookItalic, 'Lucida Sans Unicode', Arial, Helvetica, sans-serif;
 }
 
-#video .captions {
+.moovie .captions {
     position:absolute;
     bottom:35px;
     left:10%;
@@ -477,29 +477,29 @@ span.info {
     text-align:center;
 }
 
-#video .captions.top {
+.moovie .captions.top {
     top:5px;
     bottom:auto;
 }
 
-#video .overlay .wrapper div {
+.moovie .overlay .wrapper div {
     line-height:70px;
     text-shadow:1px 1px 3px rgba(0,0,0,.6);
 }
 
-#video .overlay .wrapper .play,
-#video .overlay .wrapper .replay,
-#video .overlay .wrapper .paused {
+.moovie .overlay .wrapper .play,
+.moovie .overlay .wrapper .replay,
+.moovie .overlay .wrapper .paused {
     cursor:pointer;
 }
 
-#video .overlay .wrapper .play:hover,
-#video .overlay .wrapper .replay:hover,
-#video .overlay .wrapper .paused:hover {
+.moovie .overlay .wrapper .play:hover,
+.moovie .overlay .wrapper .replay:hover,
+.moovie .overlay .wrapper .paused:hover {
     opacity:.6;
 }
 
-#video .overlay .wrapper {
+.moovie .overlay .wrapper {
     position:absolute;
     top:50%;
     left:50%;
@@ -518,7 +518,7 @@ span.info {
     border-radius:10px;
 }
 
-#video .overlay {
+.moovie .overlay {
     position:absolute;
     top:0;
     bottom:0;
@@ -528,7 +528,7 @@ span.info {
     color:#ffffff;
 }
 
-#video .video-title {
+.moovie .video-title {
     position:absolute;
     top:5px;
     right:20px;
@@ -537,13 +537,13 @@ span.info {
     text-shadow:2px 2px 5px rgba(0,0,0,.5);
 }
 
-#video .panels > div {
+.moovie .panels > div {
     display:table;
     width:100%;
     height:100%;
 }
 
-#video .panels .heading {
+.moovie .panels .heading {
     font:2.2em GaramondItalic, 'Palatino Linotype', 'Lucida Sans Unicode', Arial, Helvetica, sans-serif;
     border-bottom:1px dotted #888888;
     margin:0 0 6px 0;
@@ -551,29 +551,29 @@ span.info {
     color:#b9dc84;
 }
 
-#video .panels .heading + dl,
-#video .panels .heading + ol,
-#video .panels .heading + ul {
+.moovie .panels .heading + dl,
+.moovie .panels .heading + ol,
+.moovie .panels .heading + ul {
     margin-top:0;
 }
 
-#video .panels li {
+.moovie .panels li {
     margin:0;
 }
 
-#video .panels .about {
+.moovie .panels .about {
     background:url('http://colinaarts.com/assets/code/moovie/moovie.png') no-repeat bottom right;
 }
 
-#video .panels .playlist > div {
+.moovie .panels .playlist > div {
     display:table-row;
 }
 
-#video .panels .playlist > div + div {
+.moovie .panels .playlist > div + div {
     height:100%;
 }
 
-#video .panels .playlist ol.playlist li {
+.moovie .panels .playlist ol.playlist li {
     white-space:nowrap;
     padding:0 5px;
     -moz-border-radius:4px;
@@ -581,25 +581,25 @@ span.info {
     border-radius:4px;
 }
 
-#video .panels .playlist ol.playlist li:hover {
+.moovie .panels .playlist ol.playlist li:hover {
     background:#994004;
 }
 
-#video .panels .playlist ol.playlist li.active {
+.moovie .panels .playlist ol.playlist li.active {
     background:rgba(255,255,255,.2);
 }
 
-#video .panels .playlist ol.playlist .label:hover {
+.moovie .panels .playlist ol.playlist .label:hover {
     text-decoration:underline;
     cursor:pointer;
 }
 
-#video .panels .playlist ol.playlist {
+.moovie .panels .playlist ol.playlist {
     overflow-y:auto;
     overflow-x:hidden;
 }
 
-#video .panels {
+.moovie .panels {
     position:absolute;
     top:5px;
     bottom:5px;
@@ -615,67 +615,67 @@ span.info {
     border-radius:4px;
 }
 
-#video .controls > .wrapper > * {
+.moovie .controls > .wrapper > * {
     display:table-cell;
     vertical-align:middle;
     width:13px;
     background:none no-repeat center;
 }
 
-#video .controls > .wrapper > .current-time,
-#video .controls > .wrapper > .duration {
+.moovie .controls > .wrapper > .current-time,
+.moovie .controls > .wrapper > .duration {
     font:monospace;
     width:4ex;
     overflow:hidden;
 }
 
-#video .controls > .wrapper > .play {
+.moovie .controls > .wrapper > .play {
     background-image:url('http://colinaarts.com/assets/player-play.png');
 }
 
-#video .controls > .wrapper > .play.paused {
+.moovie .controls > .wrapper > .play.paused {
     background-image:url('http://colinaarts.com/assets/player-pause.png');
 }
 
-#video .controls > .wrapper > .stop {
+.moovie .controls > .wrapper > .stop {
     background-image:url('http://colinaarts.com/assets/player-stop.png');
 }
 
-#video .controls > .wrapper > .volume .mute {
+.moovie .controls > .wrapper > .volume .mute {
     background-image:url('http://colinaarts.com/assets/player-volume.png');
 }
 
-#video .controls > .wrapper > .volume .mute.muted {
+.moovie .controls > .wrapper > .volume .mute.muted {
     background-image:url('http://colinaarts.com/assets/player-muted.png');
 }
 
-#video .controls > .wrapper > .previous {
+.moovie .controls > .wrapper > .previous {
     background-image:url('http://colinaarts.com/assets/player-previous.png');
 }
 
-#video .controls > .wrapper > .next {
+.moovie .controls > .wrapper > .next {
     background-image:url('http://colinaarts.com/assets/player-next.png');
 }
 
-#video .controls > .wrapper > .settings {
+.moovie .controls > .wrapper > .settings {
     background-image:url('http://colinaarts.com/assets/player-settings.png');
 }
 
-#video .controls > .wrapper > .more {
+.moovie .controls > .wrapper > .more {
     background-image:url('http://colinaarts.com/assets/player-more.png');
 }
 
-#video .controls > .wrapper > .close {
+.moovie .controls > .wrapper > .close {
     background-image:url('http://colinaarts.com/assets/player-close.png');
 }
 
-#video .controls > .wrapper > * > .wrapper .popup > * {
+.moovie .controls > .wrapper > * > .wrapper .popup > * {
     width:13px;
     height:13px;
     margin:10px 0;
 }
 
-#video .controls > .wrapper > * > .wrapper .popup {
+.moovie .controls > .wrapper > * > .wrapper .popup {
     position:absolute;
     bottom:100%;
     margin:0 0 12px 0;
@@ -688,18 +688,18 @@ span.info {
     border-radius:4px;
 }
 
-#video .controls > .wrapper > * > .wrapper {
+.moovie .controls > .wrapper > * > .wrapper {
     position:relative;
 }
 
-#video .controls > .wrapper .progress .wrapper .bar {
+.moovie .controls > .wrapper .progress .wrapper .bar {
     width:100%;
     height:8px;
     background:#ffffff;
     opacity:.7;
 }
 
-#video .controls > .wrapper .progress .wrapper .buffered {
+.moovie .controls > .wrapper .progress .wrapper .buffered {
     position:absolute;
     left:0;
     bottom:0;
@@ -708,7 +708,7 @@ span.info {
     z-index:-1;
 }
 
-#video .controls > .wrapper .progress .wrapper .time div {
+.moovie .controls > .wrapper .progress .wrapper .time div {
     background:rgba(0,0,0,.7);
     border:1px solid rgba(255,255,255,.7);
     line-height:1;
@@ -721,7 +721,7 @@ span.info {
     border-radius:4px;
 }
 
-#video .controls > .wrapper .progress .wrapper .time {
+.moovie .controls > .wrapper .progress .wrapper .time {
     position:absolute;
     left:0;
     top:-33px;
@@ -729,7 +729,7 @@ span.info {
     background:url('http://colinaarts.com/assets/player-progress-time-arrow.png') no-repeat left bottom;
 }
 
-#video .controls > .wrapper .progress .wrapper .slider {
+.moovie .controls > .wrapper .progress .wrapper .slider {
     position:absolute;
     width:10px;
     height:10px;
@@ -742,16 +742,16 @@ span.info {
     border-radius:10px;
 }
 
-#video .controls > .wrapper .progress {
+.moovie .controls > .wrapper .progress {
     width: auto;
 }
 
-#video .controls > .wrapper .volume .mute {
+.moovie .controls > .wrapper .volume .mute {
     width: 13px;
     height: 13px;
 }
 
-#video .controls > .wrapper .volume .wrapper .popup .bar {
+.moovie .controls > .wrapper .volume .wrapper .popup .bar {
     height: 100%;
     background: #ffffff;
     opacity: .7;
@@ -759,7 +759,7 @@ span.info {
     margin: 0 auto;
 }
 
-#video .controls > .wrapper .volume .wrapper .popup .slider {
+.moovie .controls > .wrapper .volume .wrapper .popup .slider {
     position: absolute;
     width: 10px;
     height: 10px;
@@ -774,25 +774,25 @@ span.info {
     border-radius: 10px;
 }
 
-#video .controls > .wrapper .volume .wrapper .popup {
+.moovie .controls > .wrapper .volume .wrapper .popup {
     height: 50px;
     padding: 13px 9px;
     margin-bottom: 5px;
 }
 
-#video .controls > .wrapper .more .wrapper .popup .about {
+.moovie .controls > .wrapper .more .wrapper .popup .about {
     background-image: url('http://colinaarts.com/assets/player-about.png');
 }
 
-#video .controls > .wrapper .more .wrapper .popup .info {
+.moovie .controls > .wrapper .more .wrapper .popup .info {
     background-image: url('http://colinaarts.com/assets/player-info.png');
 }
 
-#video .controls > .wrapper .more .wrapper .popup .playlist {
+.moovie .controls > .wrapper .more .wrapper .popup .playlist {
     background-image: url('http://colinaarts.com/assets/player-playlist.png');
 }
 
-#video .controls > .wrapper {
+.moovie .controls > .wrapper {
     display: table;
     width: 100%;
     border-spacing: 10px 5px;
@@ -800,7 +800,7 @@ span.info {
     background: rgba(0,0,0,.5);
 }
 
-#video .controls {
+.moovie .controls {
     position: absolute;
     left: 0;
     right: 0;
@@ -808,7 +808,7 @@ span.info {
     font-size: .9em;
 }
 
-#video {
+.moovie {
     background: #000000;
     border: 5px solid #222222;
     padding: 30px;
