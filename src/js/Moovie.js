@@ -35,7 +35,6 @@ var Moovie = function(videos, options) {
   // ===========================================================================
   // The main function, which handles one <video> at a time.
   // <http://www.urbandictionary.com/define.php?term=Doit&defid=3379319>
-  // jshint maxstatements:150
   var Doit = function(video, options) {
 
     video.controls = false;
