@@ -390,6 +390,10 @@ span.info {
     width:100%;
 }
 
+.checkbox-widget[data-checked="true"] .checkbox {
+    background-image:url('http://colinaarts.com/assets/player-checked.png');
+}
+
 .section-tip .tip {
     background:#000000;
     max-width:300px;
