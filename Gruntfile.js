@@ -1,14 +1,21 @@
 /*global module:false*/
 module.exports = function (grunt) {
+    'use strict';
+
     grunt.initConfig({
         // Metadata.
         pkg: grunt.file.readJSON('package.json'),
 
-        banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - ' +
-            '<%= grunt.template.today("yyyy-mm-dd") %>\n' +
-            '<%= pkg.homepage ? "* " + pkg.homepage + "\\n" : "" %>' +
-            '* Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;' +
-            ' Licensed MIT %> */\n',
+        banner: '/*!\n' +
+            '* Moovie: an advanced HTML5 video player for MooTools.\n' +
+            '*\n' +
+            '* @see http://colinaarts.com/code/moovie\n' +
+            '* @version <%= pkg.version %>\n' +
+            '* @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)\n' +
+            '* @author Nathan Bishop <nbish11@hotmail.com>\n' +
+            '* @copyright 2010 Colin Aarts\n' +
+            '* @license MIT\n' +
+            '*/\n',
 
         // Task configuration.
         copy: {
@@ -47,32 +54,21 @@ module.exports = function (grunt) {
 
         jshint: {
             options: {
-                curly: true,
-                eqeqeq: true,
-                immed: true,
-                latedef: true,
-                newcap: true,
-                noarg: true,
-                sub: true,
-                undef: true,
-                unused: true,
-                boss: true,
-                eqnull: true,
-                browser: true,
-                globals: {}
+                jshintrc: true,
+                reporterOutput: ''  // Bug??
             },
 
             gruntfile: {
                 src: 'Gruntfile.js'
             },
 
-            lib_test: {
-                src: ['lib/**/*.js', 'test/**/*.js']
-            }
-        },
+            karmafile: {
+                src: 'karma.conf.js'
+            },
 
-        qunit: {
-            files: ['test/**/*.html']
+            target: {
+                src: ['src/js/*.js', 'tests/specs/*Spec.js']
+            }
         },
 
         watch: {
@@ -81,9 +77,14 @@ module.exports = function (grunt) {
                 tasks: ['jshint:gruntfile']
             },
 
-            lib_test: {
+            karmafile: {
+                files: '<%= jshint.karmafile.src %>',
+                tasks: ['jshint:karmafile']
+            },
+
+            target: {
                 files: '<%= jshint.lib_test.src %>',
-                tasks: ['jshint:lib_test', 'qunit']
+                tasks: ['jshint:target']
             }
         },
 
@@ -96,6 +97,8 @@ module.exports = function (grunt) {
 
     require('load-grunt-tasks')(grunt);
 
+    grunt.registerTask('test', ['jshint']);
     grunt.registerTask('minify', ['copy', 'uglify', 'cssmin']);
-    grunt.registerTask('default', ['jshint', 'qunit', 'minify']);
+    grunt.registerTask('build', ['test', 'minify']);
+    grunt.registerTask('default', ['test']);
 };

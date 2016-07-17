@@ -1,26 +1,34 @@
-/*
-** Moovie: An HTML 5 <video> custom controls library
-** http://colinaarts.com/code/moovie
-**
-** Copyright 2010, Colin Aarts <http://colinaarts.com>
-** Licensed under the MIT License
-*/
-
+// Here for compat with older MooTools versions...
 Element.implement({
     show: function () {
+        'use strict';
+
         this.setStyle('display', '');
 
         return this;
     },
 
     hide: function () {
+        'use strict';
+
         this.setStyle('display', 'none');
 
         return this;
     }
 });
 
+/*!
+ * Moovie: an advanced HTML5 video player for MooTools.
+ *
+ * @see http://colinaarts.com/code/moovie
+ * @version 1.0.0
+ * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
+ * @author Nathan Bishop <nbish11@hotmail.com>
+ * @copyright 2010 Colin Aarts
+ * @license MIT
+ */
 var Moovie = function(videos, options) {
+    'use strict';
 
   options = options || {};
 
@@ -382,8 +390,8 @@ var Moovie = function(videos, options) {
 
     // Content for `playlist` panel
     panels.playlist.set('html', '\
-    <div><div class="heading">Playlist</div></div>\
-    <div><ol class="playlist"></ol></div>\
+        <div><div class="heading">Playlist</div></div>\
+        <div><ol class="playlist"></ol></div>\
     ');
 
     options.playlist.each(function(el, index) {
@@ -570,7 +578,7 @@ var Moovie = function(videos, options) {
         title.fade('out');
         timer = null;
       }, 6000);
-    }
+  };
 
     // Panels ------------------------------------------------------------------
 
@@ -579,7 +587,7 @@ var Moovie = function(videos, options) {
         this.getChildren('.active').removeClass('active');
         this.fade('out');
       } else {
-        this.getChildren().hide().removeClass('active');;
+        this.getChildren().hide().removeClass('active');
         this[which].show().addClass('active');
         this.fade('in');
       }
@@ -624,13 +632,13 @@ var Moovie = function(videos, options) {
       var current = panels.playlist.getElement('ol.playlist li.active');
       var index   = +current.get('data-index');
       return { 'element': current, 'index': index };
-    }
+  };
 
     panels.playlist.setActive = function(which) {
       var active = panels.playlist.getActive().element;
       active.removeClass('active');
       panels.playlist.getElement('ol.playlist li[data-index="' + which + '"]').addClass('active');
-    }
+  };
 
     // Controls ----------------------------------------------------------------
 
@@ -666,12 +674,13 @@ var Moovie = function(videos, options) {
     };
 
     controls.volume.update = function(action) {
-      var mutedChanged = !(muted == video.muted);
+      //var mutedChanged = !(muted == video.muted);
+      var mutedChanged = muted != video.muted;
       muted = video.muted;
 
       if(mutedChanged && !video.muted && video.volume === 0) {
         // Un-muted with volume at 0 -- pick a sane default. This is probably the only deviation from the way the YouTube flash player handles volume control.
-        video.volume = .5;
+        video.volume = 0.5;
       } else if(video.muted && video.volume !== 0 && !mutedChanged) {
         // Volume changed while muted -> un-mute
         video.muted = false;
