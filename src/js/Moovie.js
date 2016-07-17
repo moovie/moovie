@@ -49,7 +49,7 @@ var Moovie = function(videos, options) {
 // The main function, which handles one <video> at a time.
 // <http://www.urbandictionary.com/define.php?term=Doit&defid=3379319>
 Moovie.Doit = function(video, options) {
-
+    'use strict';
   video.controls = false;
 
   // Options
@@ -193,6 +193,7 @@ Moovie.Doit = function(video, options) {
   ');
 
   // Content for `settings` panel
+  // jshint singleGroups:false
   panels.settings.set('html', '\
     <div class="heading">Settings</div>\
     \
@@ -209,6 +210,7 @@ Moovie.Doit = function(video, options) {
       <div class="label">Show captions</div>\
     </div>\
   ');
+  // jshint singleGroups:true
 
   // Content for `about` panel
   panels.about.set('html', '\
@@ -348,7 +350,7 @@ Moovie.Doit = function(video, options) {
       if(video.paused) {
         video.play();
       }
-    } : function(el, e) {
+    } : function(el) {
       el.beingDragged = false;
     };
 
@@ -416,7 +418,7 @@ Moovie.Doit = function(video, options) {
 
   panels.playlist.play = function(action) {
     var current = panels.playlist.getActive();
-    var active  = current.element;
+    //var active  = current.element;
     var index   = current.index;
     var length  = options.playlist.length;
     var which   = 0;
@@ -428,7 +430,7 @@ Moovie.Doit = function(video, options) {
       }
     } else if(action == 'next') {
       which = index + 1;
-      if(which > (length - 1)) {
+      if(which > length - 1) {
         which = 0;
       }
     } else if(typeOf(action) == 'number') {
@@ -445,7 +447,8 @@ Moovie.Doit = function(video, options) {
 
     title.show();
 
-    panels.info.getElement('dt.title + dd').set('html', (options.playlist[which].title || new URI(options.playlist[which].src).get('file')));
+    panels.info.getElement('dt.title + dd')
+        .set('html', options.playlist[which].title || new URI(options.playlist[which].src).get('file'));
     panels.info.getElement('dt.url + dd').set('html', options.playlist[which].src);
   };
 
@@ -463,7 +466,7 @@ Moovie.Doit = function(video, options) {
 
   // Controls ----------------------------------------------------------------
 
-  controls.play.update = function(action) {
+  controls.play.update = function() {
     if(video.paused || video.ended) {
       this.removeClass('paused');
     } else {
@@ -471,7 +474,7 @@ Moovie.Doit = function(video, options) {
     }
   };
 
-  controls.progress.update = function(action) {
+  controls.progress.update = function() {
     if(!controls.progress.slider.beingDragged) {
       var el     = controls.progress.slider;
       var pct    = video.currentTime / video.duration * 100;
@@ -494,7 +497,7 @@ Moovie.Doit = function(video, options) {
     this.getFirst().set('text', parseTime(locToTime(offset)));
   };
 
-  controls.volume.update = function(action) {
+  controls.volume.update = function() {
     //var mutedChanged = !(muted == video.muted);
     var mutedChanged = muted != video.muted;
     muted = video.muted;
@@ -534,11 +537,11 @@ Moovie.Doit = function(video, options) {
 
   // Masthead ----------------------------------------------------------------
 
-    wrapper.addEvent('mouseenter', function(e) {
+    wrapper.addEvent('mouseenter', function() {
       controls.fade('in');
     });
 
-    wrapper.addEvent('mouseleave', function(e) {
+    wrapper.addEvent('mouseleave', function() {
       if(options.autohideControls) {
         controls.fade('out');
       }
@@ -546,19 +549,19 @@ Moovie.Doit = function(video, options) {
 
   // Overlay -----------------------------------------------------------------
 
-  $$(overlay.play, overlay.replay).addEvent('click', function(e) {
+  $$(overlay.play, overlay.replay).addEvent('click', function() {
     video.play();
     title.show();
   });
 
-  $$(overlay.paused).addEvent('click', function(e) {
+  $$(overlay.paused).addEvent('click', function() {
     video.play();
   });
 
   // Panels ------------------------------------------------------------------
 
     // Checkbox widgets
-    panels.settings.addEvent('click:relay(.checkbox-widget)', function (e) {
+    panels.settings.addEvent('click:relay(.checkbox-widget)', function () {
         if (this.get('data-checked') == 'false') {
             this.set('data-checked', 'true');
         } else {
@@ -598,7 +601,7 @@ Moovie.Doit = function(video, options) {
   // Controls ----------------------------------------------------------------
 
   // Playback
-  controls.play.addEvent('click', function(e) {
+  controls.play.addEvent('click', function() {
     if(video.paused && video.readyState >= 3) {
       video.play();
     } else if(!video.paused && video.ended) {
@@ -608,17 +611,17 @@ Moovie.Doit = function(video, options) {
     }
   });
 
-  controls.stop.addEvent('click', function(e) {
+  controls.stop.addEvent('click', function() {
     video.currentTime = 0;
     video.pause();
   });
 
   if(options.playlist.length > 1) {
-    controls.previous.addEvent('click', function(e) {
+    controls.previous.addEvent('click', function() {
       panels.playlist.play('previous');
     });
 
-    controls.next.addEvent('click', function(e) {
+    controls.next.addEvent('click', function() {
       panels.playlist.play('next');
     });
   }
@@ -639,16 +642,16 @@ Moovie.Doit = function(video, options) {
     controls.progress.time.update(e.page.x, true);
   });
 
-  controls.progress.bar.addEvent('mouseleave', function(e) {
+  controls.progress.bar.addEvent('mouseleave', function() {
     controls.progress.time.fade('hide');
   });
 
-  controls.progress.slider.addEvent('mouseleave', function(e) {
+  controls.progress.slider.addEvent('mouseleave', function() {
     controls.progress.time.fade('hide');
   });
 
   // Volume
-  controls.volume.mute.addEvent('click', function(e) {
+  controls.volume.mute.addEvent('click', function() {
     if(video.muted) {
       video.muted = false;
     } else {
@@ -656,11 +659,11 @@ Moovie.Doit = function(video, options) {
     }
   });
 
-  controls.volume.addEvent('mouseenter', function(e) {
+  controls.volume.addEvent('mouseenter', function() {
     controls.volume.popup.fade('in');
   });
 
-  controls.volume.addEvent('mouseleave', function(e) {
+  controls.volume.addEvent('mouseleave', function() {
     controls.volume.popup.fade('out');
   });
 
@@ -669,32 +672,32 @@ Moovie.Doit = function(video, options) {
   });
 
   // "more"
-  controls.more.addEvent('mouseenter', function(e) {
+  controls.more.addEvent('mouseenter', function() {
     controls.more.popup.fade('in');
   });
 
-  controls.more.addEvent('mouseleave', function(e) {
+  controls.more.addEvent('mouseleave', function() {
     controls.more.popup.fade('out');
   });
 
-  controls.more.about.addEvent('click', function(e) {
+  controls.more.about.addEvent('click', function() {
     panels.update('about');
   });
 
-  controls.more.info.addEvent('click', function(e) {
+  controls.more.info.addEvent('click', function() {
     panels.update('info');
   });
 
-  controls.more.playlist.addEvent('click', function(e) {
+  controls.more.playlist.addEvent('click', function() {
     panels.update('playlist');
   });
 
   // Misc
-  controls.settings.addEvent('click', function(e) {
+  controls.settings.addEvent('click', function() {
     panels.update('settings');
   });
 
-  controls.close.addEvent('click', function(e) {
+  controls.close.addEvent('click', function() {
     panels.update('none');
   });
 
@@ -702,22 +705,22 @@ Moovie.Doit = function(video, options) {
   // Video element -----------------------------------------------------------
   video.addEvents({
 
-    click: function(e) {
+    click: function() {
       video.pause();
       overlay.update('paused');
     },
 
-    play: function(e) {
+    play: function() {
         controls.play.update();
         overlay.update('none');
         controls.show();
     },
 
-    pause: function(e) {
+    pause: function() {
       controls.play.update();
     },
 
-    ended: function(e) {
+    ended: function() {
       if(options.playlist.length > 1) {
         panels.playlist.play('next');
       } else {
@@ -737,18 +740,18 @@ Moovie.Doit = function(video, options) {
       }
     },
 
-    seeking: function(e) {
+    seeking: function() {
       overlay.update('buffering');
     },
 
-    seeked: function(e) {
+    seeked: function() {
       overlay.update('none');
       if(!video.paused) {
         controls.play.update();
       }
     },
 
-    timeupdate: function(e) {
+    timeupdate: function() {
       controls.currentTime.update(video.currentTime);
       controls.progress.update();
 
@@ -771,20 +774,20 @@ Moovie.Doit = function(video, options) {
       }
     },
 
-    durationchange: function(e) {
+    durationchange: function() {
       controls.duration.update(video.duration);
     },
 
-    volumechange: function(e) {
+    volumechange: function() {
       controls.volume.update();
     },
 
-    abort: function(e) {
+    abort: function() {
       // video.Moovie = null;
       // Doit(video);
     },
 
-    emptied: function(e) {
+    emptied: function() {
       // video.Moovie = null;
       // Doit(video);
     }
@@ -796,7 +799,6 @@ Moovie.Doit = function(video, options) {
     options.plugins.each(function (plugin) {
         var option = plugin.toLowerCase();
         var pluginOptions = {};
-        plugin = Moovie[plugin];
 
         if (typeOf(options[option]) === 'boolean') {
             pluginOptions.disabled = !options[option];
@@ -805,9 +807,7 @@ Moovie.Doit = function(video, options) {
             pluginOptions = options[option];
         }
 
-        this[option] = new plugin(video, pluginOptions);
-
-        console.log(this[option]);
+        this[option] = new Moovie[plugin](video, pluginOptions);
     }, this);
 
     // Init ====================================================================
@@ -816,13 +816,14 @@ Moovie.Doit = function(video, options) {
         controls.hide();
     }
 
-  var tips = new Tips(wrapper.getElements('[title]'), {
-    className : 'video-tip',
-    title     : '',
-    text      : function(el) {
-      return el.get('title');
-    }
-  });
+    // jshint unused:false
+    var tips = new Tips(wrapper.getElements('[title]'), {
+        className: 'video-tip',
+        title: '',
+        text: function (el) {
+            return el.get('title');
+        }
+    });
 
 }; // end Doit()
 
@@ -862,6 +863,8 @@ Moovie.Debugger = new Class({
     },
 
     initialize: function (video, options) {
+        'use strict';
+
         this.video = document.id(video);
         this.setOptions(options);
         this.bound = this.getBoundEvents();
@@ -874,6 +877,8 @@ Moovie.Debugger = new Class({
     },
 
     build: function () {
+        'use strict';
+
         this.element = new Element('div.debug');
         this.elements = {
             table: new Element('table'),
@@ -901,18 +906,24 @@ Moovie.Debugger = new Class({
     },
 
     attach: function () {
+        'use strict';
+
         this.video.addEvents(this.bound);
 
         return this;
     },
 
     detach: function () {
+        'use strict';
+
         this.video.removeEvents(this.bound);
 
         return this;
     },
 
     enable: function () {
+        'use strict';
+
         this.element.set('data-disabled', false);
         this.attach();
 
@@ -920,6 +931,8 @@ Moovie.Debugger = new Class({
     },
 
     disable: function () {
+        'use strict';
+
         this.detach();
         this.element.set('data-disabled', true);
 
@@ -927,6 +940,8 @@ Moovie.Debugger = new Class({
     },
 
     flashProperty: function (property, value) {
+        'use strict';
+
         this.elements.tbody
             .getElement('[data-property=' + property + '] > td + td')
             .set('text', value || this.video[property])
@@ -936,16 +951,22 @@ Moovie.Debugger = new Class({
     },
 
     flashMessage: function (message) {
+        'use strict';
+
         this.elements.p.set('html', message).highlight();
 
         return this;
     },
 
     toElement: function () {
+        'use strict';
+
         return this.element;
     },
 
     getBoundEvents: function () {
+        'use strict';
+
         return {
             loadstart: function () {
                 this.flashProperty('networkState')
@@ -962,91 +983,91 @@ Moovie.Debugger = new Class({
                     .flashMessage('data fetching suspended...');
             }.bind(this),
 
-            abort: function(e) {
+            abort: function () {
                 this.flashProperty('networkState')
                     .flashMessage('data fetching aborted...');
             }.bind(this),
 
-            error: function(e) {
+            error: function () {
                 this.flashProperty('networkState')
                     .flashProperty('error', this.video.error.code)
                     .flashMessage('an error occurred while fetching data...');
             }.bind(this),
 
-            emptied: function(e) {
+            emptied: function () {
                 this.flashProperty('networkState')
                     .flashMessage('media resource is empty...');
             }.bind(this),
 
-            stalled: function(e) {
+            stalled: function () {
                 this.flashProperty('networkState')
                     .flashMessage('stalled while fetching data...');
             }.bind(this),
 
-            loadedmetadata: function(e) {
+            loadedmetadata: function () {
                 this.flashProperty('readyState')
                     .flashMessage('duration and dimensions have been determined...');
             }.bind(this),
 
-            loadeddata: function(e) {
+            loadeddata: function () {
                 this.flashProperty('readyState')
                     .flashMessage('first frame is available...');
             }.bind(this),
 
-            waiting: function(e) {
+            waiting: function () {
                 this.flashProperty('readyState')
                     .flashMessage('waiting for more data...');
             }.bind(this),
 
-            playing: function(e) {
+            playing: function () {
                 this.flashProperty('readyState')
                     .flashMessage('playback has started...');
             }.bind(this),
 
-            canplay: function(e) {
+            canplay: function () {
                 this.flashProperty('readyState')
                     .flashMessage('media is ready to be played, but will likely be interrupted for buffering...');
             }.bind(this),
 
-            canplaythrough: function(e) {
+            canplaythrough: function () {
                 this.flashProperty('readyState')
                     .flashMessage('media is ready to be played and will most likely play through without stopping...');
             }.bind(this),
 
-            play: function(e) {
+            play: function () {
                 this.flashProperty('paused');
             }.bind(this),
 
-            pause: function(e) {
+            pause: function () {
                 this.flashProperty('paused');
             }.bind(this),
 
-            ended: function(e) {
+            ended: function () {
                 this.flashProperty('paused')
                     .flashProperty('ended');
             }.bind(this),
 
-            timeupdate: function(e) {
+            timeupdate: function () {
                 this.flashProperty('currentTime', this.video.currentTime.round(3));
             }.bind(this),
 
-            seeking: function(e) {
+            seeking: function () {
                 this.flashProperty('seeking');
             }.bind(this),
 
-            seeked: function(e) {
+            seeked: function () {
                 this.flashProperty('seeking');
             }.bind(this),
 
-            durationchange: function(e) {
+            durationchange: function () {
                 this.flashProperty('duration', this.video.duration.round(3));
             }.bind(this),
 
-            ratechange: function(e) {
+            ratechange: function () {
                 this.flashProperty('playbackRate');
             }.bind(this),
 
-            volumechange: function(e) {
+            volumechange: function () {
                 this.flashProperty('muted')
                     .flashProperty('volume', this.video.volume.round(2));
             }.bind(this)
@@ -1062,6 +1083,8 @@ Moovie.languages = { // You can add additional language definitions here
 
 // Public static methods
 
-Moovie.registerCaptions = function(id, captions) {
-  this.captions[id] = captions;
+Moovie.registerCaptions = function (id, captions) {
+    'use strict';
+
+    this.captions[id] = captions;
 };

@@ -19,6 +19,7 @@
     "loopfunc": false,
     "expr": false,
     "mootools": true,
+    "jasmine": true,
     "browser": true,
     "maxerr": 25,
     "predef": [],
