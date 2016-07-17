@@ -87,6 +87,7 @@ Moovie.Doit = function(video, options) {
 
   // Unfortunately, the media API only defines one volume-related event: `volumechange`. This event is fired whenever the media's `volume` attribute changes, or the media's `muted` attribute changes. The API defines no way to discern the two, so we'll have to "manually" keep track. We need to do this in order to be able to provide the advanced volume control (a la YouTube's player): changing the volume can have an effect on the muted state and vice versa.
   var muted = video.muted;
+  var panelHeightSet = false;
 
 
   // Utility methods ---------------------------------------------------------
@@ -511,21 +512,6 @@ Moovie.Doit = function(video, options) {
   controls.progress.slider.left = controls.progress.slider.getStyle('left').toInt();
   controls.volume.slider.top    = controls.volume.slider.getStyle('top').toInt();
 
-  // Adjust height of panel container to account for controls bar
-  panels.setStyle('height', panels.getStyle('height').toInt() - controls.getStyle('height').toInt());
-
-  // Err. Fixed height for the playlist.
-  (function() {
-    var el = panels.playlist.getChildren('div:nth-child(2)')[0], height = 0;
-    var content = el.getChildren().clone();
-    el.empty();
-    height = el.getStyle('height');
-    el.adopt(content);
-    el.getFirst().setStyle('height', height);
-    $$(panels.playlist, panels.playlist.getChildren()).setStyle('display', 'block');
-    // Holy crap, that is ugly. One day, CSS will actually be able to lay out inferfaces. Or maybe not.
-  })();
-
   // Make sliders draggable
   $$(controls.progress.slider, controls.volume.slider).each(function(el) {
     var modifiers  = el.getParents('.progress').length ? { y: false } : { x: false };
@@ -603,16 +589,22 @@ Moovie.Doit = function(video, options) {
 
   // Panels ------------------------------------------------------------------
 
-  panels.update = function(which) {
-    if(which == 'none' || this[which].hasClass('active')) {
-      this.getChildren('.active').removeClass('active');
-      this.fade('out');
-    } else {
-      this.getChildren().hide().removeClass('active');
-      this[which].show().addClass('active');
-      this.fade('in');
-    }
-  };
+    panels.update = function (which) {
+        // Adjust height of panel container to account for controls bar
+        if (panelHeightSet === false) {
+            panelHeightSet = true;
+            panels.setStyle('height', panels.getStyle('height').toInt() - controls.getStyle('height').toInt());
+        }
+
+        if (which == 'none' || this[which].hasClass('active')) {
+            this.getChildren('.active').removeClass('active');
+            this.fade('out');
+        } else {
+            this.getChildren().hide().removeClass('active');
+            this[which].show().addClass('active');
+            this.fade('in');
+        }
+    };
 
   panels.playlist.play = function(action) {
     var current = panels.playlist.getActive();
