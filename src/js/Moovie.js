@@ -54,13 +54,14 @@ Moovie.Doit = function(video, options) {
 
   // Options
   var defaults = {
-    debug            : false,
+    debugger: false,
     autohideControls : true,
     title            : new URI(video.src).get('file'),
     playlist         : [],
     captions         : null,
     showCaptions     : true,
-    captionLang      : 'en'
+    captionLang      : 'en',
+    plugins: ['Debugger']
   };
 
   options = Object.merge(defaults, options);
@@ -128,199 +129,6 @@ Moovie.Doit = function(video, options) {
     var volume   = 1 - (1 / 100 * offsetPc).limit(0, 1);
     return volume;
   };
-
-
-  // Dubug mode ==============================================================
-  if(options.debug) {
-
-    // Build interface -------------------------------------------------------
-    var debug        = new Element('div', { 'class': 'debug' });
-    debug.table      = new Element('table');
-    debug.table.body = new Element('tbody');
-    debug.msg        = new Element('p', { text: 'Moovie instance ready.' });
-
-    ['autobuffer', 'autoplay', 'controls', 'loop', 'networkState', 'readyState', 'error'/*, 'buffered'*/, 'defaultPlaybackRate', 'playbackRate', 'duration', 'currentTime', 'startTime'/*, 'played', 'seekable'*/, 'seeking', 'paused', 'ended', 'volume', 'muted'].each(function(el) {
-      var row   = new Element('tr');
-      var label = new Element('td', { text: el });
-      debug[el] = new Element('td', { text: video[el] });
-
-      row.adopt(label, debug[el]);
-      debug.table.body.grab(row);
-    });
-
-    debug.table.grab(debug.table.body);
-    debug.adopt(debug.table, debug.msg);
-    debug.inject(container);
-
-    // Events ----------------------------------------------------------------
-    video.addEvents({
-
-      // networkState
-      loadstart: function(e) {
-        debug.networkState.set('text', video.networkState);
-        debug.networkState.getParent().highlight();
-
-        debug.msg.set('html', 'Now looking for data...');
-        debug.msg.highlight();
-      },
-
-      progress: function(e) {
-        debug.networkState.set('text', video.networkState);
-        debug.networkState.getParent().highlight();
-
-        debug.msg.set('html', 'Now fetching data...');
-        debug.msg.highlight();
-      },
-
-      suspend: function(e) {
-        debug.networkState.set('text', video.networkState);
-        debug.networkState.getParent().highlight();
-
-        debug.msg.set('html', 'Data fetching <b>suspended</b>.');
-        debug.msg.highlight();
-      },
-
-      abort: function(e) {
-        debug.networkState.set('text', video.networkState);
-        debug.networkState.getParent().highlight();
-
-        debug.msg.set('html', 'Data fetching <b>aborted</b>.');
-        debug.msg.highlight();
-      },
-
-      error: function(e) {
-        debug.networkState.set('text', video.networkState);
-        debug.networkState.getParent().highlight();
-
-        debug.error.set('text', video.error.code);
-        debug.error.highlight();
-
-        debug.msg.set('html', 'An error occurred while fetching data. See <b>error</b> attribute.');
-        debug.msg.highlight();
-      },
-
-      emptied: function(e) {
-        debug.networkState.set('text', video.networkState);
-        debug.networkState.getParent().highlight();
-
-        debug.msg.set('html', 'Media resource <b>emptied</b>. Possible error; see <b>error attribute.');
-        debug.msg.highlight();
-      },
-
-      stalled: function(e) {
-        debug.networkState.set('text', video.networkState);
-        debug.networkState.getParent().highlight();
-
-        debug.msg.set('html', 'Data throughput is <b>stalled</b>, possibly temporarily.');
-        debug.msg.highlight();
-      },
-
-      // readyState
-      loadedmetadata: function(e) {
-        debug.readyState.set('text', video.readyState);
-        debug.readyState.getParent().highlight();
-
-        debug.msg.set('html', 'Duration and dimensions of media resource determined.');
-        debug.msg.highlight();
-      },
-
-      loadeddata: function(e) {
-        debug.readyState.set('text', video.readyState);
-        debug.readyState.getParent().highlight();
-
-        debug.msg.set('html', 'Some data available, but more is needed.');
-        debug.msg.highlight();
-      },
-
-      waiting: function(e) {
-        debug.readyState.set('text', video.readyState);
-        debug.readyState.getParent().highlight();
-
-        debug.msg.set('html', '<b>Waiting</b> for more data...');
-        debug.msg.highlight();
-      },
-
-      playing: function(e) {
-        debug.readyState.set('text', video.readyState);
-        debug.readyState.getParent().highlight();
-
-        debug.msg.set('html', 'Playback has started.');
-        debug.msg.highlight();
-      },
-
-      canplay: function(e) {
-        debug.readyState.set('text', video.readyState);
-        debug.readyState.getParent().highlight();
-
-        debug.msg.set('html', 'Playback possible, but will likely be interrupted for buffering before reaching the end.');
-        debug.msg.highlight();
-      },
-
-      canplaythrough: function(e) {
-        debug.readyState.set('text', video.readyState);
-        debug.readyState.getParent().highlight();
-
-        debug.msg.set('html', 'Most likely, uninterrupted playback all the way through to the end is now possible.');
-        debug.msg.highlight();
-      },
-
-      // Playback
-      play: function(e) {
-        debug.paused.set('text', video.paused);
-        debug.paused.getParent().highlight();
-
-        debug.ended.set('text', video.ended);
-      },
-
-      pause: function(e) {
-        debug.paused.set('text', video.paused);
-        debug.paused.getParent().highlight();
-      },
-
-      ended: function(e) {
-        debug.ended.set('text', video.ended);
-        debug.ended.getParent().highlight();
-      },
-
-      timeupdate: function(e) {
-        debug.currentTime.set('text', video.currentTime.round(3));
-      },
-
-      seeking: function(e) {
-        debug.seeking.set('text', video.seeking);
-        debug.seeking.getParent().highlight();
-      },
-
-      seeked: function(e) {
-        debug.seeking.set('text', video.seeking);
-        debug.seeking.getParent().highlight();
-      },
-
-      // Misc
-      durationchange: function(e) {
-        debug.duration.set('text', video.duration.round(3));
-        debug.duration.getParent().highlight();
-      },
-
-      ratechange: function(e) {
-        debug.playbackRate.set('text', video.playbackRate);
-        debug.playbackRate.getParent().highlight();
-
-        debug.defaultPlaybackRate.set('text', video.defaultPlaybackRate);
-        debug.defaultPlaybackRate.getParent().highlight();
-      },
-
-      volumechange: function(e) {
-        debug.muted.set('text', video.muted);
-        debug.muted.getParent().highlight();
-
-        debug.volume.set('text', video.volume.round(3));
-        debug.volume.getParent().highlight();
-      }
-
-    }); // end Events
-
-  } // end Debug mode
 
 
   // Build interface =========================================================
@@ -984,6 +792,24 @@ Moovie.Doit = function(video, options) {
   }); // end events for video element
 
 
+    // setup plugins...
+    options.plugins.each(function (plugin) {
+        var option = plugin.toLowerCase();
+        var pluginOptions = {};
+        plugin = Moovie[plugin];
+
+        if (typeOf(options[option]) === 'boolean') {
+            pluginOptions.disabled = !options[option];
+            pluginOptions.container = container;
+        } else {
+            pluginOptions = options[option];
+        }
+
+        this[option] = new plugin(video, pluginOptions);
+
+        console.log(this[option]);
+    }, this);
+
     // Init ====================================================================
     if (!video.autoplay) {
         overlay.update('play');
@@ -999,6 +825,234 @@ Moovie.Doit = function(video, options) {
   });
 
 }; // end Doit()
+
+/*!
+ * Moovie.Debugger: a plugin to allow Moovie players to view video info live.
+ *
+ * @version 0.2.0
+ * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
+ * @author Nathan Bishop <nbish11@hotmail.com>
+ * @copyright 2010 Colin Aarts
+ * @license MIT
+ */
+Moovie.Debugger = new Class({
+    Implements: [Options],
+
+    options: {
+        container: null,
+        disabled: false,
+        monitorProperties: [
+            'autoplay',
+            'controls',
+            'currentSrc',
+            'currentTime',
+            'duration',
+            'ended',
+            'error',
+            'loop',
+            'muted',
+            'networkState',
+            'paused',
+            'playbackRate',
+            'preload',
+            'readyState',
+            'seeking',
+            'volume'
+        ]
+    },
+
+    initialize: function (video, options) {
+        this.video = document.id(video);
+        this.setOptions(options);
+        this.bound = this.getBoundEvents();
+
+        if (this.options.disabled) {
+            this.build().disable();
+        } else {
+            this.build().enable();
+        }
+    },
+
+    build: function () {
+        this.element = new Element('div.debug');
+        this.elements = {
+            table: new Element('table'),
+            tbody: new Element('tbody'),
+            p: new Element('p[text=Debugger ready...]')
+        };
+
+        this.options.monitorProperties.each(function (el) {
+            var row = new Element('tr[data-property=' + el + ']');
+            var label = new Element('td[text=' + el + ']');
+            var value = new Element('td[text=' + this.video[el] + ']');
+
+            row.adopt(label, value);
+            this.elements.tbody.grab(row);
+        }, this);
+
+        this.elements.table.grab(this.elements.tbody);
+        this.element.adopt(this.elements.table, this.elements.p);
+
+        if (document.id(this.options.container)) {
+            this.element.inject(document.id(this.options.container));
+        }
+
+        return this;
+    },
+
+    attach: function () {
+        this.video.addEvents(this.bound);
+
+        return this;
+    },
+
+    detach: function () {
+        this.video.removeEvents(this.bound);
+
+        return this;
+    },
+
+    enable: function () {
+        this.element.set('data-disabled', false);
+        this.attach();
+
+        return this;
+    },
+
+    disable: function () {
+        this.detach();
+        this.element.set('data-disabled', true);
+
+        return this;
+    },
+
+    flashProperty: function (property, value) {
+        this.elements.tbody
+            .getElement('[data-property=' + property + '] > td + td')
+            .set('text', value || this.video[property])
+            .getParent().highlight();
+
+        return this;
+    },
+
+    flashMessage: function (message) {
+        this.elements.p.set('html', message).highlight();
+
+        return this;
+    },
+
+    toElement: function () {
+        return this.element;
+    },
+
+    getBoundEvents: function () {
+        return {
+            loadstart: function () {
+                this.flashProperty('networkState')
+                    .flashMessage('looking for data...');
+            }.bind(this),
+
+            progress: function () {
+                this.flashProperty('networkState')
+                    .flashMessage('fetching data...');
+            }.bind(this),
+
+            suspend: function () {
+                this.flashProperty('networkState')
+                    .flashMessage('data fetching suspended...');
+            }.bind(this),
+
+            abort: function(e) {
+                this.flashProperty('networkState')
+                    .flashMessage('data fetching aborted...');
+            }.bind(this),
+
+            error: function(e) {
+                this.flashProperty('networkState')
+                    .flashProperty('error', this.video.error.code)
+                    .flashMessage('an error occurred while fetching data...');
+            }.bind(this),
+
+            emptied: function(e) {
+                this.flashProperty('networkState')
+                    .flashMessage('media resource is empty...');
+            }.bind(this),
+
+            stalled: function(e) {
+                this.flashProperty('networkState')
+                    .flashMessage('stalled while fetching data...');
+            }.bind(this),
+
+            loadedmetadata: function(e) {
+                this.flashProperty('readyState')
+                    .flashMessage('duration and dimensions have been determined...');
+            }.bind(this),
+
+            loadeddata: function(e) {
+                this.flashProperty('readyState')
+                    .flashMessage('first frame is available...');
+            }.bind(this),
+
+            waiting: function(e) {
+                this.flashProperty('readyState')
+                    .flashMessage('waiting for more data...');
+            }.bind(this),
+
+            playing: function(e) {
+                this.flashProperty('readyState')
+                    .flashMessage('playback has started...');
+            }.bind(this),
+
+            canplay: function(e) {
+                this.flashProperty('readyState')
+                    .flashMessage('media is ready to be played, but will likely be interrupted for buffering...');
+            }.bind(this),
+
+            canplaythrough: function(e) {
+                this.flashProperty('readyState')
+                    .flashMessage('media is ready to be played and will most likely play through without stopping...');
+            }.bind(this),
+
+            play: function(e) {
+                this.flashProperty('paused');
+            }.bind(this),
+
+            pause: function(e) {
+                this.flashProperty('paused');
+            }.bind(this),
+
+            ended: function(e) {
+                this.flashProperty('paused')
+                    .flashProperty('ended');
+            }.bind(this),
+
+            timeupdate: function(e) {
+                this.flashProperty('currentTime', this.video.currentTime.round(3));
+            }.bind(this),
+
+            seeking: function(e) {
+                this.flashProperty('seeking');
+            }.bind(this),
+
+            seeked: function(e) {
+                this.flashProperty('seeking');
+            }.bind(this),
+
+            durationchange: function(e) {
+                this.flashProperty('duration', this.video.duration.round(3));
+            }.bind(this),
+
+            ratechange: function(e) {
+                this.flashProperty('playbackRate');
+            }.bind(this),
+
+            volumechange: function(e) {
+                this.flashProperty('muted')
+                    .flashProperty('volume', this.video.volume.round(2));
+            }.bind(this)
+        };
+    }
+});
 
 Moovie.captions = {};
 
