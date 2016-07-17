@@ -631,7 +631,7 @@ Moovie.Doit = function(video, options) {
       if(which > (length - 1)) {
         which = 0;
       }
-    } else if($type(action) == 'number') {
+    } else if(typeOf(action) == 'number') {
       which = action;
     }
 
@@ -904,8 +904,9 @@ Moovie.Doit = function(video, options) {
     },
 
     play: function(e) {
-      controls.play.update();
-      overlay.update('none');
+        controls.play.update();
+        overlay.update('none');
+        controls.show();
     },
 
     pause: function(e) {
@@ -987,10 +988,11 @@ Moovie.Doit = function(video, options) {
   }); // end events for video element
 
 
-  // Init ====================================================================
-  if(!video.autoplay) {
-    overlay.update('play');
-  }
+    // Init ====================================================================
+    if (!video.autoplay) {
+        overlay.update('play');
+        controls.hide();
+    }
 
   var tips = new Tips(wrapper.getElements('[title]'), {
     className : 'video-tip',
