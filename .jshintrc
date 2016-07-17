@@ -31,5 +31,8 @@
     "shadow": false,
     "strict": true,
     "unused": true,
-    "latedef": false
+    "latedef": false,
+    "undef": true,
+    "maxstatements": 180,
+    "multistr": true
 }
