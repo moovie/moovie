@@ -448,10 +448,10 @@ span.info {
 }
 
 .moovie video {
-    background:black;
-    display:block;
-    width:100%;
-    height:250px;
+    background: black;
+    display: block;
+    width: 100%;
+    height: auto;
 }
 
 .moovie .captions p i,
@@ -820,9 +820,15 @@ span.info {
 }
 
 .moovie {
-    background: #000000;
-    border: 5px solid #222222;
-    padding: 30px;
-    position: relative;
+    left: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 852px;
+    max-width: 852px;
+    background: transparent;
+    border: none;
+    padding: 0;
+    box-shadow: 0 0 15px #000000;
     color: #ffffff;
 }
