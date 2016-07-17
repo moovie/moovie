@@ -757,39 +757,43 @@ Moovie.Doit = function(video, options) {
 
   // Panels ------------------------------------------------------------------
 
-  // Checkbox widgets
-  panels.addEvent('click:relay(.checkbox-widget)', function(e) {
-    if(this.get('data-checked') == 'false') {
-      this.set('data-checked', 'true');
-    } else {
-      this.set('data-checked', 'false');
-    }
+    // Checkbox widgets
+    panels.settings.addEvent('click:relay(.checkbox-widget)', function (e) {
+        if (this.get('data-checked') == 'false') {
+            this.set('data-checked', 'true');
+        } else {
+            this.set('data-checked', 'false');
+        }
 
-    var control = this.get('data-control');
-    var checked = this.get('data-checked');
+        var control = this.get('data-control');
+        var checked = this.get('data-checked');
 
-    switch(control) {
-      case 'autohideControls':
-        options.autohideControls = checked == 'true';
-        break;
+        switch (control) {
+            case 'autohideControls':
+                options.autohideControls = checked == 'true';
+                break;
 
-      case 'loop':
-        video.loop = checked == 'true';
-        break;
+            case 'loop':
+                video.loop = checked == 'true';
+                break;
 
-      case 'showCaptions':
-        options.showCaptions = checked == 'true';
-        break;
-    }
-  });
+            case 'showCaptions':
+                options.showCaptions = checked == 'true';
+                break;
+        }
 
-  panels.playlist.addEvent('click:relay(.label)', function(e) {
-    e.stop();
+        panels.update('none');
+    });
 
-    var item  = this.getParents('li')[0];
-    var index = +item.get('data-index');
-    panels.playlist.play(index);
-  });
+    panels.playlist.addEvent('click:relay(.label)', function (e) {
+        e.stop();
+
+        var item  = this.getParents('li')[0];
+        var index = item.get('data-index').toInt();
+
+        panels.playlist.play(index);
+        panels.update('none');
+    });
 
   // Controls ----------------------------------------------------------------
 
