@@ -21,7 +21,7 @@ Element.implement({
  * Moovie: an advanced HTML5 video player for MooTools.
  *
  * @see http://colinaarts.com/code/moovie
- * @version 1.0.0
+ * @version 0.2.0
  * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
  * @author Nathan Bishop <nbish11@hotmail.com>
  * @copyright 2010 Colin Aarts

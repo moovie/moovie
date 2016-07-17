@@ -1,6 +1,13 @@
-/*! moovie - v0.1.0 - 2016-07-17
-* https://github.com/moovie/moovie#readme
-* Copyright (c) 2016 ; Licensed MIT %> */
+/**
+ * Moovie: an advanced HTML5 video player for MooTools.
+ *
+ * @see http://colinaarts.com/code/moovie
+ * @version 0.2.0
+ * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
+ * @author Nathan Bishop <nbish11@hotmail.com>
+ * @copyright 2010 Colin Aarts
+ * @license MIT
+ */
 nav,
 article,
 header,
@@ -382,6 +389,10 @@ span.info {
     width:100%;
 }
 
+.checkbox-widget[data-checked="true"] .checkbox {
+    background-image:url('http://colinaarts.com/assets/player-checked.png');
+}
+
 .section-tip .tip {
     background:#000000;
     max-width:300px;
@@ -440,10 +451,10 @@ span.info {
 }
 
 .moovie video {
-    background:black;
-    display:block;
-    width:100%;
-    height:250px;
+    background: black;
+    display: block;
+    width: 100%;
+    height: auto;
 }
 
 .moovie .captions p i,
@@ -812,9 +823,15 @@ span.info {
 }
 
 .moovie {
-    background: #000000;
-    border: 5px solid #222222;
-    padding: 30px;
-    position: relative;
+    left: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 852px;
+    max-width: 852px;
+    background: transparent;
+    border: none;
+    padding: 0;
+    box-shadow: 0 0 15px #000000;
     color: #ffffff;
 }
