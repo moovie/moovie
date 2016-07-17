@@ -35,6 +35,7 @@ var Moovie = function(videos, options) {
   // ===========================================================================
   // The main function, which handles one <video> at a time.
   // <http://www.urbandictionary.com/define.php?term=Doit&defid=3379319>
+  // jshint maxstatements:150
   var Doit = function(video, options) {
 
     video.controls = false;
@@ -56,8 +57,16 @@ var Moovie = function(videos, options) {
     options.playlist.unshift({ id: options.id, src: video.src, title: options.title });
 
     // Grab some refs
-    var wrapper   = video.getParent();
-    var container = wrapper.getParent();
+    // @bug Native textTracks won't work unless the video is cloned.
+    var container = new Element('div.moovie');
+    var wrapper = new Element('div.wrapper');
+    container.replaces(video);
+    var newVideo = video.clone(true, true);
+    video.destroy();
+    video = newVideo;
+    wrapper.grab(video);
+    container.grab(wrapper);
+
 
     // Add HTML 5 media events to Element.NativeEvents, if needed.
     if(!Element.NativeEvents.timeupdate) {
