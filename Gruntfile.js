@@ -97,7 +97,7 @@ module.exports = function (grunt) {
 
     require('load-grunt-tasks')(grunt);
 
-    grunt.registerTask('test', ['jshint']);
+    grunt.registerTask('test', ['jshint', 'karma:unit:start']);
     grunt.registerTask('minify', ['copy', 'uglify', 'cssmin']);
     grunt.registerTask('build', ['test', 'minify']);
     grunt.registerTask('default', ['test']);
