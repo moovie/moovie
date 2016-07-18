@@ -685,7 +685,7 @@ span.info {
     background-image:url('http://colinaarts.com/assets/player-more.png');
 }
 
-.moovie .controls > .wrapper > .close {
+.moovie .controls > .wrapper > .fullscreen {
     background-image:url('http://colinaarts.com/assets/player-close.png');
 }
 

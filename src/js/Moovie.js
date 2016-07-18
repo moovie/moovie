@@ -254,7 +254,7 @@ Moovie.Doit = function(video, options) {
   controls.currentTime       = new Element('div', { 'class': 'current-time', 'text': '0.00' });
   controls.duration          = new Element('div', { 'class': 'duration', 'text': '0.00' });
   controls.settings          = new Element('div', { 'class': 'settings', 'title': 'Settings' });
-  controls.close             = new Element('div', { 'class': 'close', 'title': 'Close panel' });
+  controls.fullscreen = new Element('div.fullscreen[title=Fullscreen]');
 
   controls.previous = options.playlist.length > 1 ? new Element('div', { 'class': 'previous', 'title': 'Previous' }) : null;
   controls.next     = options.playlist.length > 1 ? new Element('div', { 'class': 'next', 'title': 'Next' }) : null;
@@ -315,7 +315,7 @@ Moovie.Doit = function(video, options) {
       controls.volume,
       controls.settings,
       controls.more,
-      controls.close
+      controls.fullscreen
   );
   controls.grab(controls.wrapper);
 
@@ -709,9 +709,9 @@ Moovie.Doit = function(video, options) {
     panels.update('settings');
   });
 
-  controls.close.addEvent('click', function() {
-    panels.update('none');
-  });
+    controls.fullscreen.addEvent('click', function () {
+        screenfull.toggle(wrapper);
+    });
 
 
   // Video element -----------------------------------------------------------
