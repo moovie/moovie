@@ -1,3 +1,4 @@
+/* global screenfull:false */
 // Here for compat with older MooTools versions...
 Element.implement({
     show: function () {
