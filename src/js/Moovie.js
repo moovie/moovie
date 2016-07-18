@@ -48,6 +48,7 @@ var Moovie = function(videos, options) {
 
 // The main function, which handles one <video> at a time.
 // <http://www.urbandictionary.com/define.php?term=Doit&defid=3379319>
+// jshint maxcomplexity:8
 Moovie.Doit = function(video, options) {
     'use strict';
   video.controls = false;
@@ -192,6 +193,8 @@ Moovie.Doit = function(video, options) {
     </dl>\
   ');
 
+  var debuggerEnabled = options.debugger === true || options.debugger.disabled === false;
+
   // Content for `settings` panel
   // jshint singleGroups:false
   panels.settings.set('html', '\
@@ -208,6 +211,10 @@ Moovie.Doit = function(video, options) {
     <div class="checkbox-widget" data-control="showCaptions" data-checked="' + options.showCaptions + '">\
       <div class="checkbox"></div>\
       <div class="label">Show captions</div>\
+    </div>\
+    <div class="checkbox-widget" data-control="debugger" data-checked="' + debuggerEnabled + '">\
+      <div class="checkbox"></div>\
+      <div class="label">Enable Debugger</div>\
     </div>\
   ');
   // jshint singleGroups:true
@@ -559,6 +566,7 @@ Moovie.Doit = function(video, options) {
   });
 
   // Panels ------------------------------------------------------------------
+    var self = this;
 
     // Checkbox widgets
     panels.settings.addEvent('click:relay(.checkbox-widget)', function () {
@@ -582,6 +590,10 @@ Moovie.Doit = function(video, options) {
 
             case 'showCaptions':
                 options.showCaptions = checked == 'true';
+                break;
+
+            case 'debugger':
+                self.debugger[checked !== 'true' ? 'disable' : 'enable']();
                 break;
         }
 
