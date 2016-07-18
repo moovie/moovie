@@ -104,7 +104,7 @@ module.exports = function (grunt) {
                 changelogCommand: false,
                 src: {
                     beforeStageCommand: "git log v[REV_RANGE] --pretty=format:'* %s (%h)'"
-                }
+                },
                 npm: {
                     publish: true
                 },
