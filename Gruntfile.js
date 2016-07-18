@@ -92,6 +92,26 @@ module.exports = function (grunt) {
             unit: {
                 configFile: 'karma.conf.js'
             }
+        },
+
+        'release-it': {
+            options: {
+                pkgFiles: ['package.json', 'bower.json'],
+                buildCommand: 'grunt build',
+                commitMessage: "Release v%s",
+                tagName: "v%s",
+                tagAnnotation: "Release v%s",
+                changelogCommand: false,
+                src: {
+                    beforeStageCommand: "git log v[REV_RANGE] --pretty=format:'* %s (%h)'"
+                }
+                npm: {
+                    publish: true
+                },
+                github: {
+                    release: true
+                }
+            }
         }
     });
 
@@ -100,5 +120,6 @@ module.exports = function (grunt) {
     grunt.registerTask('test', ['jshint', 'karma:unit:start']);
     grunt.registerTask('minify', ['copy', 'uglify', 'cssmin']);
     grunt.registerTask('build', ['test', 'minify']);
+    grunt.registerTask('publish', ['release-it']);
     grunt.registerTask('default', ['test']);
 };
