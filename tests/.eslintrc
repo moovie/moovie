@@ -1,0 +1,16 @@
+{
+    "env": {
+        "browser": true,
+        "node": true,
+        "jasmine": true,
+        "phantomjs": true
+    },
+    "globals": {
+        "$": false,
+        "$$": false,
+        "Element": false,
+        "instanceOf": false,
+        "typeOf": false,
+        "Moovie": false
+    }
+}

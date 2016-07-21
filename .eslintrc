@@ -1,0 +1,27 @@
+{
+    "root": true,
+    "extends": "eslint:recommended",
+    "rules": {
+        "indent": [
+            "error",
+            4
+        ],
+        "linebreak-style": [
+            "error",
+            "unix"
+        ],
+        "quotes": [
+            "error",
+            "single"
+        ],
+        "semi": [
+            "error",
+            "always"
+        ],
+        "block-scoped-var": ["warn"],
+        "complexity": ["warn", 7],
+        "consistent-return": ["warn"],
+        "curly": ["warn", "all"],
+        "eqeqeq": ["warn", "always"]
+    }
+}
