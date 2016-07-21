@@ -35,10 +35,10 @@
     "minify:js": "uglifyjs dist/moovie.js --output=dist/moovie.min.js",
     "minify:css": "cleancss --output=dist/moovie.min.css dist/moovie.css",
     "minify": "npm run minify:js && npm run minify:css",
-    "prepublish": "npm run build",
+    "prepublish": "echo build...",
     "compile:js": "node scripts/concat.js",
     "compile": "npm run compile:js",
-    "build": "npm test && npm run compile && npm run minify"
+    "build": "echo test, build, minify..."
   },
   "repository": {
     "type": "git",
