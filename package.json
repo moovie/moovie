@@ -38,7 +38,9 @@
     "prepublish": "echo build...",
     "compile:js": "node scripts/concat.js",
     "compile": "npm run compile:js",
-    "build": "echo test, build, minify..."
+    "build": "echo test, build, minify...",
+    "preversion": "npm test",
+    "version": "node scripts/bump.js && git add bower.json src/js/*.js"
   },
   "repository": {
     "type": "git",
