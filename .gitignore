@@ -1,4 +1,6 @@
+assets/
 build/
 node_modules/
 vendor/
-assets/
+index.php
+npm-debug.log

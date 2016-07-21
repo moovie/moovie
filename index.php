@@ -4,7 +4,7 @@
     <head>
         <meta charset="utf-8">
         <title>Moovie Demo</title>
-        <link href="dist/moovie.min.css" rel="stylesheet">
+        <link href="dist/moovie.css" rel="stylesheet">
 
         <style>
             body {
@@ -14,6 +14,7 @@
     </head>
     <body>
         <video src="http://colinaarts.com/assets/avatar.ogv" poster="http://colinaarts.com/assets/avatar.png" controls>
+            <track kind="subtitles" src="assets/avatar (2008).vtt" srclang="en" label="English" default>
             <p>Your browser does not support the HTML 5 <code>video</code> element.</p>
         </video>
 
@@ -22,7 +23,7 @@
         <script src="vendor/mootools-more/Source/Drag/Drag.js"></script>
         <script src="vendor/mootools-more/Source/Interface/Tips.js"></script>
         <script src="vendor/screenfull/dist/screenfull.min.js"></script>
-        <script src="dist/moovie.min.js"></script>
+        <script src="dist/moovie.js"></script>
         <script src="http://colinaarts.com/js/avatar.mc"></script>
         <script>
             (function () {
