@@ -3,7 +3,7 @@
  *
  * A plugin to allow Moovie players to view video info live.
  *
- * @version 0.2.0
+ * @version 0.3.0
  * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
  * @author Nathan Bishop <nbish11@hotmail.com>
  * @copyright 2010 Colin Aarts
