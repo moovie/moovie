@@ -438,7 +438,8 @@ span.info {
     text-indent:0;
 }
 
-.moovie .debug {
+.moovie .debug,
+.moovie .debug[data-disabled="true"] {
     font:.75em Monaco, monospace;
     width:198px;
     padding:10px;
@@ -448,6 +449,11 @@ span.info {
     top:-5px;
     color:#444444;
     overflow:hidden;
+    display: none;
+}
+
+.moovie .debug[data-disabled="false"] {
+    display: block;
 }
 
 .moovie video {
@@ -679,7 +685,7 @@ span.info {
     background-image:url('http://colinaarts.com/assets/player-more.png');
 }
 
-.moovie .controls > .wrapper > .close {
+.moovie .controls > .wrapper > .fullscreen {
     background-image:url('http://colinaarts.com/assets/player-close.png');
 }
 
