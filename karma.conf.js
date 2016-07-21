@@ -1,4 +1,4 @@
-/* global module:false */
+/* globals module:false, require:false */
 module.exports = function (config) {
     'use strict';
 
@@ -8,16 +8,24 @@ module.exports = function (config) {
 
         // frameworks to use
         // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-        frameworks: ['jasmine'],
+        frameworks: ['mocha', 'sinon'],
 
         // list of files / patterns to load in the browser
         files: [
+            // dependencies
             'vendor/mootools/dist/mootools-core.min.js',
             'vendor/mootools-more/Source/Types/URI.js',
             'vendor/mootools-more/Source/Drag/Drag.js',
             'vendor/mootools-more/Source/Interface/Tips.js',
-            'src/js/*.js',
-            'tests/specs/*Spec.js'
+            'vendor/screenfull/dist/screenfull.min.js',
+
+            // source
+            'src/js/Moovie.js',
+            'src/js/Moovie.*.js',
+
+            // specs
+            'tests/specs/Moovie.js',
+            'tests/specs/Moovie.*.js'
         ],
 
         // list of files to exclude
@@ -50,7 +58,7 @@ module.exports = function (config) {
 
         // start these browsers
         // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-        browsers: [/*'Chrome', 'Firefox', 'Safari', 'Opera', 'IE',*/ 'PhantomJS'],
+        browsers: [/*'Chrome',*/ 'Firefox', /*'Safari', 'Opera', 'IE',*/],
 
         // Continuous Integration mode
         // if true, Karma captures browsers, runs the tests and exits
@@ -60,6 +68,19 @@ module.exports = function (config) {
         // how many browser should be started simultaneous
         concurrency: Infinity,
 
+        // mocha options
+        client: {
+            mocha: {
+                // I'm using Jasmine-style matchers here.
+                // I don't mind chaining, but I think at a certain
+                // point it becomes a bit too much (looking at you Chai).
+                require: [require.resolve('expectations')],
+                ui: 'bdd',
+            }
+        },
+
+        // All coverage can be found in either the "build/coverage"
+        // or "build/logs" directories
         coverageReporter: {
             dir: 'build',
             reporters: [
