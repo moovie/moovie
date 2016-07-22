@@ -105,19 +105,7 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
     captions.hide();
 
 
-  // Overlay -----------------------------------------------------------------
-    var overlay       = new Element('div', { 'class': 'overlay' });
-    overlay.wrapper   = new Element('div', { 'class': 'wrapper' });
-    overlay.buffering = new Element('div', { 'class': 'buffering', text: 'Buffering...' });
-    overlay.play      = new Element('div', { 'class': 'play', text: 'Play video' });
-    overlay.replay    = new Element('div', { 'class': 'replay', text: 'Replay' });
-    overlay.paused    = new Element('div', { 'class': 'paused', text: 'Paused' });
-
-    overlay.wrapper.adopt(overlay.buffering, overlay.play, overlay.replay, overlay.paused);
-    overlay.grab(overlay.wrapper);
-
-    overlay.set('tween', { duration: 50 });
-    overlay.fade('hide');
+    this.overlay = new Element('div.overlay');
 
 
   // Title -------------------------------------------------------------------
@@ -282,7 +270,7 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
 
 
   // Inject and do some post-processing --------------------------------------
-    wrapper.adopt(captions, overlay, title, panels, controls);
+    wrapper.adopt(captions, this.overlay, title, panels, controls);
 
   // Get the knob offsets for later
     controls.progress.slider.left = controls.progress.slider.getStyle('left').toInt();
@@ -337,18 +325,6 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
 
 
   // Methods =================================================================
-
-  // Overlay -----------------------------------------------------------------
-
-    overlay.update = function(which) {
-        if(which == 'none') {
-            this.fade('out');
-        } else {
-            this.wrapper.getChildren().hide();
-            this[which].show();
-            this.fade('in');
-        }
-    };
 
   // Title -------------------------------------------------------------------
 
@@ -516,14 +492,7 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
         }
     });
 
-  // Overlay -----------------------------------------------------------------
-
-    $$(overlay.play, overlay.replay).addEvent('click', function() {
-        video.play();
-        title.show();
-    });
-
-    $$(overlay.paused).addEvent('click', function() {
+    this.overlay.addEvent('click', function () {
         video.play();
     });
 
@@ -681,25 +650,29 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
 
         click: function() {
             video.pause();
-            overlay.update('paused');
         },
 
         play: function() {
             controls.play.update();
-            overlay.update('none');
             controls.show();
         },
 
+        playing: function () {
+            container.set('data-playbackstate', 'playing');
+        },
+
         pause: function() {
+            container.set('data-playbackstate', 'paused');
             controls.play.update();
         },
 
         ended: function() {
-            if(options.playlist.length > 1) {
+            container.set('data-playbackstate', 'ended');
+
+            if (options.playlist.length > 1) {
                 panels.playlist.play('next');
             } else {
                 controls.play.update();
-                overlay.update('replay');
             }
         },
 
@@ -715,11 +688,10 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
         },
 
         seeking: function() {
-            overlay.update('buffering');
+            container.set('data-playbackstate', 'seeking');
         },
 
         seeked: function() {
-            overlay.update('none');
             if(!video.paused) {
                 controls.play.update();
             }
@@ -729,10 +701,10 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
             controls.currentTime.update(video.currentTime);
             controls.progress.update();
 
-      // Captions
+            // Captions
             var found = false;
 
-            if(options.captions && options.showCaptions) {
+            if (options.captions && options.showCaptions) {
                 options.captions[options.captionLang].each(function(caption) {
                     if(video.currentTime >= caption.start / 1000 && video.currentTime <= caption.end / 1000) {
                         captions.caption.set('html', caption.text);
@@ -742,7 +714,7 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
                 });
             }
 
-            if(!found) {
+            if (!found) {
                 captions.caption.set('html', '');
                 captions.hide();
             }
@@ -757,17 +729,15 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
         },
 
         abort: function() {
-      // video.Moovie = null;
-      // Doit(video);
+            // video.Moovie = null;
+            // Doit(video);
         },
 
         emptied: function() {
-      // video.Moovie = null;
-      // Doit(video);
+            // video.Moovie = null;
+            // Doit(video);
         }
-
-    }); // end events for video element
-
+    });
 
     // setup plugins...
     options.plugins.each(function (plugin) {
@@ -787,7 +757,7 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
 
     // Init ====================================================================
     if (!video.autoplay) {
-        overlay.update('play');
+        container.set('data-playbackstate', 'stopped');
         controls.hide();
     }
 
