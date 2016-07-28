@@ -18,7 +18,6 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
     var defaults = {
         debugger: false,
         autohideControls : true,
-        title            : new URI(video.src).get('file'),
         playlist         : [],
         captions         : null,
         showCaptions     : true,
@@ -27,9 +26,24 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
     };
 
     options = Object.merge(defaults, options);
+    var playlist = [];
 
-  // Add the current video to the playlist stack
-    options.playlist.unshift({ id: options.id, src: video.src, title: options.title });
+    var basename = function (str, suffix) {
+        return str.substr(str.lastIndexOf(suffix || '/') + 1);
+    };
+
+    if (typeOf(options.playlist) === 'array') {
+        playlist.combine(options.playlist);
+
+        // Add the current video to the playlist stack
+        playlist.unshift({
+            id: video.get('id'),
+            src: video.currentSrc || video.src,
+            title: video.get('title') || basename(video.currentSrc || video.src)
+        });
+    }
+
+    this.playlist = new Moovie.Playlist(playlist);
 
   // Grab some refs
   // @bug Native textTracks won't work unless the video is cloned.
@@ -42,15 +56,10 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
     wrapper.grab(video);
     container.grab(wrapper);
 
-
-  // Add HTML 5 media events to Element.NativeEvents, if needed.
-    if(!Element.NativeEvents.timeupdate) {
-        Element.NativeEvents = Object.merge({ abort: 1, canplay: 1, canplaythrough: 1, durationchange: 1, emptied: 1, ended: 1, loadeddata: 1, loadedmetadata: 1, loadstart: 1, pause: 1, play: 1, playing: 1, progress: 2, ratechange: 1, seeked: 1, seeking: 1, stalled: 1, suspend: 1, timeupdate: 1, volumechange: 1, waiting: 1 }, Element.NativeEvents);
-    }
-
   // Unfortunately, the media API only defines one volume-related event: `volumechange`. This event is fired whenever the media's `volume` attribute changes, or the media's `muted` attribute changes. The API defines no way to discern the two, so we'll have to "manually" keep track. We need to do this in order to be able to provide the advanced volume control (a la YouTube's player): changing the volume can have an effect on the muted state and vice versa.
     var muted = video.muted;
     var panelHeightSet = false;
+    var self = this;
 
 
   // Utility methods ---------------------------------------------------------
@@ -108,8 +117,11 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
     this.overlay = new Element('div.overlay');
 
 
-  // Title -------------------------------------------------------------------
-    var title = new Element('div', { 'class': 'video-title', 'html': options.title });
+    // Title -------------------------------------------------------------------
+    var title = new Element('div', {
+        'class': 'video-title',
+        'html': this.playlist.current().title
+    });
 
     title.set('tween', { duration: 2000 });
     title.fade('hide');
@@ -132,7 +144,7 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
     <div class="heading">Video information</div>\
     <dl>\
       <dt class="title">Title</dt>\
-      <dd>' + options.title + '</dd>\
+      <dd>' + this.playlist.current().title + '</dd>\
       \
       <dt class="url">URL</dt>\
       <dd>' + video.src + '</dd>\
@@ -180,15 +192,19 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
       <div><ol class="playlist"></ol></div>\
   ');
 
-    options.playlist.each(function(el, index) {
-        var active = index === 0 ? 'active' : '';
-        panels.playlist.getElement('ol.playlist').grab(new Element('li', { 'data-index': index, 'class': active, 'html': '\
-      <div class="checkbox-widget" data-checked="true">\
-        <div class="checkbox"></div>\
-        <div class="label">' + el.title + '</div>\
-      </div>\
-    ' }));
-    });
+    this.playlist.items.each(function(el, index) {
+        panels.playlist.getElement('ol.playlist')
+            .grab(new Element('li', {
+                'data-index': index,
+                'class': this.current() === el ? 'active' : '',
+                'html': '\
+                  <div class="checkbox-widget" data-checked="true">\
+                    <div class="checkbox"></div>\
+                    <div class="label">' + (el.title || basename(el.src)) + '</div>\
+                  </div>\
+                '
+            }));
+    }, this.playlist);
 
 
   // Controls ----------------------------------------------------------------
@@ -203,8 +219,8 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
     controls.settings          = new Element('div', { 'class': 'settings', 'title': 'Settings' });
     controls.fullscreen = new Element('div.fullscreen[title=Fullscreen]');
 
-    controls.previous = options.playlist.length > 1 ? new Element('div', { 'class': 'previous', 'title': 'Previous' }) : null;
-    controls.next     = options.playlist.length > 1 ? new Element('div', { 'class': 'next', 'title': 'Next' }) : null;
+    controls.previous = this.playlist.size ? new Element('div.previous[title=Previous]') : null;
+    controls.next = this.playlist.size ? new Element('div.next[title=Next]') : null;
 
   // Progress
     controls.progress          = new Element('div', { 'class': 'progress' });
@@ -329,8 +345,8 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
   // Title -------------------------------------------------------------------
 
     title.show = function() {
-        var index = panels.playlist.getActive().index;
-        var text   = options.playlist[index].title;
+        var index = self.playlist.index;
+        var text   = self.playlist.current().title || basename(self.playlist.current().src);
         title.set('html', (index + 1).toString() + '. ' + text);
         title.fade('in');
 
@@ -360,53 +376,23 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
         }
     };
 
-    panels.playlist.play = function(action) {
-        var current = panels.playlist.getActive();
-    //var active  = current.element;
-        var index   = current.index;
-        var length  = options.playlist.length;
-        var which   = 0;
+    panels.playlist.update = function () {
+        var current = self.playlist.current();
+        var index = self.playlist.index;
 
-        if(action == 'previous') {
-            which = index - 1;
-            if(which < 0) {
-                which = length - 1;
-            }
-        } else if(action == 'next') {
-            which = index + 1;
-            if(which > length - 1) {
-                which = 0;
-            }
-        } else if(typeOf(action) == 'number') {
-            which = action;
-        }
+        panels.playlist.getElement('ol.playlist li.active').removeClass('active');
+        panels.playlist.getElement('ol.playlist li[data-index="' + index + '"]').addClass('active');
 
-        panels.playlist.setActive(which);
-
-        video.src = options.playlist[which].src;
-        video.load();
-        video.play();
+        panels.info.getElement('dt.title + dd').set('html', current.title || basename(current.src));
+        panels.info.getElement('dt.url + dd').set('html', current.src);
 
         // eslint-disable-next-line
-        options.captions = Moovie.captions[options.playlist[which].id];
+        options.captions = Moovie.captions[current.id];
 
+        video.src = current.src;
+        video.load();
+        video.play();
         title.show();
-
-        panels.info.getElement('dt.title + dd')
-        .set('html', options.playlist[which].title || new URI(options.playlist[which].src).get('file'));
-        panels.info.getElement('dt.url + dd').set('html', options.playlist[which].src);
-    };
-
-    panels.playlist.getActive = function() {
-        var current = panels.playlist.getElement('ol.playlist li.active');
-        var index   = +current.get('data-index');
-        return { 'element': current, 'index': index };
-    };
-
-    panels.playlist.setActive = function(which) {
-        var active = panels.playlist.getActive().element;
-        active.removeClass('active');
-        panels.playlist.getElement('ol.playlist li[data-index="' + which + '"]').addClass('active');
     };
 
   // Controls ----------------------------------------------------------------
@@ -497,7 +483,6 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
     });
 
   // Panels ------------------------------------------------------------------
-    var self = this;
 
     // Checkbox widgets
     panels.settings.addEvent('click:relay(.checkbox-widget)', function () {
@@ -537,7 +522,8 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
         var item  = this.getParents('li')[0];
         var index = item.get('data-index').toInt();
 
-        panels.playlist.play(index);
+        self.playlist.select(index);
+        panels.playlist.update();
         panels.update('none');
     });
 
@@ -559,13 +545,19 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
         video.pause();
     });
 
-    if(options.playlist.length > 1) {
-        controls.previous.addEvent('click', function() {
-            panels.playlist.play('previous');
+    if (this.playlist.size()) {
+        controls.previous.addEvent('click', function () {
+            if (self.playlist.hasPrevious()) {
+                self.playlist.previous();
+                panels.playlist.update();
+            }
         });
 
-        controls.next.addEvent('click', function() {
-            panels.playlist.play('next');
+        controls.next.addEvent('click', function () {
+            if (self.playlist.hasNext()) {
+                self.playlist.next();
+                panels.playlist.update();
+            }
         });
     }
 
@@ -669,8 +661,9 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
         ended: function() {
             container.set('data-playbackstate', 'ended');
 
-            if (options.playlist.length > 1) {
-                panels.playlist.play('next');
+            if (self.playlist.hasNext()) {
+                self.playlist.next();
+                panels.playlist.update();
             } else {
                 controls.play.update();
             }
