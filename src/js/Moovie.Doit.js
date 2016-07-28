@@ -4,7 +4,7 @@
  * The main function, which handles one <video> at a time.
  *
  * @see http://www.urbandictionary.com/define.php?term=Doit&defid=3379319
- * @version 0.3.0
+ * @version 0.3.1
  * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
  * @author Nathan Bishop <nbish11@hotmail.com>
  * @copyright 2010 Colin Aarts

@@ -1,6 +1,6 @@
 {
   "name": "moovie",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "An advanced HTML5 video player for MooTools.",
   "main": "index.js",
   "devDependencies": {
