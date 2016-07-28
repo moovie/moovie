@@ -43,7 +43,7 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
         });
     }
 
-    this.playlist = new Moovie.Playlist(playlist);
+    this.playlist = new Moovie.Playlist(playlist);  // eslint-disable-line
 
   // Grab some refs
   // @bug Native textTracks won't work unless the video is cloned.
