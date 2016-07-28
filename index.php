@@ -39,11 +39,11 @@
                         'playlist': [
                             {
                                 'id': 'alice',
-                                'src': 'http://http://colinaarts.com/assets/alice.ogv'
+                                'src': 'http://colinaarts.com/assets/alice.ogv'
                             },
                             {
                                 'id': 'shrek',
-                                'src': 'http://http://colinaarts.com/assets/shrek.ogv',
+                                'src': 'http://colinaarts.com/assets/shrek.ogv',
                                 'title': '<cite>Shrek Forever After</cite> theatrical trailer'
                             }
                         ]
