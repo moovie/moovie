@@ -13,7 +13,7 @@
         </style>
     </head>
     <body>
-        <video src="http://colinaarts.com/assets/avatar.ogv" poster="http://colinaarts.com/assets/avatar.png" controls>
+        <video id="avatar" src="http://colinaarts.com/assets/avatar.ogv" poster="http://colinaarts.com/assets/avatar.png" controls>
             <track kind="subtitles" src="assets/avatar (2008).vtt" srclang="en" label="English" default>
             <p>Your browser does not support the HTML 5 <code>video</code> element.</p>
         </video>
@@ -32,21 +32,19 @@
                 if (videos.length && videos[0].play) {
                     var video = {
                         'video': videos[0],
-                        'id': 'avatar',
                         'options': {
-
-                        'debugger': true,
-                        'playlist': [
-                            {
-                                'id': 'alice',
-                                'src': 'http://colinaarts.com/assets/alice.ogv'
-                            },
-                            {
-                                'id': 'shrek',
-                                'src': 'http://colinaarts.com/assets/shrek.ogv',
-                                'title': '<cite>Shrek Forever After</cite> theatrical trailer'
-                            }
-                        ]
+                            'debugger': true,
+                            'playlist': [
+                                {
+                                    'id': 'alice',
+                                    'src': 'http://colinaarts.com/assets/alice.ogv'
+                                },
+                                {
+                                    'id': 'shrek',
+                                    'src': 'http://colinaarts.com/assets/shrek.ogv',
+                                    'title': '<cite>Shrek Forever After</cite> theatrical trailer'
+                                }
+                            ]
                         }
                     };
 
