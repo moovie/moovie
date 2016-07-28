@@ -2,7 +2,7 @@
  * Moovie: an advanced HTML5 video player for MooTools.
  *
  * @see http://colinaarts.com/code/moovie
- * @version 0.2.0
+ * @version 0.3.0
  * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
  * @author Nathan Bishop <nbish11@hotmail.com>
  * @copyright 2010 Colin Aarts
@@ -23,6 +23,11 @@ var Moovie = function(videos, options) {
             return this.setStyle('display', 'none');
         }
     });
+
+    // Add HTML 5 media events to Element.NativeEvents, if needed.
+    if (!Element.NativeEvents.timeupdate) {
+        Element.NativeEvents = Object.merge({ abort: 1, canplay: 1, canplaythrough: 1, durationchange: 1, emptied: 1, ended: 1, loadeddata: 1, loadedmetadata: 1, loadstart: 1, pause: 1, play: 1, playing: 1, progress: 2, ratechange: 1, seeked: 1, seeking: 1, stalled: 1, suspend: 1, timeupdate: 1, volumechange: 1, waiting: 1 }, Element.NativeEvents);
+    }
 
     videos.each(function(el) {
         if (typeOf(el) == 'element') {
@@ -52,7 +57,7 @@ Moovie.registerCaptions = function (id, captions) {
  *
  * A plugin to allow Moovie players to view video info live.
  *
- * @version 0.2.0
+ * @version 0.3.0
  * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
  * @author Nathan Bishop <nbish11@hotmail.com>
  * @copyright 2010 Colin Aarts
@@ -303,7 +308,7 @@ Moovie.Debugger = new Class({   // eslint-disable-line
  * The main function, which handles one <video> at a time.
  *
  * @see http://www.urbandictionary.com/define.php?term=Doit&defid=3379319
- * @version 0.2.0
+ * @version 0.3.0
  * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
  * @author Nathan Bishop <nbish11@hotmail.com>
  * @copyright 2010 Colin Aarts
@@ -317,7 +322,6 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
     var defaults = {
         debugger: false,
         autohideControls : true,
-        title            : new URI(video.src).get('file'),
         playlist         : [],
         captions         : null,
         showCaptions     : true,
@@ -326,9 +330,24 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
     };
 
     options = Object.merge(defaults, options);
+    var playlist = [];
 
-  // Add the current video to the playlist stack
-    options.playlist.unshift({ id: options.id, src: video.src, title: options.title });
+    var basename = function (str, suffix) {
+        return str.substr(str.lastIndexOf(suffix || '/') + 1);
+    };
+
+    if (typeOf(options.playlist) === 'array') {
+        playlist.combine(options.playlist);
+
+        // Add the current video to the playlist stack
+        playlist.unshift({
+            id: video.get('id'),
+            src: video.currentSrc || video.src,
+            title: video.get('title') || basename(video.currentSrc || video.src)
+        });
+    }
+
+    this.playlist = new Moovie.Playlist(playlist);
 
   // Grab some refs
   // @bug Native textTracks won't work unless the video is cloned.
@@ -341,15 +360,10 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
     wrapper.grab(video);
     container.grab(wrapper);
 
-
-  // Add HTML 5 media events to Element.NativeEvents, if needed.
-    if(!Element.NativeEvents.timeupdate) {
-        Element.NativeEvents = Object.merge({ abort: 1, canplay: 1, canplaythrough: 1, durationchange: 1, emptied: 1, ended: 1, loadeddata: 1, loadedmetadata: 1, loadstart: 1, pause: 1, play: 1, playing: 1, progress: 2, ratechange: 1, seeked: 1, seeking: 1, stalled: 1, suspend: 1, timeupdate: 1, volumechange: 1, waiting: 1 }, Element.NativeEvents);
-    }
-
   // Unfortunately, the media API only defines one volume-related event: `volumechange`. This event is fired whenever the media's `volume` attribute changes, or the media's `muted` attribute changes. The API defines no way to discern the two, so we'll have to "manually" keep track. We need to do this in order to be able to provide the advanced volume control (a la YouTube's player): changing the volume can have an effect on the muted state and vice versa.
     var muted = video.muted;
     var panelHeightSet = false;
+    var self = this;
 
 
   // Utility methods ---------------------------------------------------------
@@ -404,23 +418,14 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
     captions.hide();
 
 
-  // Overlay -----------------------------------------------------------------
-    var overlay       = new Element('div', { 'class': 'overlay' });
-    overlay.wrapper   = new Element('div', { 'class': 'wrapper' });
-    overlay.buffering = new Element('div', { 'class': 'buffering', text: 'Buffering...' });
-    overlay.play      = new Element('div', { 'class': 'play', text: 'Play video' });
-    overlay.replay    = new Element('div', { 'class': 'replay', text: 'Replay' });
-    overlay.paused    = new Element('div', { 'class': 'paused', text: 'Paused' });
-
-    overlay.wrapper.adopt(overlay.buffering, overlay.play, overlay.replay, overlay.paused);
-    overlay.grab(overlay.wrapper);
-
-    overlay.set('tween', { duration: 50 });
-    overlay.fade('hide');
+    this.overlay = new Element('div.overlay');
 
 
-  // Title -------------------------------------------------------------------
-    var title = new Element('div', { 'class': 'video-title', 'html': options.title });
+    // Title -------------------------------------------------------------------
+    var title = new Element('div', {
+        'class': 'video-title',
+        'html': this.playlist.current().title
+    });
 
     title.set('tween', { duration: 2000 });
     title.fade('hide');
@@ -443,7 +448,7 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
     <div class="heading">Video information</div>\
     <dl>\
       <dt class="title">Title</dt>\
-      <dd>' + options.title + '</dd>\
+      <dd>' + this.playlist.current().title + '</dd>\
       \
       <dt class="url">URL</dt>\
       <dd>' + video.src + '</dd>\
@@ -491,15 +496,19 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
       <div><ol class="playlist"></ol></div>\
   ');
 
-    options.playlist.each(function(el, index) {
-        var active = index === 0 ? 'active' : '';
-        panels.playlist.getElement('ol.playlist').grab(new Element('li', { 'data-index': index, 'class': active, 'html': '\
-      <div class="checkbox-widget" data-checked="true">\
-        <div class="checkbox"></div>\
-        <div class="label">' + el.title + '</div>\
-      </div>\
-    ' }));
-    });
+    this.playlist.items.each(function(el, index) {
+        panels.playlist.getElement('ol.playlist')
+            .grab(new Element('li', {
+                'data-index': index,
+                'class': this.current() === el ? 'active' : '',
+                'html': '\
+                  <div class="checkbox-widget" data-checked="true">\
+                    <div class="checkbox"></div>\
+                    <div class="label">' + (el.title || basename(el.src)) + '</div>\
+                  </div>\
+                '
+            }));
+    }, this.playlist);
 
 
   // Controls ----------------------------------------------------------------
@@ -514,8 +523,8 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
     controls.settings          = new Element('div', { 'class': 'settings', 'title': 'Settings' });
     controls.fullscreen = new Element('div.fullscreen[title=Fullscreen]');
 
-    controls.previous = options.playlist.length > 1 ? new Element('div', { 'class': 'previous', 'title': 'Previous' }) : null;
-    controls.next     = options.playlist.length > 1 ? new Element('div', { 'class': 'next', 'title': 'Next' }) : null;
+    controls.previous = this.playlist.size ? new Element('div.previous[title=Previous]') : null;
+    controls.next = this.playlist.size ? new Element('div.next[title=Next]') : null;
 
   // Progress
     controls.progress          = new Element('div', { 'class': 'progress' });
@@ -581,7 +590,7 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
 
 
   // Inject and do some post-processing --------------------------------------
-    wrapper.adopt(captions, overlay, title, panels, controls);
+    wrapper.adopt(captions, this.overlay, title, panels, controls);
 
   // Get the knob offsets for later
     controls.progress.slider.left = controls.progress.slider.getStyle('left').toInt();
@@ -637,23 +646,11 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
 
   // Methods =================================================================
 
-  // Overlay -----------------------------------------------------------------
-
-    overlay.update = function(which) {
-        if(which == 'none') {
-            this.fade('out');
-        } else {
-            this.wrapper.getChildren().hide();
-            this[which].show();
-            this.fade('in');
-        }
-    };
-
   // Title -------------------------------------------------------------------
 
     title.show = function() {
-        var index = panels.playlist.getActive().index;
-        var text   = options.playlist[index].title;
+        var index = self.playlist.index;
+        var text   = self.playlist.current().title || basename(self.playlist.current().src);
         title.set('html', (index + 1).toString() + '. ' + text);
         title.fade('in');
 
@@ -683,53 +680,23 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
         }
     };
 
-    panels.playlist.play = function(action) {
-        var current = panels.playlist.getActive();
-    //var active  = current.element;
-        var index   = current.index;
-        var length  = options.playlist.length;
-        var which   = 0;
+    panels.playlist.update = function () {
+        var current = self.playlist.current();
+        var index = self.playlist.index;
 
-        if(action == 'previous') {
-            which = index - 1;
-            if(which < 0) {
-                which = length - 1;
-            }
-        } else if(action == 'next') {
-            which = index + 1;
-            if(which > length - 1) {
-                which = 0;
-            }
-        } else if(typeOf(action) == 'number') {
-            which = action;
-        }
+        panels.playlist.getElement('ol.playlist li.active').removeClass('active');
+        panels.playlist.getElement('ol.playlist li[data-index="' + index + '"]').addClass('active');
 
-        panels.playlist.setActive(which);
-
-        video.src = options.playlist[which].src;
-        video.load();
-        video.play();
+        panels.info.getElement('dt.title + dd').set('html', current.title || basename(current.src));
+        panels.info.getElement('dt.url + dd').set('html', current.src);
 
         // eslint-disable-next-line
-        options.captions = Moovie.captions[options.playlist[which].id];
+        options.captions = Moovie.captions[current.id];
 
+        video.src = current.src;
+        video.load();
+        video.play();
         title.show();
-
-        panels.info.getElement('dt.title + dd')
-        .set('html', options.playlist[which].title || new URI(options.playlist[which].src).get('file'));
-        panels.info.getElement('dt.url + dd').set('html', options.playlist[which].src);
-    };
-
-    panels.playlist.getActive = function() {
-        var current = panels.playlist.getElement('ol.playlist li.active');
-        var index   = +current.get('data-index');
-        return { 'element': current, 'index': index };
-    };
-
-    panels.playlist.setActive = function(which) {
-        var active = panels.playlist.getActive().element;
-        active.removeClass('active');
-        panels.playlist.getElement('ol.playlist li[data-index="' + which + '"]').addClass('active');
     };
 
   // Controls ----------------------------------------------------------------
@@ -815,19 +782,11 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
         }
     });
 
-  // Overlay -----------------------------------------------------------------
-
-    $$(overlay.play, overlay.replay).addEvent('click', function() {
-        video.play();
-        title.show();
-    });
-
-    $$(overlay.paused).addEvent('click', function() {
+    this.overlay.addEvent('click', function () {
         video.play();
     });
 
   // Panels ------------------------------------------------------------------
-    var self = this;
 
     // Checkbox widgets
     panels.settings.addEvent('click:relay(.checkbox-widget)', function () {
@@ -867,7 +826,8 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
         var item  = this.getParents('li')[0];
         var index = item.get('data-index').toInt();
 
-        panels.playlist.play(index);
+        self.playlist.select(index);
+        panels.playlist.update();
         panels.update('none');
     });
 
@@ -889,13 +849,19 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
         video.pause();
     });
 
-    if(options.playlist.length > 1) {
-        controls.previous.addEvent('click', function() {
-            panels.playlist.play('previous');
+    if (this.playlist.size()) {
+        controls.previous.addEvent('click', function () {
+            if (self.playlist.hasPrevious()) {
+                self.playlist.previous();
+                panels.playlist.update();
+            }
         });
 
-        controls.next.addEvent('click', function() {
-            panels.playlist.play('next');
+        controls.next.addEvent('click', function () {
+            if (self.playlist.hasNext()) {
+                self.playlist.next();
+                panels.playlist.update();
+            }
         });
     }
 
@@ -980,25 +946,30 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
 
         click: function() {
             video.pause();
-            overlay.update('paused');
         },
 
         play: function() {
             controls.play.update();
-            overlay.update('none');
             controls.show();
         },
 
+        playing: function () {
+            container.set('data-playbackstate', 'playing');
+        },
+
         pause: function() {
+            container.set('data-playbackstate', 'paused');
             controls.play.update();
         },
 
         ended: function() {
-            if(options.playlist.length > 1) {
-                panels.playlist.play('next');
+            container.set('data-playbackstate', 'ended');
+
+            if (self.playlist.hasNext()) {
+                self.playlist.next();
+                panels.playlist.update();
             } else {
                 controls.play.update();
-                overlay.update('replay');
             }
         },
 
@@ -1014,11 +985,10 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
         },
 
         seeking: function() {
-            overlay.update('buffering');
+            container.set('data-playbackstate', 'seeking');
         },
 
         seeked: function() {
-            overlay.update('none');
             if(!video.paused) {
                 controls.play.update();
             }
@@ -1028,10 +998,10 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
             controls.currentTime.update(video.currentTime);
             controls.progress.update();
 
-      // Captions
+            // Captions
             var found = false;
 
-            if(options.captions && options.showCaptions) {
+            if (options.captions && options.showCaptions) {
                 options.captions[options.captionLang].each(function(caption) {
                     if(video.currentTime >= caption.start / 1000 && video.currentTime <= caption.end / 1000) {
                         captions.caption.set('html', caption.text);
@@ -1041,7 +1011,7 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
                 });
             }
 
-            if(!found) {
+            if (!found) {
                 captions.caption.set('html', '');
                 captions.hide();
             }
@@ -1056,17 +1026,15 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
         },
 
         abort: function() {
-      // video.Moovie = null;
-      // Doit(video);
+            // video.Moovie = null;
+            // Doit(video);
         },
 
         emptied: function() {
-      // video.Moovie = null;
-      // Doit(video);
+            // video.Moovie = null;
+            // Doit(video);
         }
-
-    }); // end events for video element
-
+    });
 
     // setup plugins...
     options.plugins.each(function (plugin) {
@@ -1086,7 +1054,7 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
 
     // Init ====================================================================
     if (!video.autoplay) {
-        overlay.update('play');
+        container.set('data-playbackstate', 'stopped');
         controls.hide();
     }
 
@@ -1099,3 +1067,59 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
         }
     });
 };
+
+/**
+ * Moovie: an advanced HTML5 video player for MooTools.
+ *
+ * Allows manipulation of a collection of videos.
+ *
+ * @version 0.3.0
+ * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
+ * @author Nathan Bishop <nbish11@hotmail.com>
+ * @copyright 2010 Colin Aarts
+ * @license MIT
+ */
+Moovie.Playlist = new Class({   // eslint-disable-line
+    initialize: function (items) {
+        this.items = typeOf(items) === 'array' ? items : [];
+        this.index = this.items.length ? 0 : -1;
+    },
+
+    size: function () {
+        return this.items.length;
+    },
+
+    current: function () {
+        return this.items[this.index] || null;
+    },
+
+    hasPrevious: function () {
+        return this.index > 0;
+    },
+
+    previous: function () {
+        if (this.items[this.index--]) {
+            return this.current();
+        }
+
+        return null;
+    },
+
+    hasNext: function () {
+        return this.index < this.items.length - 1;
+    },
+
+    next: function () {
+        if (this.items[this.index++]) {
+            return this.current();
+        }
+
+        return null;
+    },
+
+    select: function (index) {
+        if (index >= 0 && index < this.items.length) {
+            this.index = index;
+        }
+    }
+});
