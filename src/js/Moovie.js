@@ -26,7 +26,7 @@ var Moovie = function(videos, options) {
 
     // Add HTML 5 media events to Element.NativeEvents, if needed.
     if (!Element.NativeEvents.timeupdate) {
-        Element.NativeEvents = Object.merge({ abort: 1, canplay: 1, canplaythrough: 1, durationchange: 1, emptied: 1, ended: 1, loadeddata: 1, loadedmetadata: 1, loadstart: 1, pause: 1, play: 1, playing: 1, progress: 2, ratechange: 1, seeked: 1, seeking: 1, stalled: 1, suspend: 1, timeupdate: 1, volumechange: 1, waiting: 1 }, Element.NativeEvents);
+        Element.NativeEvents = Object.merge(Element.NativeEvents, Moovie.MediaEvents);
     }
 
     videos.each(function(el) {
