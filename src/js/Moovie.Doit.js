@@ -224,7 +224,7 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
 
   // Progress
     controls.progress          = new Element('div', { 'class': 'progress' });
-    controls.progress.wrapper  = new Element('div', { 'class': 'wrapper' });
+    controls.progress.wrapper  = new Element('div', { 'class': 'wrapper' });    // track
     controls.progress.bar      = new Element('div', { 'class': 'bar' });
     controls.progress.time     = new Element('div', { 'class': 'time' }).grab(new Element('div', { text: '0.00' }));
     controls.progress.buffered = new Element('div', { 'class': 'buffered' });
@@ -235,6 +235,31 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
     controls.progress.grab(controls.progress.wrapper);
 
     controls.progress.time.fade('hide');
+
+    var seekbar = controls.progress;
+    seekbar.addEvent('mousedown', function (e) {
+        function update(e) {
+            video.pause();
+            var offset = e.page.x - seekbar.bar.getPosition().x;
+            var pct = offset / seekbar.bar.getSize().x;
+            video.currentTime = (pct * video.duration).limit(0, video.duration);
+        }
+
+        function move(e) {
+            update(e);
+        }
+
+        function stop() {
+            video.play();
+            document.removeEvent('mousemove', move);
+            document.removeEvent('mouseup', stop);
+        }
+
+        document.addEvent('mousemove', move);
+        document.addEvent('mouseup', stop);
+
+        update(e);
+    });
 
   // Volume
     controls.volume            = new Element('div', { 'class': 'volume' });
@@ -250,6 +275,28 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
 
     controls.volume.popup.fade('hide');
     controls.volume.popup.set('tween', { duration: 150 });
+
+    controls.volume.popup.addEvent('mousedown', function (e) {
+        function update(e) {
+            var offset = e.page.y - controls.volume.bar.getPosition().y;
+            var pct = offset / controls.volume.bar.getSize().y;
+            video.volume = (1 - (pct * 1)).limit(0, 1);
+        }
+
+        function move(e) {
+            update(e);
+        }
+
+        function stop() {
+            document.removeEvent('mousemove', move);
+            document.removeEvent('mouseup', stop);
+        }
+
+        document.addEvent('mousemove', move);
+        document.addEvent('mouseup', stop);
+
+        update(e);
+    });
 
   // "more"
     controls.more              = new Element('div', { 'class': 'more' });
@@ -285,59 +332,12 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
     controls.set('tween', { duration: 150 });
 
 
-  // Inject and do some post-processing --------------------------------------
+    // Inject and do some post-processing --------------------------------------
     wrapper.adopt(captions, this.overlay, title, panels, controls);
 
-  // Get the knob offsets for later
+    // Get the knob offsets for later
     controls.progress.slider.left = controls.progress.slider.getStyle('left').toInt();
     controls.volume.slider.top    = controls.volume.slider.getStyle('top').toInt();
-
-  // Make sliders draggable
-    $$(controls.progress.slider, controls.volume.slider).each(function(el) {
-        var modifiers  = el.getParents('.progress').length ? { y: false } : { x: false };
-        var onDrag     = el.getParents('.progress').length ? function(el, e) {
-            var barX = controls.progress.bar.getPosition().x;
-            var barW = controls.progress.bar.getSize().x;
-            if(e.page.x < barX) {
-                el.setStyle('left', el.left);
-            } else if(e.page.x > barX + barW) {
-                el.setStyle('left', el.left + barW);
-            }
-            controls.progress.time.update(true, e.page.x);
-        } : function(el, e) {
-            video.volume = locToVolume(e.page.y);
-            var barY = controls.volume.bar.getPosition().y;
-            var barH = controls.volume.bar.getSize().y;
-            if(e.page.y < barY) {
-                el.setStyle('top', el.top);
-            } else if(e.page.y > barY + barH) {
-                el.setStyle('top', el.top + barH);
-            }
-        };
-        var onComplete = el.getParents('.progress').length ? function(el, e) {
-            el.beingDragged = false;
-            video.currentTime = locToTime(e.page.x);
-            if(video.paused) {
-                video.play();
-            }
-        } : function(el) {
-            el.beingDragged = false;
-        };
-
-        el.drag = new Drag(el, {
-            modifiers  : modifiers,
-            snap       : 0,
-            onStart    : function() {
-                el.beingDragged = true;
-            },
-            onDrag     : onDrag,
-            onComplete : onComplete,
-            onCancel   : function() {
-                el.beingDragged = true;
-            }
-        });
-
-    }); // end each() for draggable sliders
 
 
   // Methods =================================================================
@@ -552,14 +552,7 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
         });
     }
 
-  // Progress
-    controls.progress.bar.addEvent('click', function(e) {
-        video.currentTime = locToTime(e.page.x);
-        if(video.paused) {
-            video.play();
-        }
-    });
-
+    // Progress
     controls.progress.bar.addEvent('mousemove', function(e) {
         controls.progress.time.update(e.page.x, false);
     });
@@ -576,13 +569,9 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
         controls.progress.time.fade('hide');
     });
 
-  // Volume
+    // Volume
     controls.volume.mute.addEvent('click', function() {
-        if(video.muted) {
-            video.muted = false;
-        } else {
-            video.muted = true;
-        }
+        video.muted = !video.muted;
     });
 
     controls.volume.addEvent('mouseenter', function() {
@@ -591,10 +580,6 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
 
     controls.volume.addEvent('mouseleave', function() {
         controls.volume.popup.fade('out');
-    });
-
-    controls.volume.bar.addEvent('click', function(e) {
-        video.volume = locToVolume(e.page.y);
     });
 
   // "more"
