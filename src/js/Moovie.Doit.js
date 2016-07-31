@@ -395,16 +395,7 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
         title.show();
     };
 
-  // Controls ----------------------------------------------------------------
-
-    controls.play.update = function() {
-        if(video.paused || video.ended) {
-            this.removeClass('paused');
-        } else {
-            this.addClass('paused');
-        }
-    };
-
+    // Controls ----------------------------------------------------------------
     controls.progress.update = function() {
         if(!controls.progress.slider.beingDragged) {
             var el     = controls.progress.slider;
@@ -645,7 +636,6 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
         },
 
         play: function() {
-            controls.play.update();
             controls.show();
         },
 
@@ -655,7 +645,6 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
 
         pause: function() {
             container.set('data-playbackstate', 'paused');
-            controls.play.update();
         },
 
         ended: function() {
@@ -664,8 +653,6 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
             if (self.playlist.hasNext()) {
                 self.playlist.next();
                 panels.playlist.update();
-            } else {
-                controls.play.update();
             }
         },
 
@@ -685,9 +672,6 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
         },
 
         seeked: function() {
-            if(!video.paused) {
-                controls.play.update();
-            }
         },
 
         timeupdate: function() {

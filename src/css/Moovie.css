@@ -676,12 +676,14 @@ span.info {
     overflow:hidden;
 }
 
-.moovie .controls > .wrapper > .play {
-    background-image:url('http://colinaarts.com/assets/player-play.png');
+.moovie[data-playbackstate="playing"] .controls > .wrapper > .play {
+    background-image:url('http://colinaarts.com/assets/player-pause.png');
 }
 
-.moovie .controls > .wrapper > .play.paused {
-    background-image:url('http://colinaarts.com/assets/player-pause.png');
+.moovie[data-playbackstate="stopped"] .controls > .wrapper > .play,
+.moovie[data-playbackstate="paused"] .controls > .wrapper > .play,
+.moovie[data-playbackstate="ended"] .controls > .wrapper > .play {
+    background-image:url('http://colinaarts.com/assets/player-play.png');
 }
 
 .moovie .controls > .wrapper > .stop {
