@@ -664,6 +664,11 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
         // Info panel
                 var MB = (e.event.total / 1024 / 1024).round(2);
                 panels.info.getElement('dt.size + dd').set('html', MB + ' MB');
+            } else if (video.buffered.length) {
+                var buffered = video.buffered.end(video.buffered.length - 1);
+                var pct = buffered / video.duration * 100;
+
+                controls.progress.buffered.setStyle('width', pct + '%');
             }
         },
 
@@ -675,8 +680,11 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
         },
 
         timeupdate: function() {
+            var pct = video.currentTime / video.duration * 100;
+
             controls.currentTime.update(video.currentTime);
             controls.progress.update();
+            controls.progress.played.setStyle('width', pct + '%');
 
             // Captions
             var found = false;

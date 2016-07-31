@@ -748,13 +748,22 @@ span.info {
     opacity:.7;
 }
 
+.moovie .controls > .wrapper .progress .wrapper .played {
+    background-color: #b9dc84;
+    height: 8px;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 50px;
+}
+
 .moovie .controls > .wrapper .progress .wrapper .buffered {
-    position:absolute;
-    left:0;
-    bottom:0;
-    top:0;
-    background:rgba(0,255,0,.5);
-    z-index:-1;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    top: 0;
+    background: rgba(0, 255, 0, 0.3);
+    z-index: -1;
 }
 
 .moovie .controls > .wrapper .progress .wrapper .time div {
