@@ -2,7 +2,7 @@
  * Moovie: an advanced HTML5 video player for MooTools.
  *
  * @see http://colinaarts.com/code/moovie
- * @version 0.3.1
+ * @version 0.3.2
  * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
  * @author Nathan Bishop <nbish11@hotmail.com>
  * @copyright 2010 Colin Aarts
