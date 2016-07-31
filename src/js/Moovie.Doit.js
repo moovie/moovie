@@ -12,9 +12,10 @@
  */
 Moovie.Doit = function(video, options) {    // eslint-disable-line
     'use strict';
+
     video.controls = false;
 
-  // Options
+    // Options
     var defaults = {
         debugger: false,
         autohideControls : true,
@@ -45,8 +46,8 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
 
     this.playlist = new Moovie.Playlist(playlist);  // eslint-disable-line
 
-  // Grab some refs
-  // @bug Native textTracks won't work unless the video is cloned.
+    // Grab some refs
+    // @bug Native textTracks won't work unless the video is cloned.
     var container = new Element('div.moovie');
     var wrapper = new Element('div.wrapper');
     container.replaces(video);
@@ -56,15 +57,19 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
     wrapper.grab(video);
     container.grab(wrapper);
 
-  // Unfortunately, the media API only defines one volume-related event: `volumechange`. This event is fired whenever the media's `volume` attribute changes, or the media's `muted` attribute changes. The API defines no way to discern the two, so we'll have to "manually" keep track. We need to do this in order to be able to provide the advanced volume control (a la YouTube's player): changing the volume can have an effect on the muted state and vice versa.
+    // Unfortunately, the media API only defines one volume-related
+    // event: `volumechange`. This event is fired whenever the media's
+    // `volume` attribute changes, or the media's `muted` attribute
+    // changes. The API defines no way to discern the two, so we'll
+    // have to "manually" keep track. We need to do this in order to
+    // be able to provide the advanced volume control (a la YouTube's
+    // player): changing the volume can have an effect on the muted
+    // state and vice versa.
     var muted = video.muted;
     var panelHeightSet = false;
     var self = this;
 
-
-  // Utility methods ---------------------------------------------------------
-
-  // Parses a float value in seconds (from video.currentTime etc) to normal time format
+    // Parses a float value in seconds (from video.currentTime etc) to normal time format
     var parseTime = function(val) {
         var rest = 0, hrs = 0, mins = 0, secs = 0, time = '';
 
@@ -81,7 +86,7 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
         return time + mins + ':' + secs;
     };
 
-  // Calculates offset for progress bar slider based on page location
+    // Calculates offset for progress bar slider based on page location
     var locToTime = function(val) {
         var barX     = controls.progress.bar.getPosition().x;
         var barW     = controls.progress.bar.getSize().x;
@@ -91,31 +96,14 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
         return time;
     };
 
-  // Calculates offset for volume bar slider based on page location
-    var locToVolume = function(val) {
-        var barY     = controls.volume.bar.getPosition().y;
-        var barH     = controls.volume.bar.getSize().y;
-        var offsetPx = val - barY;
-        var offsetPc = offsetPx / barH * 100;
-        var volume   = 1 - (1 / 100 * offsetPc).limit(0, 1);
-        return volume;
-    };
-
-
-  // Build interface =========================================================
-
-  // Captions ----------------------------------------------------------------
-
+    // Captions ----------------------------------------------------------------
     var captions     = new Element('div', { 'class': 'captions' });
     captions.caption = new Element('p');
 
     captions.grab(captions.caption);
-
     captions.hide();
 
-
     this.overlay = new Element('div.overlay');
-
 
     // Title -------------------------------------------------------------------
     var title = new Element('div', {
@@ -126,8 +114,7 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
     title.set('tween', { duration: 2000 });
     title.fade('hide');
 
-
-  // Panels ------------------------------------------------------------------
+    // Panels ------------------------------------------------------------------
     var panels      = new Element('div', { 'class': 'panels' });
     panels.info     = new Element('div', { 'class': 'info' });
     panels.settings = new Element('div', { 'class': 'settings' });
@@ -135,62 +122,61 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
     panels.playlist = new Element('div', { 'class': 'playlist' });
 
     panels.adopt(panels.info, panels.settings, panels.about, panels.playlist);
-
     panels.set('tween', { duration: 250 });
     panels.fade('hide');
 
-  // Content for `info` panel
+    // Content for `info` panel
     panels.info.set('html', '\
-    <div class="heading">Video information</div>\
-    <dl>\
-      <dt class="title">Title</dt>\
-      <dd>' + this.playlist.current().title + '</dd>\
-      \
-      <dt class="url">URL</dt>\
-      <dd>' + video.src + '</dd>\
-      \
-      <dt class="size">Size</dt>\
-      <dd></dd>\
-    </dl>\
-  ');
+        <div class="heading">Video information</div>\
+        <dl>\
+            <dt class="title">Title</dt>\
+            <dd>' + this.playlist.current().title + '</dd>\
+            \
+            <dt class="url">URL</dt>\
+            <dd>' + video.src + '</dd>\
+            \
+            <dt class="size">Size</dt>\
+            <dd></dd>\
+        </dl>\
+    ');
 
     var debuggerEnabled = options.debugger === true || options.debugger.disabled === false;
 
-  // Content for `settings` panel
+    // Content for `settings` panel
     panels.settings.set('html', '\
-    <div class="heading">Settings</div>\
-    \
-    <div class="checkbox-widget" data-control="autohideControls" data-checked="' + options.autohideControls + '">\
-      <div class="checkbox"></div>\
-      <div class="label">Auto-hide controls</div>\
-    </div>\
-    <div class="checkbox-widget" data-control="loop" data-checked="' + (video.loop || false) + '">\
-      <div class="checkbox"></div>\
-      <div class="label">Loop video</div>\
-    </div>\
-    <div class="checkbox-widget" data-control="showCaptions" data-checked="' + options.showCaptions + '">\
-      <div class="checkbox"></div>\
-      <div class="label">Show captions</div>\
-    </div>\
-    <div class="checkbox-widget" data-control="debugger" data-checked="' + debuggerEnabled + '">\
-      <div class="checkbox"></div>\
-      <div class="label">Enable Debugger</div>\
-    </div>\
-  ');
+        <div class="heading">Settings</div>\
+        \
+        <div class="checkbox-widget" data-control="autohideControls" data-checked="' + options.autohideControls + '">\
+            <div class="checkbox"></div>\
+            <div class="label">Auto-hide controls</div>\
+        </div>\
+        <div class="checkbox-widget" data-control="loop" data-checked="' + (video.loop || false) + '">\
+            <div class="checkbox"></div>\
+            <div class="label">Loop video</div>\
+        </div>\
+        <div class="checkbox-widget" data-control="showCaptions" data-checked="' + options.showCaptions + '">\
+            <div class="checkbox"></div>\
+            <div class="label">Show captions</div>\
+        </div>\
+        <div class="checkbox-widget" data-control="debugger" data-checked="' + debuggerEnabled + '">\
+            <div class="checkbox"></div>\
+            <div class="label">Enable Debugger</div>\
+        </div>\
+    ');
 
-  // Content for `about` panel
+    // Content for `about` panel
     panels.about.set('html', '\
-    <div class="heading">About this player</div>\
-    <p><b>Moovie</b> v1.0 <i>alpha</i></p>\
-    <p>Copyright Â© 2010, Colin Aarts</p>\
-    <p><a href="http://colinaarts.com/code/moovie/" rel="external">http://colinaarts.com/code/moovie/</a></p>\
-  ');
+        <div class="heading">About this player</div>\
+        <p><b>Moovie</b> v1.0 <i>alpha</i></p>\
+        <p>Copyright Â© 2010, Colin Aarts</p>\
+        <p><a href="http://colinaarts.com/code/moovie/" rel="external">http://colinaarts.com/code/moovie/</a></p>\
+    ');
 
-  // Content for `playlist` panel
+    // Content for `playlist` panel
     panels.playlist.set('html', '\
-      <div><div class="heading">Playlist</div></div>\
-      <div><ol class="playlist"></ol></div>\
-  ');
+        <div><div class="heading">Playlist</div></div>\
+        <div><ol class="playlist"></ol></div>\
+    ');
 
     this.playlist.items.each(function(el, index) {
         panels.playlist.getElement('ol.playlist')
@@ -206,12 +192,11 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
             }));
     }, this.playlist);
 
-
-  // Controls ----------------------------------------------------------------
+    // Controls ----------------------------------------------------------------
     var controls               = new Element('div', { 'class': 'controls' });
     controls.wrapper           = new Element('div', { 'class': 'wrapper' });
 
-  // General
+    // General
     controls.play              = new Element('div', { 'class': 'play' });
     controls.stop              = new Element('div', { 'class': 'stop' });
     controls.currentTime       = new Element('div', { 'class': 'current-time', 'text': '0.00' });
@@ -222,7 +207,7 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
     controls.previous = this.playlist.size ? new Element('div.previous[title=Previous]') : null;
     controls.next = this.playlist.size ? new Element('div.next[title=Next]') : null;
 
-  // Progress
+    // Progress
     controls.progress          = new Element('div', { 'class': 'progress' });
     controls.progress.wrapper  = new Element('div', { 'class': 'wrapper' });    // track
     controls.progress.bar      = new Element('div', { 'class': 'bar' });
@@ -233,7 +218,6 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
 
     controls.progress.wrapper.adopt(controls.progress.bar, controls.progress.buffered, controls.progress.played, controls.progress.slider, controls.progress.time);
     controls.progress.grab(controls.progress.wrapper);
-
     controls.progress.time.fade('hide');
 
     var seekbar = controls.progress;
@@ -261,7 +245,7 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
         update(e);
     });
 
-  // Volume
+    // Volume
     controls.volume            = new Element('div', { 'class': 'volume' });
     controls.volume.mute       = new Element('div', { 'class': 'mute' });
     controls.volume.wrapper    = new Element('div', { 'class': 'wrapper' });
@@ -298,7 +282,7 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
         update(e);
     });
 
-  // "more"
+    // "more"
     controls.more              = new Element('div', { 'class': 'more' });
     controls.more.wrapper      = new Element('div', { 'class': 'wrapper' });
     controls.more.popup        = new Element('div', { 'class': 'popup' });
@@ -312,25 +296,22 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
 
     controls.more.popup.fade('hide');
     controls.more.popup.set('tween', { duration: 150 });
-
-  //
     controls.wrapper.adopt(
-      controls.play,
-      controls.stop,
-      controls.previous,
-      controls.next,
-      controls.currentTime,
-      controls.progress,
-      controls.duration,
-      controls.volume,
-      controls.settings,
-      controls.more,
-      controls.fullscreen
-  );
+        controls.play,
+        controls.stop,
+        controls.previous,
+        controls.next,
+        controls.currentTime,
+        controls.progress,
+        controls.duration,
+        controls.volume,
+        controls.settings,
+        controls.more,
+        controls.fullscreen
+    );
+
     controls.grab(controls.wrapper);
-
     controls.set('tween', { duration: 150 });
-
 
     // Inject and do some post-processing --------------------------------------
     wrapper.adopt(captions, this.overlay, title, panels, controls);
@@ -339,11 +320,7 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
     controls.progress.slider.left = controls.progress.slider.getStyle('left').toInt();
     controls.volume.slider.top    = controls.volume.slider.getStyle('top').toInt();
 
-
-  // Methods =================================================================
-
-  // Title -------------------------------------------------------------------
-
+    // Title -------------------------------------------------------------------
     title.show = function() {
         var index = self.playlist.index;
         var text   = self.playlist.current().title || basename(self.playlist.current().src);
@@ -357,8 +334,7 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
         }, 6000);
     };
 
-  // Panels ------------------------------------------------------------------
-
+    // Panels ------------------------------------------------------------------
     panels.update = function (which) {
         // Adjust height of panel container to account for controls bar
         if (panelHeightSet === false) {
@@ -420,51 +396,50 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
     };
 
     controls.volume.update = function() {
-    //var mutedChanged = !(muted == video.muted);
         var mutedChanged = muted != video.muted;
         muted = video.muted;
 
-        if(mutedChanged && !video.muted && video.volume === 0) {
-      // Un-muted with volume at 0 -- pick a sane default. This is probably the only deviation from the way the YouTube flash player handles volume control.
+        // Un-muted with volume at 0 -- pick a sane default. This
+        // is probably the only deviation from the way the YouTube
+        // flash player handles volume control.
+        if (mutedChanged && !video.muted && video.volume === 0) {
             video.volume = 0.5;
-        } else if(video.muted && video.volume !== 0 && !mutedChanged) {
-      // Volume changed while muted -> un-mute
+
+        // Volume changed while muted -> un-mute
+        } else if (video.muted && video.volume !== 0 && !mutedChanged) {
             video.muted = false;
-        } else if(!mutedChanged && !video.muted && video.volume === 0) {
-      // Slider dragged to 0 -> mute
+
+        // Slider dragged to 0 -> mute
+        } else if (!mutedChanged && !video.muted && video.volume === 0) {
             video.muted = true;
         }
 
-        if(video.muted) {
+        if (video.muted) {
             controls.volume.mute.addClass('muted');
         } else {
             controls.volume.mute.removeClass('muted');
         }
 
-        if(!controls.volume.slider.beingDragged) {
+        if (!controls.volume.slider.beingDragged) {
             var slider  = controls.volume.slider;
             var volume  = video.muted && mutedChanged ? 0 : video.volume; // If muted, assume 0 for volume to visualize the muted state in the slider as well. Don't actually change the volume, though, so when un-muted, the slider simply goes back to its former value.
             var barSize = controls.volume.bar.getSize().y;
             var offset  = barSize - volume * barSize;
             slider.setStyle('top', offset + slider.top);
         }
-    }; // end controls.volume.update()
+    };
 
     controls.currentTime.update = controls.duration.update = function(time) {
         this.set('text', parseTime(time));
     };
 
-
-  // Events ==================================================================
-
-  // Masthead ----------------------------------------------------------------
-
+    // Masthead ----------------------------------------------------------------
     wrapper.addEvent('mouseenter', function() {
         controls.fade('in');
     });
 
     wrapper.addEvent('mouseleave', function() {
-        if(options.autohideControls) {
+        if (options.autohideControls) {
             controls.fade('out');
         }
     });
@@ -473,9 +448,7 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
         video.play();
     });
 
-  // Panels ------------------------------------------------------------------
-
-    // Checkbox widgets
+    // Panels ------------------------------------------------------------------
     panels.settings.addEvent('click:relay(.checkbox-widget)', function () {
         if (this.get('data-checked') == 'false') {
             this.set('data-checked', 'true');
@@ -518,9 +491,7 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
         panels.update('none');
     });
 
-  // Controls ----------------------------------------------------------------
-
-  // Playback
+    // Playback
     controls.play.addEvent('click', function() {
         if(video.paused && video.readyState >= 3) {
             video.play();
@@ -582,7 +553,7 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
         controls.volume.popup.fade('out');
     });
 
-  // "more"
+    // "more"
     controls.more.addEvent('mouseenter', function() {
         controls.more.popup.fade('in');
     });
@@ -603,7 +574,7 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
         panels.update('playlist');
     });
 
-  // Misc
+    // Misc
     controls.settings.addEvent('click', function() {
         panels.update('settings');
     });
@@ -613,9 +584,8 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
     });
 
 
-  // Video element -----------------------------------------------------------
+    // Video element -----------------------------------------------------------
     video.addEvents({
-
         click: function() {
             video.pause();
         },
@@ -642,19 +612,19 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
         },
 
         progress: function(e) {
-            if(e.event.lengthComputable) {
-        // Progress bar
-                var pct = e.event.loaded / e.event.total * 100;
-                controls.progress.buffered.setStyle('width', pct + '%');
-        // Info panel
-                var MB = (e.event.total / 1024 / 1024).round(2);
-                panels.info.getElement('dt.size + dd').set('html', MB + ' MB');
+            var percent = 0;
+            var mb = 0;
+
+            if (e.event.lengthComputable) {
+                mb = (e.event.total / 1024 / 1024).round(2);
+                percent = e.event.loaded / e.event.total * 100;
             } else if (video.buffered.length) {
                 var buffered = video.buffered.end(video.buffered.length - 1);
-                var pct = buffered / video.duration * 100;
-
-                controls.progress.buffered.setStyle('width', pct + '%');
+                percent = buffered / video.duration * 100;
             }
+
+            controls.progress.buffered.setStyle('width', percent + '%');
+            panels.info.getElement('dt.size + dd').set('html', mb + ' MB');
         },
 
         seeking: function() {
