@@ -9,7 +9,7 @@
  * @copyright 2010 Colin Aarts
  * @license MIT
  */
-Moovie.MediaEvents = {  // eslint-disable-line
+Moovie.MediaEvents = {
     abort: 1,
     canplay: 1,
     canplaythrough: 1,

@@ -9,7 +9,7 @@
  * @copyright 2010 Colin Aarts
  * @license MIT
  */
-Moovie.Playlist = new Class({   // eslint-disable-line
+Moovie.Playlist = new Class({
     initialize: function (items) {
         this.items = typeOf(items) === 'array' ? items : [];
         this.index = this.items.length ? 0 : -1;

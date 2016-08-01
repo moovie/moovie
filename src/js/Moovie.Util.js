@@ -9,7 +9,7 @@
  * @copyright 2010 Colin Aarts
  * @license MIT
  */
-Moovie.Util = { // eslint-disable-line
+Moovie.Util = {
     formatTime: function (seconds) {
         var hh = Math.floor(seconds / 3600);
         var mm = Math.floor((seconds % 3600) / 60);

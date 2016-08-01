@@ -49,6 +49,7 @@
         "URI": false,
         "Window": false,
 
+        "Moovie": false,
         "screenfull": false
     }
 }

@@ -10,7 +10,7 @@
  * @copyright 2010 Colin Aarts
  * @license MIT
  */
-Moovie.Doit = function(video, options) {    // eslint-disable-line
+Moovie.Doit = function(video, options) {
     'use strict';
 
     video.controls = false;
@@ -44,7 +44,7 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
         });
     }
 
-    this.playlist = new Moovie.Playlist(playlist);  // eslint-disable-line
+    this.playlist = new Moovie.Playlist(playlist);
 
     // Grab some refs
     // @bug Native textTracks won't work unless the video is cloned.
@@ -345,7 +345,6 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
         panels.info.getElement('dt.title + dd').set('html', current.title || basename(current.src));
         panels.info.getElement('dt.url + dd').set('html', current.src);
 
-        // eslint-disable-next-line
         options.captions = Moovie.captions[current.id];
 
         video.src = current.src;
@@ -674,7 +673,6 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
             pluginOptions = options[option];
         }
 
-        // eslint-disable-next-line
         this[option] = new Moovie[plugin](video, pluginOptions);
     }, this);
 

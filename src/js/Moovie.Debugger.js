@@ -9,7 +9,7 @@
  * @copyright 2010 Colin Aarts
  * @license MIT
  */
-Moovie.Debugger = new Class({   // eslint-disable-line
+Moovie.Debugger = new Class({
     Implements: [Options],
 
     options: {
