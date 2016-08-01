@@ -69,23 +69,6 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
     var panelHeightSet = false;
     var self = this;
 
-    // Parses a float value in seconds (from video.currentTime etc) to normal time format
-    var parseTime = function(val) {
-        var rest = 0, hrs = 0, mins = 0, secs = 0, time = '';
-
-        hrs  = (val / 3600).toInt();
-        rest = val % 3600;
-        mins = (rest / 60).toInt();
-        rest = rest % 60;
-        secs = rest.toInt().toString();
-
-        if(secs.length == 1) {
-            secs = '0' + secs;
-        }
-        if(hrs !== 0) time += hrs + ':';
-        return time + mins + ':' + secs;
-    };
-
     // Calculates offset for progress bar slider based on page location
     var locToTime = function(val) {
         var barX     = controls.progress.bar.getPosition().x;
@@ -392,7 +375,7 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
             controls.progress.time.setStyle('left', sliderX - barX - controls.progress.slider.left + 'px');
             offset = sliderX - controls.progress.slider.left;
         }
-        this.getFirst().set('text', parseTime(locToTime(offset)));
+        this.getFirst().set('text', Moovie.Util.formatTime(locToTime(offset)));
     };
 
     controls.volume.update = function() {
@@ -430,7 +413,7 @@ Moovie.Doit = function(video, options) {    // eslint-disable-line
     };
 
     controls.currentTime.update = controls.duration.update = function(time) {
-        this.set('text', parseTime(time));
+        this.set('text', Moovie.Util.formatTime(time));
     };
 
     // Masthead ----------------------------------------------------------------
