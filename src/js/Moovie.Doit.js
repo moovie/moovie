@@ -29,10 +29,6 @@ Moovie.Doit = new Class({
 
         var playlist = [];
 
-        var basename = function (str, suffix) {
-            return str.substr(str.lastIndexOf(suffix || '/') + 1);
-        };
-
         if (typeOf(options.playlist) === 'array') {
             playlist.combine(options.playlist);
 
@@ -40,7 +36,7 @@ Moovie.Doit = new Class({
             playlist.unshift({
                 id: video.get('id'),
                 src: video.currentSrc || video.src,
-                title: video.get('title') || basename(video.currentSrc || video.src)
+                title: video.get('title') || Moovie.Util.basename(video.currentSrc || video.src)
             });
         }
 
@@ -155,7 +151,7 @@ Moovie.Doit = new Class({
                     'html': '\
                       <div class="checkbox-widget" data-checked="true">\
                         <div class="checkbox"></div>\
-                        <div class="label">' + (el.title || basename(el.src)) + '</div>\
+                        <div class="label">' + (el.title || Moovie.Util.basename(el.src)) + '</div>\
                       </div>\
                     '
                 }));
@@ -314,7 +310,7 @@ Moovie.Doit = new Class({
             panels.playlist.getElement('ol.playlist li.active').removeClass('active');
             panels.playlist.getElement('ol.playlist li[data-index="' + index + '"]').addClass('active');
 
-            panels.info.getElement('dt.title + dd').set('html', current.title || basename(current.src));
+            panels.info.getElement('dt.title + dd').set('html', current.title || Moovie.Util.basename(current.src));
             panels.info.getElement('dt.url + dd').set('html', current.src);
 
             video.src = current.src;
@@ -655,7 +651,7 @@ Moovie.Doit = new Class({
 
         title.show = function() {
             var index = self.playlist.index;
-            var text   = self.playlist.current().title || basename(self.playlist.current().src);
+            var text   = self.playlist.current().title || Moovie.Util.basename(self.playlist.current().src);
             title.set('html', (index + 1).toString() + '. ' + text);
             title.fade('in');
 

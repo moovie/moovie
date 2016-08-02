@@ -32,4 +32,26 @@ describe('Moovie.Util', function () {
             expect(Moovie.Util.formatTime(3600)).toEqual('1:00:00');
         });
     });
+
+    describe('basename', function () {
+        it('should remove the suffix', function () {
+            expect(Moovie.Util.basename('/www/site/home.htm', '.htm')).toEqual('home');
+        });
+
+        it('should return basename without stripping query', function () {
+            expect(Moovie.Util.basename('ecra.php?p=1')).toEqual('ecra.php?p=1');
+        });
+
+        it('should handle trailing slashes', function () {
+            expect(Moovie.Util.basename('/some/path/')).toEqual('path');
+        });
+
+        it('should handle trailing slashes with suffix provided', function () {
+            expect(Moovie.Util.basename('/some/path_ext.ext/', '.ext')).toEqual('path_ext');
+        });
+
+        it('should handle paths with no directories', function () {
+            expect(Moovie.Util.basename('user')).toEqual('user');
+        });
+    });
 });
