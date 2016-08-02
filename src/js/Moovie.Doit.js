@@ -92,12 +92,7 @@ Moovie.Doit = new Class({
         this.overlay = new Element('div.overlay');
 
         // Title -------------------------------------------------------------------
-        var title = new Element('div.video-title', {
-            'html': this.playlist.current().title
-        });
-
-        title.set('tween', { duration: 2000 });
-        title.fade('hide');
+        this.buildTitle();
 
         // Panels ------------------------------------------------------------------
         var panels      = new Element('div.panels');
@@ -299,25 +294,11 @@ Moovie.Doit = new Class({
         controls.set('tween', { duration: 150 });
 
         // Inject and do some post-processing --------------------------------------
-        wrapper.adopt(captions, this.overlay, title, panels, controls);
+        wrapper.adopt(captions, this.overlay, this.title, panels, controls);
 
         // Get the knob offsets for later
         controls.progress.slider.left = controls.progress.slider.getStyle('left').toInt();
         controls.volume.slider.top    = controls.volume.slider.getStyle('top').toInt();
-
-        // Title -------------------------------------------------------------------
-        title.show = function() {
-            var index = self.playlist.index;
-            var text   = self.playlist.current().title || basename(self.playlist.current().src);
-            title.set('html', (index + 1).toString() + '. ' + text);
-            title.fade('in');
-
-            // eslint-disable-next-line
-            var timer = setTimeout(function() {
-                title.fade('out');
-                timer = null;
-            }, 6000);
-        };
 
         // Panels ------------------------------------------------------------------
         panels.update = function (which) {
@@ -352,7 +333,6 @@ Moovie.Doit = new Class({
             video.src = current.src;
             video.load();
             video.play();
-            title.show();
         };
 
         // Controls ----------------------------------------------------------------
@@ -430,6 +410,7 @@ Moovie.Doit = new Class({
 
         this.overlay.addEvent('click', function () {
             video.play();
+            self.title.show();
         });
 
         // Panels ------------------------------------------------------------------
@@ -496,6 +477,7 @@ Moovie.Doit = new Class({
                 if (self.playlist.hasPrevious()) {
                     self.playlist.previous();
                     panels.playlist.update();
+                    self.title.show();
                 }
             });
 
@@ -503,6 +485,7 @@ Moovie.Doit = new Class({
                 if (self.playlist.hasNext()) {
                     self.playlist.next();
                     panels.playlist.update();
+                    self.title.show();
                 }
             });
         }
@@ -592,6 +575,7 @@ Moovie.Doit = new Class({
                 if (self.playlist.hasNext()) {
                     self.playlist.next();
                     panels.playlist.update();
+                    self.title.show();
                 }
             },
 
@@ -692,5 +676,29 @@ Moovie.Doit = new Class({
                 return el.get('title');
             }
         });
+    },
+
+    buildTitle: function () {
+        var self = this;
+        var title = new Element('div.video-title', {
+            'html': this.playlist.current().title
+        });
+
+        title.show = function() {
+            var index = self.playlist.index;
+            var text   = self.playlist.current().title || basename(self.playlist.current().src);
+            title.set('html', (index + 1).toString() + '. ' + text);
+            title.fade('in');
+
+            // eslint-disable-next-line
+            var timer = setTimeout(function() {
+                title.fade('out');
+                timer = null;
+            }, 6000);
+        };
+
+        title.set('tween', { duration: 2000 });
+        title.fade('hide');
+        this.title = title;
     }
 });
