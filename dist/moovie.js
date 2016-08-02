@@ -2,7 +2,7 @@
  * Moovie: an advanced HTML5 video player for MooTools.
  *
  * @see http://colinaarts.com/code/moovie
- * @version 0.3.2
+ * @version 0.3.3
  * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
  * @author Nathan Bishop <nbish11@hotmail.com>
  * @copyright 2010 Colin Aarts
@@ -35,21 +35,9 @@ var Moovie = function(videos, options) {
         } else if (typeOf(el) == 'object') {
             el.options = el.options || {};
             el.options.id = el.id || null;
-            el.options.captions = Moovie.captions[el.id] || null;
             el.video.Moovie = new Moovie.Doit(el.video, Object.merge(options, el.options));
         }
     });
-};
-
-Moovie.captions = {};
-Moovie.languages = {
-    'en': 'English'
-};
-
-Moovie.registerCaptions = function (id, captions) {
-    'use strict';
-
-    this.captions[id] = captions;
 };
 
 /**
@@ -57,7 +45,7 @@ Moovie.registerCaptions = function (id, captions) {
  *
  * A plugin to allow Moovie players to view video info live.
  *
- * @version 0.3.2
+ * @version 0.3.3
  * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
  * @author Nathan Bishop <nbish11@hotmail.com>
  * @copyright 2010 Colin Aarts
@@ -308,7 +296,7 @@ Moovie.Debugger = new Class({
  * The main function, which handles one <video> at a time.
  *
  * @see http://www.urbandictionary.com/define.php?term=Doit&defid=3379319
- * @version 0.3.2
+ * @version 0.3.3
  * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
  * @author Nathan Bishop <nbish11@hotmail.com>
  * @copyright 2010 Colin Aarts
@@ -321,9 +309,6 @@ Moovie.Doit = new Class({
         debugger: false,
         autohideControls: true,
         playlist: [],
-        captions: null,
-        showCaptions: true,
-        captionLang: 'en',
         plugins: ['Debugger']
     },
 
@@ -386,22 +371,8 @@ Moovie.Doit = new Class({
             return time;
         };
 
-        // Captions ----------------------------------------------------------------
-        var captions     = new Element('div.captions');
-        captions.caption = new Element('p');
-
-        captions.grab(captions.caption);
-        captions.hide();
-
         this.overlay = new Element('div.overlay');
-
-        // Title -------------------------------------------------------------------
-        var title = new Element('div.video-title', {
-            'html': this.playlist.current().title
-        });
-
-        title.set('tween', { duration: 2000 });
-        title.fade('hide');
+        this.buildTitle();
 
         // Panels ------------------------------------------------------------------
         var panels      = new Element('div.panels');
@@ -430,6 +401,7 @@ Moovie.Doit = new Class({
         ');
 
         var debuggerEnabled = options.debugger === true || options.debugger.disabled === false;
+        var showCaptions = !!video.getElement('track[default]');
 
         // Content for `settings` panel
         panels.settings.set('html', '\
@@ -443,7 +415,7 @@ Moovie.Doit = new Class({
                 <div class="checkbox"></div>\
                 <div class="label">Loop video</div>\
             </div>\
-            <div class="checkbox-widget" data-control="showCaptions" data-checked="' + options.showCaptions + '">\
+            <div class="checkbox-widget" data-control="captions" data-checked="' + showCaptions + '">\
                 <div class="checkbox"></div>\
                 <div class="label">Show captions</div>\
             </div>\
@@ -603,25 +575,11 @@ Moovie.Doit = new Class({
         controls.set('tween', { duration: 150 });
 
         // Inject and do some post-processing --------------------------------------
-        wrapper.adopt(captions, this.overlay, title, panels, controls);
+        wrapper.adopt(this.overlay, this.title, panels, controls);
 
         // Get the knob offsets for later
         controls.progress.slider.left = controls.progress.slider.getStyle('left').toInt();
         controls.volume.slider.top    = controls.volume.slider.getStyle('top').toInt();
-
-        // Title -------------------------------------------------------------------
-        title.show = function() {
-            var index = self.playlist.index;
-            var text   = self.playlist.current().title || basename(self.playlist.current().src);
-            title.set('html', (index + 1).toString() + '. ' + text);
-            title.fade('in');
-
-            // eslint-disable-next-line
-            var timer = setTimeout(function() {
-                title.fade('out');
-                timer = null;
-            }, 6000);
-        };
 
         // Panels ------------------------------------------------------------------
         panels.update = function (which) {
@@ -651,12 +609,9 @@ Moovie.Doit = new Class({
             panels.info.getElement('dt.title + dd').set('html', current.title || basename(current.src));
             panels.info.getElement('dt.url + dd').set('html', current.src);
 
-            options.captions = Moovie.captions[current.id];
-
             video.src = current.src;
             video.load();
             video.play();
-            title.show();
         };
 
         // Controls ----------------------------------------------------------------
@@ -734,6 +689,7 @@ Moovie.Doit = new Class({
 
         this.overlay.addEvent('click', function () {
             video.play();
+            self.title.show();
         });
 
         // Panels ------------------------------------------------------------------
@@ -756,8 +712,8 @@ Moovie.Doit = new Class({
                 video.loop = checked == 'true';
                 break;
 
-            case 'showCaptions':
-                options.showCaptions = checked == 'true';
+            case 'captions':
+                video.getElement('track[default]').track.mode = (checked === 'true' ? 'showing' : 'hidden');
                 break;
 
             case 'debugger':
@@ -800,6 +756,7 @@ Moovie.Doit = new Class({
                 if (self.playlist.hasPrevious()) {
                     self.playlist.previous();
                     panels.playlist.update();
+                    self.title.show();
                 }
             });
 
@@ -807,6 +764,7 @@ Moovie.Doit = new Class({
                 if (self.playlist.hasNext()) {
                     self.playlist.next();
                     panels.playlist.update();
+                    self.title.show();
                 }
             });
         }
@@ -896,6 +854,7 @@ Moovie.Doit = new Class({
                 if (self.playlist.hasNext()) {
                     self.playlist.next();
                     panels.playlist.update();
+                    self.title.show();
                 }
             },
 
@@ -928,24 +887,6 @@ Moovie.Doit = new Class({
                 controls.currentTime.update(video.currentTime);
                 controls.progress.update();
                 controls.progress.played.setStyle('width', pct + '%');
-
-                // Captions
-                var found = false;
-
-                if (options.captions && options.showCaptions) {
-                    options.captions[options.captionLang].each(function(caption) {
-                        if(video.currentTime >= caption.start / 1000 && video.currentTime <= caption.end / 1000) {
-                            captions.caption.set('html', caption.text);
-                            captions.show();
-                            found = true;
-                        }
-                    });
-                }
-
-                if (!found) {
-                    captions.caption.set('html', '');
-                    captions.hide();
-                }
             },
 
             durationchange: function() {
@@ -996,6 +937,30 @@ Moovie.Doit = new Class({
                 return el.get('title');
             }
         });
+    },
+
+    buildTitle: function () {
+        var self = this;
+        var title = new Element('div.video-title', {
+            'html': this.playlist.current().title
+        });
+
+        title.show = function() {
+            var index = self.playlist.index;
+            var text   = self.playlist.current().title || basename(self.playlist.current().src);
+            title.set('html', (index + 1).toString() + '. ' + text);
+            title.fade('in');
+
+            // eslint-disable-next-line
+            var timer = setTimeout(function() {
+                title.fade('out');
+                timer = null;
+            }, 6000);
+        };
+
+        title.set('tween', { duration: 2000 });
+        title.fade('hide');
+        this.title = title;
     }
 });
 
@@ -1004,7 +969,7 @@ Moovie.Doit = new Class({
  *
  * Currently supported HTML5 media events.
  *
- * @version 0.3.2
+ * @version 0.3.3
  * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
  * @author Nathan Bishop <nbish11@hotmail.com>
  * @copyright 2010 Colin Aarts
@@ -1040,7 +1005,7 @@ Moovie.MediaEvents = {
  *
  * Allows manipulation of a collection of videos.
  *
- * @version 0.3.2
+ * @version 0.3.3
  * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
  * @author Nathan Bishop <nbish11@hotmail.com>
  * @copyright 2010 Colin Aarts
@@ -1096,7 +1061,7 @@ Moovie.Playlist = new Class({
  *
  * Commonly used functions for the Moovie library.
  *
- * @version 0.3.2
+ * @version 0.3.3
  * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
  * @author Nathan Bishop <nbish11@hotmail.com>
  * @copyright 2010 Colin Aarts

@@ -35,19 +35,7 @@ var Moovie = function(videos, options) {
         } else if (typeOf(el) == 'object') {
             el.options = el.options || {};
             el.options.id = el.id || null;
-            el.options.captions = Moovie.captions[el.id] || null;
             el.video.Moovie = new Moovie.Doit(el.video, Object.merge(options, el.options));
         }
     });
-};
-
-Moovie.captions = {};
-Moovie.languages = {
-    'en': 'English'
-};
-
-Moovie.registerCaptions = function (id, captions) {
-    'use strict';
-
-    this.captions[id] = captions;
 };

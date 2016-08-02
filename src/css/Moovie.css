@@ -463,45 +463,6 @@ span.info {
     height: auto;
 }
 
-.moovie .captions p i,
-.moovie .captions p em,
-.moovie .captions p cite {
-    font-family:OfficinaSansBookItalic, 'Lucida Sans Unicode', Arial, Helvetica, sans-serif;
-}
-
-.moovie .captions p {
-    font-size:1.3em;
-    font-family:OfficinaSansBook, 'Lucida Sans Unicode', Arial, Helvetica, sans-serif;
-    display:inline;
-    padding:.2em 0;
-    text-shadow:0 0 5px #000000, 0 0 5px #000000, 0 0 5px #000000, 0 0 10px #000000, 0 0 10px #000000;
-    line-height:1;
-}
-
-.moovie .captions span.off-screen i,
-.moovie .captions span.off-screen em,
-.moovie .captions span.off-screen cite {
-    font-family:OfficinaSansBook, 'Lucida Sans Unicode', Arial, Helvetica, sans-serif;
-    font-style:normal;
-}
-
-.moovie .captions span.off-screen {
-    font-family:OfficinaSansBookItalic, 'Lucida Sans Unicode', Arial, Helvetica, sans-serif;
-}
-
-.moovie .captions {
-    position:absolute;
-    bottom:35px;
-    left:10%;
-    right:10%;
-    text-align:center;
-}
-
-.moovie .captions.top {
-    top:5px;
-    bottom:auto;
-}
-
 .moovie .overlay,
 .moovie[data-playbackstate="playing"] .overlay {
     background-color: rgba(0, 0, 0, 0.5);

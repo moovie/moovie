@@ -17,9 +17,6 @@ Moovie.Doit = new Class({
         debugger: false,
         autohideControls: true,
         playlist: [],
-        captions: null,
-        showCaptions: true,
-        captionLang: 'en',
         plugins: ['Debugger']
     },
 
@@ -82,16 +79,7 @@ Moovie.Doit = new Class({
             return time;
         };
 
-        // Captions ----------------------------------------------------------------
-        var captions     = new Element('div.captions');
-        captions.caption = new Element('p');
-
-        captions.grab(captions.caption);
-        captions.hide();
-
         this.overlay = new Element('div.overlay');
-
-        // Title -------------------------------------------------------------------
         this.buildTitle();
 
         // Panels ------------------------------------------------------------------
@@ -121,6 +109,7 @@ Moovie.Doit = new Class({
         ');
 
         var debuggerEnabled = options.debugger === true || options.debugger.disabled === false;
+        var showCaptions = !!video.getElement('track[default]');
 
         // Content for `settings` panel
         panels.settings.set('html', '\
@@ -134,7 +123,7 @@ Moovie.Doit = new Class({
                 <div class="checkbox"></div>\
                 <div class="label">Loop video</div>\
             </div>\
-            <div class="checkbox-widget" data-control="showCaptions" data-checked="' + options.showCaptions + '">\
+            <div class="checkbox-widget" data-control="captions" data-checked="' + showCaptions + '">\
                 <div class="checkbox"></div>\
                 <div class="label">Show captions</div>\
             </div>\
@@ -294,7 +283,7 @@ Moovie.Doit = new Class({
         controls.set('tween', { duration: 150 });
 
         // Inject and do some post-processing --------------------------------------
-        wrapper.adopt(captions, this.overlay, this.title, panels, controls);
+        wrapper.adopt(this.overlay, this.title, panels, controls);
 
         // Get the knob offsets for later
         controls.progress.slider.left = controls.progress.slider.getStyle('left').toInt();
@@ -327,8 +316,6 @@ Moovie.Doit = new Class({
 
             panels.info.getElement('dt.title + dd').set('html', current.title || basename(current.src));
             panels.info.getElement('dt.url + dd').set('html', current.src);
-
-            options.captions = Moovie.captions[current.id];
 
             video.src = current.src;
             video.load();
@@ -433,8 +420,8 @@ Moovie.Doit = new Class({
                 video.loop = checked == 'true';
                 break;
 
-            case 'showCaptions':
-                options.showCaptions = checked == 'true';
+            case 'captions':
+                video.getElement('track[default]').track.mode = (checked === 'true' ? 'showing' : 'hidden');
                 break;
 
             case 'debugger':
@@ -608,24 +595,6 @@ Moovie.Doit = new Class({
                 controls.currentTime.update(video.currentTime);
                 controls.progress.update();
                 controls.progress.played.setStyle('width', pct + '%');
-
-                // Captions
-                var found = false;
-
-                if (options.captions && options.showCaptions) {
-                    options.captions[options.captionLang].each(function(caption) {
-                        if(video.currentTime >= caption.start / 1000 && video.currentTime <= caption.end / 1000) {
-                            captions.caption.set('html', caption.text);
-                            captions.show();
-                            found = true;
-                        }
-                    });
-                }
-
-                if (!found) {
-                    captions.caption.set('html', '');
-                    captions.hide();
-                }
             },
 
             durationchange: function() {

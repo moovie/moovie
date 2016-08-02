@@ -24,7 +24,6 @@
         <script src="vendor/mootools-more/Source/Interface/Tips.js"></script>
         <script src="vendor/screenfull/dist/screenfull.min.js"></script>
         <script src="dist/moovie.js"></script>
-        <script src="http://colinaarts.com/js/avatar.mc"></script>
         <script>
             (function () {
                 var videos = $$('video');
