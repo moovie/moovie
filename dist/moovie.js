@@ -317,7 +317,6 @@ Moovie.Doit = new Class({
 
         this.setOptions(options);
         options = this.options;
-        video.controls = false;
 
         var playlist = [];
 
@@ -344,6 +343,8 @@ Moovie.Doit = new Class({
         video = newVideo;
         wrapper.grab(video);
         container.grab(wrapper);
+        this.video = video;
+        this.wrapper = wrapper;
 
         // Unfortunately, the media API only defines one volume-related
         // event: `volumechange`. This event is fired whenever the media's
@@ -356,16 +357,7 @@ Moovie.Doit = new Class({
         var muted = video.muted;
         var panelHeightSet = false;
         var self = this;
-
-        // Calculates offset for progress bar slider based on page location
-        var locToTime = function(val) {
-            var barX     = controls.progress.bar.getPosition().x;
-            var barW     = controls.progress.bar.getSize().x;
-            var offsetPx = val - barX;
-            var offsetPc = offsetPx / barW * 100;
-            var time     = (video.duration || 0) / 100 * offsetPc;
-            return time;
-        };
+        var showControls = video.controls;
 
         this.overlay = new Element('div.overlay');
         this.buildTitle();
@@ -449,140 +441,28 @@ Moovie.Doit = new Class({
                 }));
         }, this.playlist);
 
+        this.panels = panels;
+
         // Controls ----------------------------------------------------------------
-        var controls        = new Element('div.controls');
-        controls.wrapper    = new Element('div.wrapper');
-
-        // General
-        controls.play           = new Element('div.play');
-        controls.stop           = new Element('div.stop');
-        controls.currentTime    = new Element('div.current-time[text=0:00]');
-        controls.duration       = new Element('div.duration[text=0:00]');
-        controls.settings       = new Element('div.settings[title=Settings]');
-        controls.fullscreen     = new Element('div.fullscreen[title=Fullscreen]');
-
-        controls.previous = this.playlist.size ? new Element('div.previous[title=Previous]') : null;
-        controls.next = this.playlist.size ? new Element('div.next[title=Next]') : null;
-
-        // Progress
-        controls.progress           = new Element('div.progress');
-        controls.progress.wrapper   = new Element('div.wrapper');    // track
-        controls.progress.bar       = new Element('div.bar');
-        controls.progress.time      = new Element('div.time').grab(new Element('div[text=0:00]'));
-        controls.progress.buffered  = new Element('div.buffered');
-        controls.progress.played    = new Element('div.played');
-        controls.progress.slider    = new Element('div.slider');
-
-        controls.progress.wrapper.adopt(controls.progress.bar, controls.progress.buffered, controls.progress.played, controls.progress.slider, controls.progress.time);
-        controls.progress.grab(controls.progress.wrapper);
-        controls.progress.time.fade('hide');
-
-        var seekbar = controls.progress;
-        seekbar.addEvent('mousedown', function (e) {
-            function update(e) {
-                video.pause();
-                var offset = e.page.x - seekbar.bar.getPosition().x;
-                var pct = offset / seekbar.bar.getSize().x;
-                video.currentTime = (pct * video.duration).limit(0, video.duration);
-            }
-
-            function move(e) {
-                update(e);
-            }
-
-            function stop() {
-                video.play();
-                document.removeEvent('mousemove', move);
-                document.removeEvent('mouseup', stop);
-            }
-
-            document.addEvent('mousemove', move);
-            document.addEvent('mouseup', stop);
-
-            update(e);
-        });
-
-        // Volume
-        controls.volume         = new Element('div.volume');
-        controls.volume.mute    = new Element('div.mute');
-        controls.volume.wrapper = new Element('div.wrapper');
-        controls.volume.popup   = new Element('div.popup');
-        controls.volume.bar     = new Element('div.bar');
-        controls.volume.slider  = new Element('div.slider');
-
-        controls.volume.popup.adopt(controls.volume.bar, controls.volume.slider);
-        controls.volume.wrapper.adopt(controls.volume.mute, controls.volume.popup);
-        controls.volume.grab(controls.volume.wrapper);
-
-        controls.volume.popup.fade('hide');
-        controls.volume.popup.set('tween', { duration: 150 });
-
-        controls.volume.popup.addEvent('mousedown', function (e) {
-            function update(e) {
-                var offset = e.page.y - controls.volume.bar.getPosition().y;
-                var pct = offset / controls.volume.bar.getSize().y;
-                video.volume = (1 - (pct * 1)).limit(0, 1);
-            }
-
-            function move(e) {
-                update(e);
-            }
-
-            function stop() {
-                document.removeEvent('mousemove', move);
-                document.removeEvent('mouseup', stop);
-            }
-
-            document.addEvent('mousemove', move);
-            document.addEvent('mouseup', stop);
-
-            update(e);
-        });
-
-        // "more"
-        controls.more           = new Element('div.more');
-        controls.more.wrapper   = new Element('div.wrapper');
-        controls.more.popup     = new Element('div.popup');
-        controls.more.about     = new Element('div.about[title=About]');
-        controls.more.info      = new Element('div.info[title=Video info]');
-        controls.more.playlist  = new Element('div.playlist[title=Playlist]');
-
-        controls.more.popup.adopt(controls.more.about, controls.more.info, controls.more.playlist);
-        controls.more.wrapper.grab(controls.more.popup);
-        controls.more.grab(controls.more.wrapper);
-
-        controls.more.popup.fade('hide');
-        controls.more.popup.set('tween', { duration: 150 });
-        controls.wrapper.adopt(
-            controls.play,
-            controls.stop,
-            controls.previous,
-            controls.next,
-            controls.currentTime,
-            controls.progress,
-            controls.duration,
-            controls.volume,
-            controls.settings,
-            controls.more,
-            controls.fullscreen
-        );
-
-        controls.grab(controls.wrapper);
-        controls.set('tween', { duration: 150 });
+        this.buildControls(showControls);
 
         // Inject and do some post-processing --------------------------------------
-        wrapper.adopt(this.overlay, this.title, panels, controls);
+        wrapper.adopt(this.overlay, this.title, panels, this.controls);
 
         // Get the knob offsets for later
-        controls.progress.slider.left = controls.progress.slider.getStyle('left').toInt();
-        controls.volume.slider.top    = controls.volume.slider.getStyle('top').toInt();
+        this.controls.seekbar.knob.left = this.controls.seekbar.knob.getStyle('left').toInt();
+        this.controls.volume.knob.top = this.controls.volume.knob.getStyle('top').toInt();
 
         // Panels ------------------------------------------------------------------
         panels.update = function (which) {
             // Adjust height of panel container to account for controls bar
             if (panelHeightSet === false) {
                 panelHeightSet = true;
-                panels.setStyle('height', panels.getStyle('height').toInt() - controls.getStyle('height').toInt());
+                panels.setStyle(
+                    'height',
+                    panels.getStyle('height').toInt() -
+                    self.controls.getStyle('height').toInt()
+                );
             }
 
             if (which == 'none' || this[which].hasClass('active')) {
@@ -610,82 +490,25 @@ Moovie.Doit = new Class({
             video.play();
         };
 
-        // Controls ----------------------------------------------------------------
-        controls.progress.update = function() {
-            if(!controls.progress.slider.beingDragged) {
-                var el     = controls.progress.slider;
-                var pct    = video.currentTime / video.duration * 100;
-                var width  = controls.progress.bar.getSize().x;
-                var offset = width / 100 * pct;
-                el.setStyle('left', offset + el.left + 'px');
-            }
-        };
-
-        controls.progress.time.update = function(offset, slider) {
-            controls.progress.time.fade('show');
-            var barX = controls.progress.bar.getPosition().x;
-            if(!slider) {
-                controls.progress.time.setStyle('left', offset - barX + 'px');
-            } else {
-                var sliderX = controls.progress.slider.getPosition().x;
-                controls.progress.time.setStyle('left', sliderX - barX - controls.progress.slider.left + 'px');
-                offset = sliderX - controls.progress.slider.left;
-            }
-            this.getFirst().set('text', Moovie.Util.formatTime(locToTime(offset)));
-        };
-
-        controls.volume.update = function() {
-            var mutedChanged = muted != video.muted;
-            muted = video.muted;
-
-            // Un-muted with volume at 0 -- pick a sane default. This
-            // is probably the only deviation from the way the YouTube
-            // flash player handles volume control.
-            if (mutedChanged && !video.muted && video.volume === 0) {
-                video.volume = 0.5;
-
-            // Volume changed while muted -> un-mute
-            } else if (video.muted && video.volume !== 0 && !mutedChanged) {
-                video.muted = false;
-
-            // Slider dragged to 0 -> mute
-            } else if (!mutedChanged && !video.muted && video.volume === 0) {
-                video.muted = true;
-            }
-
-            if (video.muted) {
-                controls.volume.mute.addClass('muted');
-            } else {
-                controls.volume.mute.removeClass('muted');
-            }
-
-            if (!controls.volume.slider.beingDragged) {
-                var slider  = controls.volume.slider;
-                var volume  = video.muted && mutedChanged ? 0 : video.volume; // If muted, assume 0 for volume to visualize the muted state in the slider as well. Don't actually change the volume, though, so when un-muted, the slider simply goes back to its former value.
-                var barSize = controls.volume.bar.getSize().y;
-                var offset  = barSize - volume * barSize;
-                slider.setStyle('top', offset + slider.top);
-            }
-        };
-
-        controls.currentTime.update = controls.duration.update = function(time) {
-            this.set('text', Moovie.Util.formatTime(time));
-        };
-
         // Masthead ----------------------------------------------------------------
-        wrapper.addEvent('mouseenter', function() {
-            controls.fade('in');
+        wrapper.addEvent('mouseenter', function () {
+            self.controls.show();
         });
 
-        wrapper.addEvent('mouseleave', function() {
+        wrapper.addEvent('mouseleave', function () {
             if (options.autohideControls) {
-                controls.fade('out');
+                self.controls.hide();
             }
         });
 
         this.overlay.addEvent('click', function () {
             video.play();
             self.title.show();
+
+            // re-enable controls once "big play button" has been clicked
+            if (showControls) {
+                self.controls.enable();
+            }
         });
 
         // Panels ------------------------------------------------------------------
@@ -731,101 +554,6 @@ Moovie.Doit = new Class({
             panels.update('none');
         });
 
-        // Playback
-        controls.play.addEvent('click', function() {
-            if(video.paused && video.readyState >= 3) {
-                video.play();
-            } else if(!video.paused && video.ended) {
-                video.currentTime = 0;
-            } else if(!video.paused) {
-                video.pause();
-            }
-        });
-
-        controls.stop.addEvent('click', function() {
-            video.currentTime = 0;
-            video.pause();
-        });
-
-        if (this.playlist.size()) {
-            controls.previous.addEvent('click', function () {
-                if (self.playlist.hasPrevious()) {
-                    self.playlist.previous();
-                    panels.playlist.update();
-                    self.title.show();
-                }
-            });
-
-            controls.next.addEvent('click', function () {
-                if (self.playlist.hasNext()) {
-                    self.playlist.next();
-                    panels.playlist.update();
-                    self.title.show();
-                }
-            });
-        }
-
-        // Progress
-        controls.progress.bar.addEvent('mousemove', function(e) {
-            controls.progress.time.update(e.page.x, false);
-        });
-
-        controls.progress.slider.addEvent('mouseenter', function(e) {
-            controls.progress.time.update(e.page.x, true);
-        });
-
-        controls.progress.bar.addEvent('mouseleave', function() {
-            controls.progress.time.fade('hide');
-        });
-
-        controls.progress.slider.addEvent('mouseleave', function() {
-            controls.progress.time.fade('hide');
-        });
-
-        // Volume
-        controls.volume.mute.addEvent('click', function() {
-            video.muted = !video.muted;
-        });
-
-        controls.volume.addEvent('mouseenter', function() {
-            controls.volume.popup.fade('in');
-        });
-
-        controls.volume.addEvent('mouseleave', function() {
-            controls.volume.popup.fade('out');
-        });
-
-        // "more"
-        controls.more.addEvent('mouseenter', function() {
-            controls.more.popup.fade('in');
-        });
-
-        controls.more.addEvent('mouseleave', function() {
-            controls.more.popup.fade('out');
-        });
-
-        controls.more.about.addEvent('click', function() {
-            panels.update('about');
-        });
-
-        controls.more.info.addEvent('click', function() {
-            panels.update('info');
-        });
-
-        controls.more.playlist.addEvent('click', function() {
-            panels.update('playlist');
-        });
-
-        // Misc
-        controls.settings.addEvent('click', function() {
-            panels.update('settings');
-        });
-
-        controls.fullscreen.addEvent('click', function () {
-            screenfull.toggle(wrapper);
-        });
-
-
         // Video element -----------------------------------------------------------
         video.addEvents({
             click: function() {
@@ -833,7 +561,7 @@ Moovie.Doit = new Class({
             },
 
             play: function() {
-                controls.show();
+                self.controls.show();
             },
 
             playing: function () {
@@ -866,7 +594,7 @@ Moovie.Doit = new Class({
                     percent = buffered / video.duration * 100;
                 }
 
-                controls.progress.buffered.setStyle('width', percent + '%');
+                self.controls.seekbar.buffered.setStyle('width', percent + '%');
                 panels.info.getElement('dt.size + dd').set('html', mb + ' MB');
             },
 
@@ -875,22 +603,56 @@ Moovie.Doit = new Class({
             },
 
             seeked: function() {
+                // @bug pressing stop button still shows "seeking" state. This get around that.
+                if (video.paused) {
+                    container.set('data-playbackstate', 'paused');
+                }
             },
 
             timeupdate: function() {
                 var pct = video.currentTime / video.duration * 100;
+                var offset = self.controls.seekbar.track.getSize().x / 100 * pct;
+                var pos = offset + self.controls.seekbar.knob.left;
 
-                controls.currentTime.update(video.currentTime);
-                controls.progress.update();
-                controls.progress.played.setStyle('width', pct + '%');
+                self.controls.elapsed.set('text', Moovie.Util.formatTime(video.currentTime));
+                self.controls.seekbar.played.setStyle('width', pct + '%');
+                self.controls.seekbar.knob.setStyle('left', pos + 'px');
             },
 
             durationchange: function() {
-                controls.duration.update(video.duration);
+                self.controls.duration.set('text', Moovie.Util.formatTime(video.duration));
             },
 
             volumechange: function() {
-                controls.volume.update();
+                var mutedChanged = muted != video.muted;
+                muted = video.muted;
+
+                // Un-muted with volume at 0 -- pick a sane default. This
+                // is probably the only deviation from the way the YouTube
+                // flash player handles volume control.
+                if (mutedChanged && !video.muted && video.volume === 0) {
+                    video.volume = 0.5;
+
+                // Volume changed while muted -> un-mute
+                } else if (video.muted && video.volume !== 0 && !mutedChanged) {
+                    video.muted = false;
+
+                // Slider dragged to 0 -> mute
+                } else if (!mutedChanged && !video.muted && video.volume === 0) {
+                    video.muted = true;
+                }
+
+                self.controls.volume.set('data-muted', video.muted);
+                self.controls.volume.set('data-level', video.volume.round(2));
+
+                // If muted, assume 0 for volume to visualize the
+                // muted state in the slider as well. Don't actually
+                // change the volume, though, so when un-muted, the
+                // slider simply goes back to its former value.
+                var volume  = video.muted && mutedChanged ? 0 : video.volume;
+                var barSize = self.controls.volume.track.getSize().y;
+                var offset  = barSize - volume * barSize;
+                self.controls.volume.knob.setStyle('top', offset + self.controls.volume.knob.top);
             },
 
             abort: function() {
@@ -922,7 +684,11 @@ Moovie.Doit = new Class({
         // Init ====================================================================
         if (!video.autoplay) {
             container.set('data-playbackstate', 'stopped');
-            controls.hide();
+
+            // hide controls while "big play button" is showing
+            if (showControls) {
+                this.controls.disable();
+            }
         }
 
         // eslint-disable-next-line
@@ -957,6 +723,264 @@ Moovie.Doit = new Class({
         title.set('tween', { duration: 2000 });
         title.fade('hide');
         this.title = title;
+    },
+
+    buildControls: function (showControls) {
+        var self = this;
+        var panels = this.panels;
+        var video = this.video;
+
+        this.controls = new Element('div.controls');
+        this.controls.wrapper = new Element('div.wrapper');
+        this.controls.play = new Element('div.play[title=Play]');
+        this.controls.play.addEvent('click', function () {
+            if (video.paused && video.readyState >= 3) {
+                video.play();
+            } else if (!video.paused && video.ended) {
+                video.currentTime = 0;
+            } else if (!video.paused) {
+                video.pause();
+            }
+        });
+
+        this.controls.stop = new Element('div.stop[title=Stop]');
+        this.controls.stop.addEvent('click', function () {
+            video.currentTime = 0;
+            video.pause();
+        });
+
+        this.controls.previous = new Element('div.previous[title=Previous]');
+        this.controls.previous.addEvent('click', function () {
+            if (self.playlist.hasPrevious()) {
+                self.playlist.previous();
+                panels.playlist.update();
+                self.title.show();
+            }
+        });
+
+        this.controls.next = new Element('div.next[title=Next]');
+        this.controls.next.addEvent('click', function () {
+            if (self.playlist.hasNext()) {
+                self.playlist.next();
+                panels.playlist.update();
+                self.title.show();
+            }
+        });
+
+        this.controls.elapsed = new Element('div.elapsed[text=0:00]');
+        this.controls.seekbar = this.createSeekbar(video);
+        this.controls.duration = new Element('div.duration[text=0:00]');
+        this.controls.volume = this.createVolumeControl(video);
+        this.controls.settings = new Element('div.settings[title=Settings]');
+        this.controls.settings.addEvent('click', function () {
+            panels.update('settings');
+        });
+
+        this.controls.more = this.createMoreControl(panels);
+        this.controls.fullscreen = new Element('div.fullscreen[title=Fullscreen]');
+        this.controls.fullscreen.addEvent('click', function () {
+            screenfull.toggle(self.wrapper);
+        });
+
+        this.controls.wrapper.adopt(
+            this.controls.play,
+            this.controls.stop,
+            this.controls.previous,
+            this.controls.next,
+            this.controls.elapsed,
+            this.controls.seekbar,
+            this.controls.duration,
+            this.controls.volume,
+            this.controls.settings,
+            this.controls.more,
+            this.controls.fullscreen
+        );
+
+        this.controls.grab(this.controls.wrapper);
+        video.controls = false; // disable native controls
+
+        this.controls.show = function () {
+            if (!this.disabled) {
+                this.set('data-displaystate', 'showing');
+            }
+
+            return this;
+        };
+
+        this.controls.hide = function () {
+            if (!this.disabled) {
+                this.set('data-displaystate', 'hidden');
+            }
+
+            return this;
+        };
+
+        this.controls.enable = function () {
+            this.disabled = false;
+            this.set('data-displaystate', 'showing');
+
+            return this;
+        };
+
+        this.controls.disable = function () {
+            this.disabled = true;
+            this.set('data-displaystate', 'disabled');
+
+            return this;
+        };
+
+        this.controls[showControls ? 'enable' : 'disable']();
+    },
+
+    createSeekbar: function (video) {
+        var seekbar = new Element('div.seekbar');
+
+        var locToTime = function (val) {
+            var barX     = seekbar.track.getPosition().x;
+            var barW     = seekbar.track.getSize().x;
+            var offsetPx = val - barX;
+            var offsetPc = offsetPx / barW * 100;
+            var time     = (video.duration || 0) / 100 * offsetPc;
+            return time;
+        };
+
+        seekbar.addEvent('mousedown', function (e) {
+            function update(e) {
+                var offset = e.page.x - seekbar.track.getPosition().x;
+                var pct = offset / seekbar.track.getSize().x;
+
+                video.pause();
+                video.currentTime = (pct * video.duration).limit(0, video.duration);
+            }
+
+            function move(e) {
+                update(e);
+            }
+
+            function stop() {
+                document.removeEvent('mousemove', move);
+                document.removeEvent('mouseup', stop);
+                video.play();
+            }
+
+            document.addEvent('mousemove', move);
+            document.addEvent('mouseup', stop);
+
+            update(e);
+        });
+
+        seekbar.slider = new Element('div.slider');
+        seekbar.slider.addEvents({
+            mousemove: function (e) {
+                var barX = seekbar.track.getPosition().x;
+                var sliderX = seekbar.knob.getPosition().x;
+                var pos, time;
+
+                // does the "snap" like effect when the mouse is over the slider's knob
+                if (e.target == seekbar.knob) {
+                    pos = sliderX - barX - seekbar.knob.left;
+                    time = sliderX - seekbar.knob.left;
+                    time = Moovie.Util.formatTime(locToTime(time));
+                } else {
+                    pos = e.page.x - barX;
+                    time = Moovie.Util.formatTime(locToTime(e.page.x));
+                }
+
+                seekbar.time.set('data-displaystate', 'showing');
+                seekbar.time.setStyle('left', pos + 'px');
+                seekbar.time.getFirst().set('text', time);
+            },
+
+            mouseleave: function () {
+                seekbar.time.set('data-displaystate', 'hidden');
+            }
+        });
+
+        seekbar.track = new Element('div.track');
+        seekbar.time = new Element('div.tooltip').grab(new Element('div[text=0:00]'));
+        seekbar.buffered = new Element('div.buffered');
+        seekbar.played = new Element('div.played');
+        seekbar.knob = new Element('div.knob');
+
+        seekbar.track.adopt(seekbar.buffered, seekbar.played, seekbar.knob);
+        seekbar.slider.adopt(seekbar.track);
+        seekbar.adopt(seekbar.time, seekbar.slider);
+        seekbar.time.set('data-displaystate', 'hidden');
+
+        return seekbar;
+    },
+
+    createVolumeControl: function (video) {
+        var volume = new Element('div.volume[title=Mute]');
+
+        volume.addEvent('click', function () {
+            video.muted = !video.muted;
+        });
+
+        volume.popup = new Element('div.popup');
+        volume.popup.addEvent('click', function (e) {
+            // stop child elements from triggering the mute when clicked
+            e.stop();
+        });
+
+        volume.slider = new Element('div.slider');
+        volume.slider.addEvent('mousedown', function (e) {
+            function update(e) {
+                var offset = e.page.y - volume.track.getPosition().y;
+                var pct = offset / volume.track.getSize().y;
+
+                video.volume = (1 - (pct * 1)).limit(0, 1);
+            }
+
+            function move(e) {
+                update(e);
+            }
+
+            function stop() {
+                document.removeEvent('mousemove', move);
+                document.removeEvent('mouseup', stop);
+            }
+
+            document.addEvent('mousemove', move);
+            document.addEvent('mouseup', stop);
+
+            update(e);
+        });
+
+        volume.track = new Element('div.track');
+        volume.knob = new Element('div.knob');
+
+        volume.track.grab(volume.knob);
+        volume.slider.grab(volume.track);
+        volume.popup.grab(volume.slider);
+        volume.grab(volume.popup);
+
+        return volume;
+    },
+
+    createMoreControl: function (panels) {
+        var more = new Element('div.more');
+
+        more.popup = new Element('div.popup');
+        more.about = new Element('div.about[title=About]');
+        more.about.addEvent('click', function () {
+            panels.update('about');
+        });
+
+        more.info = new Element('div.info[title=Video info]');
+        more.info.addEvent('click', function () {
+            panels.update('info');
+        });
+
+        more.playlist = new Element('div.playlist[title=Playlist]');
+        more.playlist.addEvent('click', function () {
+            panels.update('playlist');
+        });
+
+        more.popup.adopt(more.about, more.info, more.playlist);
+        more.grab(more.popup);
+
+        return more;
     }
 });
 
