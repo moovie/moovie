@@ -65,7 +65,6 @@ Moovie.Doit = new Class({
         var muted = video.muted;
         var panelHeightSet = false;
         var self = this;
-        var showControls = video.controls;
 
         this.overlay = new Element('div.overlay');
         this.buildTitle();
@@ -152,7 +151,7 @@ Moovie.Doit = new Class({
         this.panels = panels;
 
         // Controls ----------------------------------------------------------------
-        this.buildControls(showControls);
+        this.buildControls();
 
         // Inject and do some post-processing --------------------------------------
         wrapper.adopt(this.overlay, this.title, panels, this.controls);
@@ -212,11 +211,6 @@ Moovie.Doit = new Class({
         this.overlay.addEvent('click', function () {
             video.play();
             self.title.show();
-
-            // re-enable controls once "big play button" has been clicked
-            if (showControls) {
-                self.controls.enable();
-            }
         });
 
         // Panels ------------------------------------------------------------------
@@ -269,11 +263,12 @@ Moovie.Doit = new Class({
             },
 
             play: function() {
-                self.controls.show();
+
             },
 
             playing: function () {
                 container.set('data-playbackstate', 'playing');
+                self.controls.show();
             },
 
             pause: function() {
@@ -392,11 +387,6 @@ Moovie.Doit = new Class({
         // Init ====================================================================
         if (!video.autoplay) {
             container.set('data-playbackstate', 'stopped');
-
-            // hide controls while "big play button" is showing
-            if (showControls) {
-                this.controls.disable();
-            }
         }
 
         // eslint-disable-next-line
@@ -433,7 +423,7 @@ Moovie.Doit = new Class({
         this.title = title;
     },
 
-    buildControls: function (showControls) {
+    buildControls: function () {
         var self = this;
         var panels = this.panels;
         var video = this.video;
@@ -506,36 +496,12 @@ Moovie.Doit = new Class({
         video.controls = false; // disable native controls
 
         this.controls.show = function () {
-            if (!this.disabled) {
-                this.set('data-displaystate', 'showing');
-            }
-
-            return this;
+            return this.set('aria-hidden', false);
         };
 
         this.controls.hide = function () {
-            if (!this.disabled) {
-                this.set('data-displaystate', 'hidden');
-            }
-
-            return this;
+            return this.set('aria-hidden', true);
         };
-
-        this.controls.enable = function () {
-            this.disabled = false;
-            this.set('data-displaystate', 'showing');
-
-            return this;
-        };
-
-        this.controls.disable = function () {
-            this.disabled = true;
-            this.set('data-displaystate', 'disabled');
-
-            return this;
-        };
-
-        this.controls[showControls ? 'enable' : 'disable']();
     },
 
     createSeekbar: function (video) {

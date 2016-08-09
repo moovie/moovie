@@ -635,18 +635,14 @@ span.info {
     height: 3em;
 }
 
-.moovie .controls[data-displaystate="disabled"] {
-    display: none;
-}
-
-.moovie .controls[data-displaystate="hidden"] {
+.moovie .controls[aria-hidden="true"] {
     opacity: 0;
     visibility: hidden;
 }
 
-.moovie .controls[data-displaystate="showing"] {
-    opacity: 1;
-    visibility: visible;
+/* hide controls while "Big Play Button" is showing */
+.moovie[data-playbackstate="stopped"] .controls {
+    display: none;
 }
 
 .moovie .controls .play {
