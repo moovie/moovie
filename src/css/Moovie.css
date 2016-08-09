@@ -692,6 +692,7 @@ span.info {
     display: flex;
     align-items: center;
     min-width: 4em;
+    position: relative;
 }
 
 .moovie .controls > .seekbar > .tooltip {
