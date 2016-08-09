@@ -41,12 +41,8 @@ Moovie.Debugger = new Class({
         this.video = document.id(video);
         this.setOptions(options);
         this.bound = this.getBoundEvents();
-
-        if (this.options.disabled) {
-            this.build().disable();
-        } else {
-            this.build().enable();
-        }
+        this.build();
+        this[this.options.disabled ? 'disable' : 'enable']();
     },
 
     build: function () {
@@ -97,19 +93,19 @@ Moovie.Debugger = new Class({
     enable: function () {
         'use strict';
 
-        this.element.set('data-disabled', false);
-        this.attach();
+        this.disabled = false;
+        this.element.set('aria-disabled', false);
 
-        return this;
+        return this.attach();
     },
 
     disable: function () {
         'use strict';
 
-        this.detach();
-        this.element.set('data-disabled', true);
+        this.disabled = true;
+        this.element.set('aria-disabled', true);
 
-        return this;
+        return this.detach();
     },
 
     flashProperty: function (property, value) {

@@ -412,6 +412,22 @@ span.info {
     text-indent:0;
 }
 
+.moovie .debug {
+    font:.75em Monaco, monospace;
+    width:198px;
+    padding:10px;
+    border:1px solid #aaaaaa;
+    position:absolute;
+    left:-235px;
+    top:-5px;
+    color:#444444;
+    overflow:hidden;
+}
+
+.moovie .debug[aria-disabled="true"] {
+    display: none;
+}
+
 .moovie .debug,
 .moovie .debug tr,
 .moovie .debug p {
@@ -436,24 +452,6 @@ span.info {
     margin:5px 0 0;
     padding:10px 5px 5px;
     text-indent:0;
-}
-
-.moovie .debug,
-.moovie .debug[data-disabled="true"] {
-    font:.75em Monaco, monospace;
-    width:198px;
-    padding:10px;
-    border:1px solid #aaaaaa;
-    position:absolute;
-    left:-235px;
-    top:-5px;
-    color:#444444;
-    overflow:hidden;
-    display: none;
-}
-
-.moovie .debug[data-disabled="false"] {
-    display: block;
 }
 
 .moovie video {
