@@ -1,0 +1,198 @@
+@import '../components/_button';
+@import '../components/_popup';
+@import '../components/_slider';
+@import '../components/_time-display';
+
+.moovie .controls {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    font-size: .9em;
+    transition: all 0.4s ease;
+    display: flex;
+    background: rgba(0, 0, 0, 0.5);
+    height: 3em;
+}
+
+.moovie .controls[aria-hidden="true"] {
+    opacity: 0;
+    visibility: hidden;
+}
+
+/* hide controls while "Big Play Button" is showing */
+.moovie[data-playbackstate="stopped"] .controls {
+    display: none;
+}
+
+.moovie .controls .play {
+    @extend %button;
+    background-image: url("http://colinaarts.com/assets/player-play.png");
+}
+
+.moovie[data-playbackstate="playing"] .controls .play {
+    background-image: url("http://colinaarts.com/assets/player-pause.png");
+}
+
+.moovie .controls .stop {
+    @extend %button;
+    background-image: url("http://colinaarts.com/assets/player-stop.png");
+}
+
+.moovie .controls .previous {
+    @extend %button;
+    background-image: url("http://colinaarts.com/assets/player-previous.png");
+}
+
+.moovie .controls .next {
+    @extend %button;
+    background-image: url("http://colinaarts.com/assets/player-next.png");
+}
+
+.moovie .controls .elapsed {
+    @extend %time-display;
+    padding: 0 1em 0 0.5em;
+}
+
+.moovie .controls .seekbar {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    min-width: 4em;
+    position: relative;
+}
+
+.moovie .controls .seekbar .tooltip {
+    position: absolute;
+    padding: 0px 0px 5px 1.5px;
+    background: transparent url("http://colinaarts.com/assets/player-progress-time-arrow.png") no-repeat scroll left bottom;
+    left: 0px;
+    bottom: 100%;
+}
+
+.moovie .controls .seekbar .tooltip[data-displaystate="hidden"] {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.moovie .controls .seekbar .tooltip[data-displaystate="showing"] {
+    opacity: 1;
+    visibility: visible;
+}
+
+.moovie .controls .seekbar .tooltip > div {
+    background: rgba(0, 0, 0, 0.7) none repeat scroll 0% 0%;
+    padding: 5px;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    position: relative;
+    left: -50%;
+    font-size: 0.9em;
+    line-height: 1;
+    border-radius: 4px;
+}
+
+.moovie .controls .seekbar .slider {
+    @extend %slider;
+    height: 8px;
+    width: 100%;
+}
+
+.moovie .controls .seekbar .slider .buffered {
+    background: rgba(0, 255, 0, 0.3) none repeat scroll 0% 0%;
+    position: absolute;
+    width: 0%;
+    height: 100%;
+}
+
+.moovie .controls .seekbar .slider .played {
+    position: absolute;
+    height: 100%;
+    width: 0%;
+    background: rgb(185, 220, 132) none repeat scroll 0% 0%;
+}
+
+.moovie .controls .seekbar .slider .knob {
+    left: -7px;
+    top: -3px;
+}
+
+.moovie .controls .duration {
+    @extend %time-display;
+    padding: 0 0.5em 0 1em;
+}
+
+.moovie .controls .volume {
+    @extend %button;
+    background-image: url("http://colinaarts.com/assets/player-volume.png");
+}
+
+.moovie .controls .volume[data-muted="true"] {
+    background-image: url("http://colinaarts.com/assets/player-muted.png");
+}
+
+.moovie .controls .volume .popup {
+    @extend %popup;
+    padding: 13px 9px;
+}
+
+.moovie .controls .volume:hover .popup {
+    opacity: 1;
+    visibility: visible;
+}
+
+.moovie .controls .volume .popup .slider {
+    @extend %slider;
+    height: 50px;
+    width: 8px;
+}
+
+.moovie .controls .volume .knob {
+    top: -7px;
+    left: -3px;
+}
+
+.moovie .controls .settings {
+    @extend %button;
+    background-image: url("http://colinaarts.com/assets/player-settings.png");
+}
+
+.moovie .controls .more {
+    @extend %button;
+    background-image: url("http://colinaarts.com/assets/player-more.png");
+}
+
+.moovie .controls .more .popup {
+    @extend %popup;
+    padding: 0 7px;
+}
+
+.moovie .controls .more:hover .popup {
+    opacity: 1;
+    visibility: visible;
+}
+
+.moovie .controls .more .popup .about {
+    background-image: url("http://colinaarts.com/assets/player-about.png");
+    width: 13px;
+    height: 13px;
+    margin: 10px 0;
+}
+
+.moovie .controls .more .popup .info {
+    background-image: url("http://colinaarts.com/assets/player-info.png");
+    width: 13px;
+    height: 13px;
+    margin: 10px 0;
+}
+
+.moovie .controls .more .popup .playlist {
+    background-image: url("http://colinaarts.com/assets/player-playlist.png");
+    width: 13px;
+    height: 13px;
+    margin: 10px 0;
+}
+
+.moovie .controls .fullscreen {
+    @extend %button;
+    background-image: url("http://colinaarts.com/assets/player-close.png");
+}

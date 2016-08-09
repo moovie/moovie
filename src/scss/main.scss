@@ -1,0 +1,49 @@
+/**
+ * Moovie: an advanced HTML5 video player for MooTools.
+ *
+ * @see http://colinaarts.com/code/moovie
+ * @version 0.2.0
+ * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
+ * @author Nathan Bishop <nbish11@hotmail.com>
+ * @copyright 2010 Colin Aarts
+ * @license MIT
+ */
+@import 'base/_reset';
+@import 'components/checkbox-widget';
+@import 'components/tooltip';
+
+.moovie {
+    left: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 852px;
+    max-width: 852px;
+    background: transparent;
+    border: none;
+    padding: 0;
+    box-shadow: 0 0 15px #000000;
+    color: #ffffff;
+    font-size: 12px;
+}
+
+.moovie > .wrapper {
+    position:relative;
+}
+
+.moovie p {
+    text-indent:0;
+}
+
+.moovie video {
+    background: black;
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+@import 'modules/debugger';
+@import 'modules/overlay';
+@import 'modules/video-title';
+@import 'modules/panels';
+@import 'modules/controls';

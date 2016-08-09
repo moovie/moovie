@@ -1,0 +1,41 @@
+.moovie .debug {
+    font:.75em Monaco, monospace;
+    width:198px;
+    padding:10px;
+    border:1px solid #aaaaaa;
+    position:absolute;
+    left:-235px;
+    top:-5px;
+    color:#444444;
+    overflow:hidden;
+}
+
+.moovie .debug[aria-disabled="true"] {
+    display: none;
+}
+
+.moovie .debug,
+.moovie .debug tr,
+.moovie .debug p {
+    background:#dddddd;
+}
+
+.moovie .debug table {
+    width:100%;
+    border-spacing:5px;
+}
+
+.moovie .debug td:first-child {
+    width:1px;
+}
+
+.moovie .debug td + td {
+    font-weight:bold;
+}
+
+.moovie .debug p {
+    border-top:1px dotted #888888;
+    margin:5px 0 0;
+    padding:10px 5px 5px;
+    text-indent:0;
+}

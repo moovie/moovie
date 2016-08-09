@@ -1,0 +1,17 @@
+%slider {
+    .track {
+        background-color: rgba(255, 255, 255, 0.7);
+        height: 100%;
+        position: relative;
+        width: 100%;
+
+        .knob {
+            background-color: #B9DC84;
+            border: 2px solid #FFFFFF;
+            border-radius: 10px;
+            height: 10px;
+            position: absolute;
+            width: 10px;
+        }
+    }
+}

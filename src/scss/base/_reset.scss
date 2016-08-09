@@ -1,0 +1,250 @@
+nav,
+article,
+header,
+footer,
+figure,
+section,
+aside {
+    display:block;
+}
+
+html {
+    margin:0;
+    padding:0;
+    font:76% 'Lucida Sans Unicode', Arial, Helvetica, sans-serif;
+    line-height:1.8;
+    color:#444444;
+    background:#ffffff url('http://colinaarts.com/assets/body-bg.png') fixed;
+    cursor:default;
+    overflow-y:scroll;
+}
+
+*+html {
+    overflow-x:hidden;
+}
+
+body {
+    margin:0;
+    padding:3em 0;
+    font-size:1.1em;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin:1.4em 0 0;
+    font-weight:bold;
+    color:#666666;
+}
+
+h1,
+h2,
+aside h3 {
+    font-family:GaramondItalic, 'Palatino Linotype', 'Lucida Sans Unicode', Arial, Helvetica, sans-serif;
+    font-weight:normal;
+    line-height:1.4;
+    text-shadow:1px 1px 3px #cbcbcb;
+    color:#83b834;
+}
+
+h1 {
+    font-size:3.5em;
+}
+
+h1:first-child {
+    margin-top:0;
+}
+
+h2 {
+    font-size:2.5em;
+}
+
+h3 {
+    font-size:1.4em;
+}
+
+h4 {
+    font-size:1.2em;
+}
+
+h5 {
+    font-size:1.1em;
+}
+
+h6 {
+    font-size:1.0em;
+}
+
+p {
+    margin:1.3em 0;
+    text-indent:1.5em;
+}
+
+h1 + p,
+h2 + p,
+h3 + p,
+h4 + p,
+h5 + p,
+h6 + p,
+ul + p,
+ol + p,
+dl + p,
+blockquote + p,
+pre + p,
+div + p,
+img + p {
+    text-indent:0;
+}
+
+ul,
+ol,
+dl {
+    margin:1.5em 0;
+}
+
+ul,
+ol {
+    padding:0 0 0 3em;
+}
+
+ul {
+    list-style:square;
+}
+
+li dl {
+    margin:0 0 0 1.5em;
+}
+
+dt {
+    font-weight:bold;
+    font-style:normal;
+}
+
+dd {
+    margin:0 0 0 1.5em;
+}
+
+dd + dt {
+    margin-top:.8em;
+}
+
+em {
+    font-style: italic;
+}
+
+strong {
+    font-weight:bold;
+    font-style:normal;
+}
+
+code {
+    background:#eeeeee;
+    border:1px solid #dddddd;
+    padding:0 3px;
+    white-space:pre;
+    font-size:.9em;
+    -moz-border-radius:3px;
+    -webkit-border-radius:3px;
+    border-radius:3px;
+}
+
+pre code {
+    font-family:Monaco, monospace;
+    display:block;
+    width:100%;
+    position:relative;
+    left:-30px;
+    padding:10px 30px;
+    background:#f0f8e7 url('http://colinaarts.com/assets/fade-bottom.png') repeat-x bottom;
+    border:solid #cbcbcb;
+    border-width:1px 0;
+    -moz-border-radius:0;
+    -webkit-border-radius:0;
+    border-radius:0;
+}
+
+abbr {
+    cursor:help;
+}
+
+ins {
+    text-decoration:none;
+    border-top:1px solid #cbcbcb;
+}
+
+q {
+    font-style:italic;
+}
+
+th {
+    font-weight:bold;
+    text-align:left;
+}
+
+a {
+    color:#444444;
+    text-decoration:none;
+    display:inline-block;
+    text-indent:0;
+    border-bottom:1px solid #888888;
+    display:inline;
+}
+
+a[rel="external"] {
+    padding:0 13px 0 0;
+    background:url('http://colinaarts.com/assets/icon-external.png') no-repeat right center;
+}
+
+a:visited {
+    color:#888888;
+    border-color:#cbcbcb;
+}
+
+a:hover {
+    text-decoration:none;
+    border:0;
+}
+
+a img {
+    border:0;
+}
+
+input,
+select,
+textarea {
+    font:1em 'Lucida Sans Unicode', Arial, Helvetica, sans-serif;
+    color:inherit;
+}
+
+table {
+    border-collapse:collapse;
+}
+
+caption {
+    text-transform:uppercase;
+    letter-spacing:.1em;
+}
+
+td,
+th,
+caption {
+    vertical-align:top;
+    padding:3px 6px;
+}
+
+ul {
+    padding-left:1.5em;
+    list-style:none;
+}
+
+li {
+    margin:.5em 0;
+}
+
+ul li {
+    padding:0 0 0 22px;
+    background:url('http://colinaarts.com/assets/arrow-right.png') no-repeat left .4em;
+}

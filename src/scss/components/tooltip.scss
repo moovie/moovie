@@ -1,0 +1,13 @@
+.video-tip {
+    display: none;
+
+    .tip {
+        background: #c45206;
+        border-radius: 4px;
+        color: #ffffff;
+        font-size: 0.9em;
+        max-width: 200px;
+        opacity: 0.8;
+        padding: 2px 5px;
+    }
+}
