@@ -36,8 +36,6 @@ Moovie.Debugger = new Class({
     },
 
     initialize: function (video, options) {
-        'use strict';
-
         this.video = document.id(video);
         this.setOptions(options);
         this.bound = this.getBoundEvents();
@@ -46,8 +44,6 @@ Moovie.Debugger = new Class({
     },
 
     build: function () {
-        'use strict';
-
         this.element = new Element('div.debug');
         this.elements = {
             table: new Element('table'),
@@ -75,24 +71,18 @@ Moovie.Debugger = new Class({
     },
 
     attach: function () {
-        'use strict';
-
         this.video.addEvents(this.bound);
 
         return this;
     },
 
     detach: function () {
-        'use strict';
-
         this.video.removeEvents(this.bound);
 
         return this;
     },
 
     enable: function () {
-        'use strict';
-
         this.disabled = false;
         this.element.set('aria-disabled', false);
 
@@ -100,8 +90,6 @@ Moovie.Debugger = new Class({
     },
 
     disable: function () {
-        'use strict';
-
         this.disabled = true;
         this.element.set('aria-disabled', true);
 
@@ -109,8 +97,6 @@ Moovie.Debugger = new Class({
     },
 
     flashProperty: function (property, value) {
-        'use strict';
-
         this.elements.tbody
             .getElement('[data-property=' + property + '] > td + td')
             .set('text', value || this.video[property])
@@ -120,22 +106,16 @@ Moovie.Debugger = new Class({
     },
 
     flashMessage: function (message) {
-        'use strict';
-
         this.elements.p.set('html', message).highlight();
 
         return this;
     },
 
     toElement: function () {
-        'use strict';
-
         return this.element;
     },
 
     getBoundEvents: function () {
-        'use strict';
-
         return {
             loadstart: function () {
                 this.flashProperty('networkState')
