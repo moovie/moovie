@@ -439,7 +439,6 @@ Moovie.Doit = new Class({
         var video = this.video;
 
         this.controls = new Element('div.controls');
-        this.controls.wrapper = new Element('div.wrapper');
         this.controls.play = new Element('div.play[title=Play]');
         this.controls.play.addEvent('click', function () {
             if (video.paused && video.readyState >= 3) {
@@ -490,7 +489,7 @@ Moovie.Doit = new Class({
             screenfull.toggle(self.wrapper);
         });
 
-        this.controls.wrapper.adopt(
+        this.controls.adopt(
             this.controls.play,
             this.controls.stop,
             this.controls.previous,
@@ -504,7 +503,6 @@ Moovie.Doit = new Class({
             this.controls.fullscreen
         );
 
-        this.controls.grab(this.controls.wrapper);
         video.controls = false; // disable native controls
 
         this.controls.show = function () {

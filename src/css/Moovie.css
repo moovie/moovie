@@ -630,6 +630,9 @@ span.info {
     bottom: 0;
     font-size: .9em;
     transition: all 0.4s ease;
+    display: flex;
+    background: rgba(0, 0, 0, 0.5);
+    height: 3em;
 }
 
 .moovie .controls[data-displaystate="disabled"] {
@@ -646,56 +649,55 @@ span.info {
     visibility: visible;
 }
 
-.moovie .controls > .wrapper {
-    display: table;
-    width: 100%;
-    border-spacing: 10px 5px;
-    opacity: 0.9;
-    background: rgba(0, 0, 0, 0.5);
+.moovie .controls .play {
+    background: transparent url("http://colinaarts.com/assets/player-play.png") no-repeat scroll 50% 50%;
+    cursor: pointer;
+    flex: 0 0 auto;
+    width: 3em;
 }
 
-.moovie .controls > .wrapper > * {
-    display: table-cell;
-    vertical-align: middle;
-    width: 13px;
-    background: none no-repeat center;
-}
-
-.moovie[data-playbackstate="playing"] .controls > .wrapper > .play {
+.moovie[data-playbackstate="playing"] .controls .play {
     background-image: url("http://colinaarts.com/assets/player-pause.png");
 }
 
-.moovie[data-playbackstate="stopped"] .controls > .wrapper > .play,
-.moovie[data-playbackstate="paused"] .controls > .wrapper > .play,
-.moovie[data-playbackstate="ended"] .controls > .wrapper > .play,
-.moovie[data-playbackstate="seeking"] .controls > .wrapper > .play {
-    background-image: url("http://colinaarts.com/assets/player-play.png");
+.moovie .controls > .stop {
+    background: transparent url("http://colinaarts.com/assets/player-stop.png") no-repeat scroll 50% 50%;
+    cursor: pointer;
+    flex: 0 0 auto;
+    width: 3em;
 }
 
-.moovie .controls > .wrapper > .stop {
-    background-image: url("http://colinaarts.com/assets/player-stop.png");
+.moovie .controls > .previous {
+    background: transparent url("http://colinaarts.com/assets/player-previous.png") no-repeat scroll 50% 50%;
+    cursor: pointer;
+    flex: 0 0 auto;
+    width: 3em;
 }
 
-.moovie .controls > .wrapper > .previous {
-    background-image: url("http://colinaarts.com/assets/player-previous.png");
+.moovie .controls > .next {
+    background: transparent url("http://colinaarts.com/assets/player-next.png") no-repeat scroll 50% 50%;
+    cursor: pointer;
+    flex: 0 0 auto;
+    width: 3em;
 }
 
-.moovie .controls > .wrapper > .next {
-    background-image: url("http://colinaarts.com/assets/player-next.png");
-}
-
-.moovie .controls > .wrapper > .elapsed {
-    font: monospace;
-    width: 4ex;
-    overflow: hidden;
-}
-
-.moovie .controls > .wrapper > .seekbar {
+.moovie .controls > .elapsed {
+    align-self: center;
+    flex: 0 0 auto;
+    font-size: 1.2em;
+    min-width: 2em;
+    padding: 0px 1em 0 0.5em;
     width: auto;
-    position: relative;
 }
 
-.moovie .controls > .wrapper > .seekbar > .tooltip {
+.moovie .controls > .seekbar {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    min-width: 4em;
+}
+
+.moovie .controls > .seekbar > .tooltip {
     position: absolute;
     padding: 0px 0px 5px 1.5px;
     background: transparent url("http://colinaarts.com/assets/player-progress-time-arrow.png") no-repeat scroll left bottom;
@@ -703,17 +705,17 @@ span.info {
     bottom: 100%;
 }
 
-.moovie .controls > .wrapper > .seekbar > .tooltip[data-displaystate="hidden"] {
+.moovie .controls > .seekbar > .tooltip[data-displaystate="hidden"] {
     opacity: 0;
     visibility: hidden;
 }
 
-.moovie .controls > .wrapper > .seekbar > .tooltip[data-displaystate="showing"] {
+.moovie .controls > .seekbar > .tooltip[data-displaystate="showing"] {
     opacity: 1;
     visibility: visible;
 }
 
-.moovie .controls > .wrapper > .seekbar > .tooltip > div {
+.moovie .controls > .seekbar > .tooltip > div {
     background: rgba(0, 0, 0, 0.7) none repeat scroll 0% 0%;
     padding: 5px;
     border: 1px solid rgba(255, 255, 255, 0.7);
@@ -724,33 +726,33 @@ span.info {
     border-radius: 4px;
 }
 
-.moovie .controls > .wrapper > .seekbar > .slider {
+.moovie .controls > .seekbar > .slider {
     height: 8px;
     width: 100%;
 }
 
-.moovie .controls > .wrapper > .seekbar > .slider > .track {
+.moovie .controls > .seekbar > .slider > .track {
     position: relative;
     background: rgba(255, 255, 255, 0.7) none repeat scroll 0% 0%;
     width: 100%;
     height: 100%;
 }
 
-.moovie .controls > .wrapper > .seekbar > .slider > .track > .buffered {
+.moovie .controls > .seekbar > .slider > .track > .buffered {
     background: rgba(0, 255, 0, 0.3) none repeat scroll 0% 0%;
     position: absolute;
     width: 0%;
     height: 100%;
 }
 
-.moovie .controls > .wrapper > .seekbar > .slider > .track > .played {
+.moovie .controls > .seekbar > .slider > .track > .played {
     position: absolute;
     height: 100%;
     width: 0%;
     background: rgb(185, 220, 132) none repeat scroll 0% 0%;
 }
 
-.moovie .controls > .wrapper > .seekbar > .slider > .track > .knob {
+.moovie .controls > .seekbar > .slider > .track > .knob {
     position: absolute;
     width: 10px;
     height: 10px;
@@ -761,21 +763,27 @@ span.info {
     top: -3px;
 }
 
-.moovie .controls > .wrapper > .duration {
-    font: monospace;
-    width: 4ex;
-    overflow: hidden;
+.moovie .controls > .duration {
+    align-self: center;
+    flex: 0 0 auto;
+    font-size: 1.2em;
+    min-width: 2em;
+    padding: 0 0.5em 0 1em;
+    width: auto;
 }
 
-.moovie .controls > .wrapper > .volume {
-    background-image: url("http://colinaarts.com/assets/player-volume.png");
+.moovie .controls > .volume {
+    background: transparent url("http://colinaarts.com/assets/player-volume.png") no-repeat scroll 50% 50%;
+    cursor: pointer;
+    flex: 0 0 auto;
+    width: 3em;
 }
 
-.moovie .controls > .wrapper > .volume[data-muted="true"] {
+.moovie .controls > .volume[data-muted="true"] {
     background-image: url("http://colinaarts.com/assets/player-muted.png");
 }
 
-.moovie .controls > .wrapper > .volume > .popup {
+.moovie .controls > .volume > .popup {
     background: rgba(0, 0, 0, 0.8) none repeat scroll 0% 0%;
     bottom: 100%;
     color: #FFF;
@@ -786,27 +794,26 @@ span.info {
     border-radius: 4px;
     opacity: 0;
     visibility: hidden;
-    transform: translateX(-25%);
-    margin-bottom: -6px;
+    margin: 0 0 -5px 2px;
     transition: all 0.2s ease;
 }
 
-.moovie .controls > .wrapper > .volume:hover > .popup {
+.moovie .controls > .volume:hover > .popup {
     opacity: 1;
     visibility: visible;
 }
 
-.moovie .controls > .wrapper > .volume > .popup > .slider {
+.moovie .controls > .volume > .popup > .slider {
 
 }
 
-.moovie .controls > .wrapper > .volume > .popup > .slider > .track {
+.moovie .controls > .volume > .popup > .slider > .track {
     height: 50px;
     width: 8px;
     background: rgba(255, 255, 255, 0.7) none repeat scroll 0% 0%;
 }
 
-.moovie .controls > .wrapper > .volume > .popup > .slider > .track > .knob {
+.moovie .controls > .volume > .popup > .slider > .track > .knob {
     position: absolute;
     width: 10px;
     height: 10px;
@@ -817,15 +824,21 @@ span.info {
     left: 6px;
 }
 
-.moovie .controls > .wrapper > .settings {
-    background-image: url("http://colinaarts.com/assets/player-settings.png");
+.moovie .controls > .settings {
+    background: transparent url("http://colinaarts.com/assets/player-settings.png") no-repeat scroll 50% 50%;
+    cursor: pointer;
+    flex: 0 0 auto;
+    width: 3em;
 }
 
-.moovie .controls > .wrapper > .more {
-    background-image: url("http://colinaarts.com/assets/player-more.png");
+.moovie .controls > .more {
+    background: transparent url("http://colinaarts.com/assets/player-more.png") no-repeat scroll 50% 50%;
+    cursor: pointer;
+    flex: 0 0 auto;
+    width: 3em;
 }
 
-.moovie .controls > .wrapper > .more > .popup {
+.moovie .controls > .more > .popup {
     background: rgba(0, 0, 0, 0.8) none repeat scroll 0% 0%;
     bottom: 100%;
     color: #FFF;
@@ -836,36 +849,38 @@ span.info {
     border-radius: 4px;
     opacity: 0;
     visibility: hidden;
-    transform: translateX(-25%);
-    margin-bottom: -6px;
+    margin: 0 0 -5px 2px;
     transition: all 0.2s ease;
 }
 
-.moovie .controls > .wrapper > .more:hover > .popup {
+.moovie .controls > .more:hover > .popup {
     opacity: 1;
     visibility: visible;
 }
 
-.moovie .controls > .wrapper > .more > .popup > * {
+.moovie .controls > .more > .popup > * {
     width: 13px;
     height: 13px;
     margin: 10px 0;
 }
 
-.moovie .controls > .wrapper > .more > .popup > .about {
+.moovie .controls > .more > .popup > .about {
     background-image: url("http://colinaarts.com/assets/player-about.png");
 }
 
-.moovie .controls > .wrapper > .more > .popup > .info {
+.moovie .controls > .more > .popup > .info {
     background-image: url("http://colinaarts.com/assets/player-info.png");
 }
 
-.moovie .controls > .wrapper > .more > .popup > .playlist {
+.moovie .controls > .more > .popup > .playlist {
     background-image: url("http://colinaarts.com/assets/player-playlist.png");
 }
 
-.moovie .controls > .wrapper > .fullscreen {
-    background-image: url("http://colinaarts.com/assets/player-close.png");
+.moovie .controls > .fullscreen {
+    background: transparent url("http://colinaarts.com/assets/player-close.png") no-repeat scroll 50% 50%;
+    cursor: pointer;
+    flex: 0 0 auto;
+    width: 3em;
 }
 
 .moovie {
@@ -880,4 +895,5 @@ span.info {
     padding: 0;
     box-shadow: 0 0 15px #000000;
     color: #ffffff;
+    font-size: 12px;
 }
