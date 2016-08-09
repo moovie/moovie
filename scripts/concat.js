@@ -4,15 +4,13 @@
 require('shelljs/global');
 
 // Clean & copy...
-rm('-rf', 'dist/*');                    // Clean distribution directory
-cp('src/**/*', 'dist/');                // Copy files to distribution directory
-mv('dist/Moovie.js', 'dist/moovie.js'); // rename to lowercase
+rm('-rf', 'dist/*');
+cp('src/js/Moovie.js', 'dist/moovie.js');
 
-// Concatonation...
-ls('dist/Moovie.*.js').forEach(function (file) {
+// Concatonate files together...
+ls('src/js/Moovie.*.js').forEach(function (file) {
     echo('\n').toEnd('dist/moovie.js'); // Append newline
     cat(file).toEnd('dist/moovie.js');  // Add file to main script
-    rm(file);                           // Delete file after concatonation
 });
 
 exit(0);
