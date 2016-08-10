@@ -1,77 +1,83 @@
 .moovie .panels {
-    position:absolute;
-    top:5px;
-    bottom:5px;
-    left:5px;
-    right:5px;
-    background:rgba(0,0,0,.8);
-    padding:10px;
-    font-size:.8em;
-    border:1px solid rgba(255,255,255,.25);
-    overflow:hidden;
-    -moz-border-radius:4px;
-    -webkit-border-radius:4px;
-    border-radius:4px;
+    background-color: rgba(0, 0, 0, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 4px;
+    bottom: 37px;
+    font-size: 0.8em;
+    left: 5px;
+    overflow: hidden;
+    padding: 10px;
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    transition: all 250ms ease 0s;
+}
+
+.moovie .panels[aria-hidden="true"] {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.moovie .panels .active {
+    display: table;
 }
 
 .moovie .panels > div {
-    display:table;
-    width:100%;
-    height:100%;
+    display: none;
+    height: 100%;
+    width: 100%;
 }
 
 .moovie .panels .heading {
-    font:2.2em GaramondItalic, 'Palatino Linotype', 'Lucida Sans Unicode', Arial, Helvetica, sans-serif;
-    border-bottom:1px dotted #888888;
-    margin:0 0 6px 0;
-    padding:0 0 .3em 0;
-    color:#b9dc84;
+    border-bottom: 1px dotted #888888;
+    color: #b9dc84;
+    font: 2.2em GaramondItalic, 'Palatino Linotype', 'Lucida Sans Unicode', Arial, Helvetica, sans-serif;
+    margin: 0 0 6px 0;
+    padding: 0 0 0.3em 0;
 }
 
 .moovie .panels .heading + dl,
 .moovie .panels .heading + ol,
 .moovie .panels .heading + ul {
-    margin-top:0;
+    margin-top: 0;
 }
 
 .moovie .panels li {
-    margin:0;
+    margin: 0;
 }
 
 .moovie .panels .about {
-    background:url('http://colinaarts.com/assets/code/moovie/moovie.png') no-repeat bottom right;
+    background: url('http://colinaarts.com/assets/code/moovie/moovie.png') no-repeat bottom right;
 }
 
 .moovie .panels .playlist > div {
-    display:table-row;
+    display: table-row;
 }
 
 .moovie .panels .playlist > div + div {
-    height:100%;
+    height: 100%;
 }
 
 .moovie .panels .playlist ol.playlist li {
-    white-space:nowrap;
-    padding:0 5px;
-    -moz-border-radius:4px;
-    -webkit-border-radius:4px;
-    border-radius:4px;
+    border-radius: 4px;
+    padding: 0 5px;
+    white-space: nowrap;
 }
 
 .moovie .panels .playlist ol.playlist li:hover {
-    background:#994004;
+    background-color: #994004;
 }
 
 .moovie .panels .playlist ol.playlist li.active {
-    background:rgba(255,255,255,.2);
+    background-color: rgba(255, 255, 255, 0.2);
 }
 
 .moovie .panels .playlist ol.playlist .label:hover {
-    text-decoration:underline;
-    cursor:pointer;
+    cursor: pointer;
+    text-decoration: underline;
 }
 
 .moovie .panels .playlist ol.playlist {
-    overflow-y:auto;
-    overflow-x:hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
 }

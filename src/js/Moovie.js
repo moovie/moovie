@@ -13,17 +13,6 @@ var Moovie = function(videos, options) {
 
     options = options || {};
 
-    // Here for compat with older MooTools versions...
-    Element.implement({
-        show: function () {
-            return this.setStyle('display', '');
-        },
-
-        hide: function () {
-            return this.setStyle('display', 'none');
-        }
-    });
-
     // Add HTML 5 media events to Element.NativeEvents, if needed.
     if (!Element.NativeEvents.timeupdate) {
         Element.NativeEvents = Object.merge(Element.NativeEvents, Moovie.MediaEvents);

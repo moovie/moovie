@@ -63,7 +63,6 @@ Moovie.Doit = new Class({
         // player): changing the volume can have an effect on the muted
         // state and vice versa.
         var muted = video.muted;
-        var panelHeightSet = false;
         var self = this;
 
         this.overlay = new Element('div.overlay');
@@ -77,8 +76,7 @@ Moovie.Doit = new Class({
         panels.playlist = new Element('div.playlist');
 
         panels.adopt(panels.info, panels.settings, panels.about, panels.playlist);
-        panels.set('tween', { duration: 250 });
-        panels.fade('hide');
+        panels.set('aria-hidden', true);
 
         // Content for `info` panel
         panels.info.set('html', '\
@@ -162,23 +160,13 @@ Moovie.Doit = new Class({
 
         // Panels ------------------------------------------------------------------
         panels.update = function (which) {
-            // Adjust height of panel container to account for controls bar
-            if (panelHeightSet === false) {
-                panelHeightSet = true;
-                panels.setStyle(
-                    'height',
-                    panels.getStyle('height').toInt() -
-                    self.controls.getStyle('height').toInt()
-                );
-            }
-
             if (which == 'none' || this[which].hasClass('active')) {
                 this.getChildren('.active').removeClass('active');
-                this.fade('out');
+                this.set('aria-hidden', true);
             } else {
-                this.getChildren().hide().removeClass('active');
-                this[which].show().addClass('active');
-                this.fade('in');
+                this.getChildren().removeClass('active');
+                this[which].addClass('active');
+                this.set('aria-hidden', false);
             }
         };
 
