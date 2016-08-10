@@ -26,29 +26,20 @@
         <script src="dist/moovie.js"></script>
         <script>
             (function () {
-                var videos = $$('video');
-
-                if (videos.length && videos[0].play) {
-                    var video = {
-                        'video': videos[0],
-                        'options': {
-                            'debugger': true,
-                            'playlist': [
-                                {
-                                    'id': 'alice',
-                                    'src': 'http://colinaarts.com/assets/alice.ogv'
-                                },
-                                {
-                                    'id': 'shrek',
-                                    'src': 'http://colinaarts.com/assets/shrek.ogv',
-                                    'title': '<cite>Shrek Forever After</cite> theatrical trailer'
-                                }
-                            ]
+                $$('video').toMoovie({
+                    debugger: true,
+                    playlist: [
+                        {
+                            'id': 'alice',
+                            'src': 'http://colinaarts.com/assets/alice.ogv'
+                        },
+                        {
+                            'id': 'shrek',
+                            'src': 'http://colinaarts.com/assets/shrek.ogv',
+                            'title': '<cite>Shrek Forever After</cite> theatrical trailer'
                         }
-                    };
-
-                    Moovie([video]);
-                }
+                    ]
+                });
             })();
         </script>
     </body>
