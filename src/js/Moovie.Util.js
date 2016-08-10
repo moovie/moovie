@@ -3,7 +3,7 @@
  *
  * Commonly used functions for the Moovie library.
  *
- * @version 0.3.4
+ * @version 0.4.0
  * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
  * @author Nathan Bishop <nbish11@hotmail.com>
  * @copyright 2010 Colin Aarts
