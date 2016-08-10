@@ -19,43 +19,28 @@ $ npm install moovie
 
 ## Basic Usage
 ```js
-// Basic instantiation: shared options for all videos
-var items = $$('video');
-var options = {
-    debug: true,
+// procedural-style
+$$('video').toMoovie({
+    // shared options
     autohideControls: false
-};
+});
 
-Moovie(items, options);
-
-// Advanced instantiation: generic options with override support
-var options = {
-    autohideControls: false
-};
-
-var items = [
-    {
-      video: $('video-1'),
-      id: 'my-video',
-      options: {
-          debug: true
-      }
-    },
-
-    {
-        video: $('video-2')
-    },
-
-    {
-        video: $('video-3'),
-        options: {
-            // Option overrides setting from generic options object
-            autohideControls: true
+// OOP-style
+var player = new Moovie('avatar', {
+    // instance-specific options
+    debugger: true,
+    playlist: [
+        {
+            'id': 'alice',
+            'src': 'http://colinaarts.com/assets/alice.ogv'
+        },
+        {
+            'id': 'shrek',
+            'src': 'http://colinaarts.com/assets/shrek.ogv',
+            'title': '<cite>Shrek Forever After</cite> theatrical trailer'
         }
-    }
-];
-
-Moovie(items, options);
+    ]
+});
 ```
 
 And in your HTML:
