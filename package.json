@@ -38,7 +38,7 @@
     "compile": "npm run compile:js && npm run compile:scss",
     "build": "echo test, build, minify...",
     "preversion": "npm test",
-    "version": "node scripts/bump.js && git add bower.json src/js/*.js",
+    "version": "node scripts/bump.js && git add bower.json src/",
     "postversion": "git push && git push --tags"
   },
   "repository": {
