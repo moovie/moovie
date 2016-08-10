@@ -11,7 +11,8 @@ var newVersion = JSON.parse(fs.readFileSync('./package.json')).version;
 sed('-i', /\ \ "version": "(.*)",/, '  "version": "' + newVersion + '",', 'bower.json');
 
 // Update version tag in docblocks
-sed('-i', /\ * @version .*/, ' @version ' + newVersion, 'src/**/*');
+sed('-i', /\ * @version .*/, ' @version ' + newVersion, 'src/js/*.js');
+sed('-i', /\ * @version .*/, ' @version ' + newVersion, 'src/scss/main.scss');
 
 // Success
 exit(0);
