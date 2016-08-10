@@ -15,28 +15,28 @@ footer,
 figure,
 section,
 aside {
-    display:block;
+    display: block;
 }
 
 html {
-    margin:0;
-    padding:0;
-    font:76% 'Lucida Sans Unicode', Arial, Helvetica, sans-serif;
-    line-height:1.8;
-    color:#444444;
-    background:#ffffff url('http://colinaarts.com/assets/body-bg.png') fixed;
-    cursor:default;
-    overflow-y:scroll;
+    margin: 0;
+    padding: 0;
+    font: 76% 'Lucida Sans Unicode', Arial, Helvetica, sans-serif;
+    line-height: 1.8;
+    color: #444444;
+    background: #ffffff url("http://colinaarts.com/assets/body-bg.png") fixed;
+    cursor: default;
+    overflow-y: scroll;
 }
 
-*+html {
-    overflow-x:hidden;
+* + html {
+    overflow-x: hidden;
 }
 
 body {
-    margin:0;
-    padding:3em 0;
-    font-size:1.1em;
+    margin: 0;
+    padding: 3em 0;
+    font-size: 1.1em;
 }
 
 h1,
@@ -45,52 +45,52 @@ h3,
 h4,
 h5,
 h6 {
-    margin:1.4em 0 0;
-    font-weight:bold;
-    color:#666666;
+    margin: 1.4em 0 0;
+    font-weight: bold;
+    color: #666666;
 }
 
 h1,
 h2,
 aside h3 {
-    font-family:GaramondItalic, 'Palatino Linotype', 'Lucida Sans Unicode', Arial, Helvetica, sans-serif;
-    font-weight:normal;
-    line-height:1.4;
-    text-shadow:1px 1px 3px #cbcbcb;
-    color:#83b834;
+    font-family: GaramondItalic, 'Palatino Linotype', 'Lucida Sans Unicode', Arial, Helvetica, sans-serif;
+    font-weight: normal;
+    line-height: 1.4;
+    text-shadow: 1px 1px 3px #cbcbcb;
+    color: #83b834;
 }
 
 h1 {
-    font-size:3.5em;
+    font-size: 3.5em;
 }
 
 h1:first-child {
-    margin-top:0;
+    margin-top: 0;
 }
 
 h2 {
-    font-size:2.5em;
+    font-size: 2.5em;
 }
 
 h3 {
-    font-size:1.4em;
+    font-size: 1.4em;
 }
 
 h4 {
-    font-size:1.2em;
+    font-size: 1.2em;
 }
 
 h5 {
-    font-size:1.1em;
+    font-size: 1.1em;
 }
 
 h6 {
-    font-size:1.0em;
+    font-size: 1.0em;
 }
 
 p {
-    margin:1.3em 0;
-    text-indent:1.5em;
+    margin: 1.3em 0;
+    text-indent: 1.5em;
 }
 
 h1 + p,
@@ -106,39 +106,39 @@ blockquote + p,
 pre + p,
 div + p,
 img + p {
-    text-indent:0;
+    text-indent: 0;
 }
 
 ul,
 ol,
 dl {
-    margin:1.5em 0;
+    margin: 1.5em 0;
 }
 
 ul,
 ol {
-    padding:0 0 0 3em;
+    padding: 0 0 0 3em;
 }
 
 ul {
-    list-style:square;
+    list-style: square;
 }
 
 li dl {
-    margin:0 0 0 1.5em;
+    margin: 0 0 0 1.5em;
 }
 
 dt {
-    font-weight:bold;
-    font-style:normal;
+    font-weight: bold;
+    font-style: normal;
 }
 
 dd {
-    margin:0 0 0 1.5em;
+    margin: 0 0 0 1.5em;
 }
 
 dd + dt {
-    margin-top:.8em;
+    margin-top: .8em;
 }
 
 em {
@@ -146,314 +146,181 @@ em {
 }
 
 strong {
-    font-weight:bold;
-    font-style:normal;
+    font-weight: bold;
+    font-style: normal;
 }
 
 code {
-    background:#eeeeee;
-    border:1px solid #dddddd;
-    padding:0 3px;
-    white-space:pre;
-    font-size:.9em;
-    -moz-border-radius:3px;
-    -webkit-border-radius:3px;
-    border-radius:3px;
-}
-
-pre code .tip {
-    margin:0;
-    float:right;
-    position:relative;
-    right:-30px;
-    font-family:'Lucida Sans Unicode', Arial, Helvetica, sans-serif;
-    padding-right:30px;
-    text-indent:0;
-    -moz-border-radius-topright:0;
-    -webkit-border-top-right-radius:0;
-    border-top-right-radius:0;
-    -moz-border-radius-bottomright:0;
-    -webkit-border-bottom-right-radius:0;
-    border-bottom-right-radius:0;
+    background: #eeeeee;
+    border: 1px solid #dddddd;
+    padding: 0 3px;
+    white-space: pre;
+    font-size: .9em;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
 }
 
 pre code {
-    font-family:Monaco, monospace;
-    display:block;
-    width:100%;
-    position:relative;
-    left:-30px;
-    padding:10px 30px;
-    background:#f0f8e7 url('http://colinaarts.com/assets/fade-bottom.png') repeat-x bottom;
-    border:solid #cbcbcb;
-    border-width:1px 0;
-    -moz-border-radius:0;
-    -webkit-border-radius:0;
-    border-radius:0;
+    font-family: Monaco, monospace;
+    display: block;
+    width: 100%;
+    position: relative;
+    left: -30px;
+    padding: 10px 30px;
+    background: #f0f8e7 url("http://colinaarts.com/assets/fade-bottom.png") repeat-x bottom;
+    border: solid #cbcbcb;
+    border-width: 1px 0;
+    -moz-border-radius: 0;
+    -webkit-border-radius: 0;
+    border-radius: 0;
 }
 
 abbr {
-    cursor:help;
+    cursor: help;
 }
 
 ins {
-    text-decoration:none;
-    border-top:1px solid #cbcbcb;
+    text-decoration: none;
+    border-top: 1px solid #cbcbcb;
 }
 
 q {
-    font-style:italic;
+    font-style: italic;
 }
 
 th {
-    font-weight:bold;
-    text-align:left;
-}
-
-a img {
-    border:0;
+    font-weight: bold;
+    text-align: left;
 }
 
 a {
-    color:#444444;
-    text-decoration:none;
-    display:inline-block;
-    text-indent:0;
-    border-bottom:1px solid #888888;
+    color: #444444;
+    text-decoration: none;
+    display: inline-block;
+    text-indent: 0;
+    border-bottom: 1px solid #888888;
+    display: inline;
 }
 
-a {
-    display:inline;
+a[rel="external"] {
+    padding: 0 13px 0 0;
+    background: url("http://colinaarts.com/assets/icon-external.png") no-repeat right center;
 }
 
 a:visited {
-    color:#888888;
-    border-color:#cbcbcb;
+    color: #888888;
+    border-color: #cbcbcb;
 }
 
 a:hover {
-    text-decoration:none;
-    border:0;
+    text-decoration: none;
+    border: 0;
 }
 
-a[rel~="external"] {
-    padding:0 13px 0 0;
-    background:url('http://colinaarts.com/assets/icon-external.png') no-repeat right center;
+a img {
+    border: 0;
 }
 
 input,
 select,
 textarea {
-    font:1em 'Lucida Sans Unicode', Arial, Helvetica, sans-serif;
-    color:inherit;
-}
-
-a.button {
-    display:inline-block;
-    text-decoration:none;
+    font: 1em 'Lucida Sans Unicode', Arial, Helvetica, sans-serif;
+    color: inherit;
 }
 
 table {
-    border-collapse:collapse;
+    border-collapse: collapse;
 }
 
 caption {
-    text-transform:uppercase;
-    letter-spacing:.1em;
+    text-transform: uppercase;
+    letter-spacing: .1em;
 }
 
 td,
 th,
 caption {
-    vertical-align:top;
-    padding:3px 6px;
+    vertical-align: top;
+    padding: 3px 6px;
 }
 
 ul {
-    padding-left:1.5em;
-    list-style:none;
+    padding-left: 1.5em;
+    list-style: none;
 }
 
 li {
-    margin:.5em 0;
+    margin: .5em 0;
 }
 
 ul li {
-    padding:0 0 0 22px;
-    background:url('http://colinaarts.com/assets/arrow-right.png') no-repeat left .4em;
-}
-
-ul.check li {
-    padding:0 0 0 25px;
-    background:url('http://colinaarts.com/assets/icon-bullet-checkmark.png') no-repeat left .25em;
-}
-
-div.figure {
-    padding:10px;
-    border:3px solid #b9dc84;
-    -moz-border-radius:4px;
-    -webkit-border-radius:4px;
-    border-radius:4px;
-}
-
-div.figure img {
-    display:block;
-}
-
-div.figure p {
-    text-align:center;
-    font-family:Georgia, 'Lucida Sans Unicode', Arial, Helvetica, sans-serif;
-    font-style:italic;
-    font-size:.85em;
-    font-weight:bold;
-    color:#888888;
-    padding:0 20px;
-    text-indent:0;
-}
-
-p.fin {
-    margin:3.5em 0 0;
-    text-align:center;
-    font-style:italic;
-    color:#888888;
-    text-indent:0;
-}
-
-em.required {
-    border-bottom:2px solid #fa9654;
-    font-style:normal;
-}
-
-i.optional {
-    border-bottom:2px solid #e2f1cd;
-    font-style:normal;
-}
-
-i.default {
-    border-bottom:2px solid #cbcbcb;
-}
-
-b.param {
-    font-family:Monaco, monospace;
-}
-
-span.info {
-    border-bottom:1px dotted;
-    border-color:inherit;
-    cursor:help;
-}
-
-.tip-wrap,
-.video-tip,
-.likes-tip,
-.section-tip {
-    display:none;
-}
-
-.tip {
-    background:#c45206;
-    padding:2px 5px;
-    color:#ffffff;
-    font-size:.9em;
-    max-width:200px;
-    -moz-border-radius:4px;
-    -webkit-border-radius:4px;
-    border-radius:4px;
-}
-
-.video-tip .tip {
-    opacity:.8;
-}
-
-.checkbox-widget .checkbox {
-    display:inline-block;
-    width:17px;
-    height:17px;
-    vertical-align:bottom;
-    margin:0 5px 0 0;
-    background:no-repeat center;
-    border:1px solid rgba(255,255,255,.15);
-    -moz-border-radius:4px;
-    -webkit-border-radius:4px;
-    border-radius:4px;
-}
-
-.checkbox-widget .label {
-    display:inline-block;
-    vertical-align:middle;
+    padding: 0 0 0 22px;
+    background: url("http://colinaarts.com/assets/arrow-right.png") no-repeat left 0.4em;
 }
 
 .checkbox-widget {
-    display:inline-block;
-    margin:3px 0;
-    width:100%;
+    display: inline-block;
+    margin: 3px 0;
+    width: 100%;
+}
+
+.checkbox-widget .checkbox {
+    background-position: center;
+    background-repeat: no-repeat;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+    display: inline-block;
+    height: 17px;
+    margin: 0 5px 0 0;
+    vertical-align: bottom;
+    width: 17px;
+}
+
+.checkbox-widget .label {
+    display: inline-block;
+    vertical-align: middle;
 }
 
 .checkbox-widget[data-checked="true"] .checkbox {
-    background-image:url('http://colinaarts.com/assets/player-checked.png');
+    background-image: url("http://colinaarts.com/assets/player-checked.png");
 }
 
-.section-tip .tip {
-    background:#000000;
-    max-width:300px;
-    padding:.5em .8em;
-    font-size:.7em;
-    opacity:.8;
-    -moz-border-radius:0;
-    -webkit-border-radius:0;
-    border-radius:0;
-}
-
-.moovie > .wrapper {
-    position:relative;
-}
-
-.moovie p {
-    text-indent:0;
-}
-
-.moovie .debug,
-.moovie .debug tr,
-.moovie .debug p {
-    background:#dddddd;
-}
-
-.moovie .debug table {
-    width:100%;
-    border-spacing:5px;
-}
-
-.moovie .debug td:first-child {
-    width:1px;
-}
-
-.moovie .debug td + td {
-    font-weight:bold;
-}
-
-.moovie .debug p {
-    border-top:1px dotted #888888;
-    margin:5px 0 0;
-    padding:10px 5px 5px;
-    text-indent:0;
-}
-
-.moovie .debug,
-.moovie .debug[data-disabled="true"] {
-    font:.75em Monaco, monospace;
-    width:198px;
-    padding:10px;
-    border:1px solid #aaaaaa;
-    position:absolute;
-    left:-235px;
-    top:-5px;
-    color:#444444;
-    overflow:hidden;
+.video-tip {
     display: none;
 }
 
-.moovie .debug[data-disabled="false"] {
-    display: block;
+.video-tip .tip {
+    background: #c45206;
+    border-radius: 4px;
+    color: #ffffff;
+    font-size: 0.9em;
+    max-width: 200px;
+    opacity: 0.8;
+    padding: 2px 5px;
+}
+
+.moovie {
+    left: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 852px;
+    max-width: 852px;
+    background: transparent;
+    border: none;
+    padding: 0;
+    box-shadow: 0 0 15px #000000;
+    color: #ffffff;
+    font-size: 12px;
+}
+
+.moovie > .wrapper {
+    position: relative;
+}
+
+.moovie p {
+    text-indent: 0;
 }
 
 .moovie video {
@@ -463,53 +330,92 @@ span.info {
     height: auto;
 }
 
-.moovie .overlay,
-.moovie[data-playbackstate="playing"] .overlay {
+.moovie .debug {
+    font: .75em Monaco, monospace;
+    width: 198px;
+    padding: 10px;
+    border: 1px solid #aaaaaa;
+    position: absolute;
+    left: -235px;
+    top: -5px;
+    color: #444444;
+    overflow: hidden;
+}
+
+.moovie .debug[aria-disabled="true"] {
+    display: none;
+}
+
+.moovie .debug,
+.moovie .debug tr,
+.moovie .debug p {
+    background: #dddddd;
+}
+
+.moovie .debug table {
+    width: 100%;
+    border-spacing: 5px;
+}
+
+.moovie .debug td:first-child {
+    width: 1px;
+}
+
+.moovie .debug td + td {
+    font-weight: bold;
+}
+
+.moovie .debug p {
+    border-top: 1px dotted #888888;
+    margin: 5px 0 0;
+    padding: 10px 5px 5px;
+    text-indent: 0;
+}
+
+.moovie .overlay {
     background-color: rgba(0, 0, 0, 0.5);
     bottom: 0;
     left: 0;
-    opacity: 0;
+    opacity: 0.7;
     position: absolute;
     right: 0;
     top: 0;
     transition: all 500ms ease 0s;
-    visibility: hidden;
 }
 
-.moovie .overlay::after {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 200px;
-    height: 70px;
-    margin-top: -35px;
-    margin-left: -100px;
-    background: #a5d260;
-    color: #000000;
-    font-size: 2em;
-    text-align: center;
-    border: 4px solid #ffffff;
-    opacity: 0.8;
-    -moz-border-radius: 10px;
-    -webkit-border-radius: 10px;
-    border-radius: 10px;
-    line-height: 70px;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
-    cursor: pointer;
+.moovie[data-playbackstate="playing"] .overlay {
+    display: none;
 }
 
-.moovie .overlay:hover::after {
-    opacity: 0.6;
-}
-
+/* informational overlays do not dim when mouse leaves player */
 .moovie[data-playbackstate="loading"] .overlay,
-.moovie[data-playbackstate="stopped"] .overlay,
-.moovie[data-playbackstate="paused"] .overlay,
-.moovie[data-playbackstate="ended"] .overlay,
 .moovie[data-playbackstate="seeking"] .overlay,
 .moovie[data-playbackstate="waiting"] .overlay {
     opacity: 1;
-    visibility: visible;
+}
+
+/* interactive overlays dim when the mouse leaves the player */
+.moovie[data-playbackstate="stopped"]:hover .overlay,
+.moovie[data-playbackstate="ended"]:hover .overlay,
+.moovie[data-playbackstate="paused"]:hover .overlay {
+    opacity: 1;
+}
+
+.moovie .overlay::after {
+    background: #A5D260 none repeat scroll 0px 0px;
+    border: 4px solid #FFF;
+    border-radius: 10px;
+    color: #000;
+    display: block;
+    height: 70px;
+    left: 50%;
+    margin: -35px auto auto -100px;
+    position: relative;
+    text-align: center;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+    top: 50%;
+    width: 20%;
+    font: 2.8em/70px "Times New Roman", serif;
 }
 
 .moovie[data-playbackstate="loading"] .overlay::after {
@@ -537,90 +443,143 @@ span.info {
 }
 
 .moovie .video-title {
-    position:absolute;
-    top:5px;
-    right:20px;
-    padding:3px;
-    font-size:1.6em;
-    text-shadow:2px 2px 5px rgba(0,0,0,.5);
+    position: absolute;
+    top: 5px;
+    right: 20px;
+    padding: 3px;
+    font-size: 1.6em;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+.moovie .panels {
+    background-color: rgba(0, 0, 0, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 4px;
+    bottom: 37px;
+    font-size: 0.8em;
+    left: 5px;
+    overflow: hidden;
+    padding: 10px;
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    transition: all 250ms ease 0s;
+}
+
+.moovie .panels[aria-hidden="true"] {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.moovie .panels .active {
+    display: table;
 }
 
 .moovie .panels > div {
-    display:table;
-    width:100%;
-    height:100%;
+    display: none;
+    height: 100%;
+    width: 100%;
 }
 
 .moovie .panels .heading {
-    font:2.2em GaramondItalic, 'Palatino Linotype', 'Lucida Sans Unicode', Arial, Helvetica, sans-serif;
-    border-bottom:1px dotted #888888;
-    margin:0 0 6px 0;
-    padding:0 0 .3em 0;
-    color:#b9dc84;
+    border-bottom: 1px dotted #888888;
+    color: #b9dc84;
+    font: 2.2em GaramondItalic, 'Palatino Linotype', 'Lucida Sans Unicode', Arial, Helvetica, sans-serif;
+    margin: 0 0 6px 0;
+    padding: 0 0 0.3em 0;
 }
 
 .moovie .panels .heading + dl,
 .moovie .panels .heading + ol,
 .moovie .panels .heading + ul {
-    margin-top:0;
+    margin-top: 0;
 }
 
 .moovie .panels li {
-    margin:0;
+    margin: 0;
 }
 
 .moovie .panels .about {
-    background:url('http://colinaarts.com/assets/code/moovie/moovie.png') no-repeat bottom right;
+    background: url("http://colinaarts.com/assets/code/moovie/moovie.png") no-repeat bottom right;
 }
 
 .moovie .panels .playlist > div {
-    display:table-row;
+    display: table-row;
 }
 
 .moovie .panels .playlist > div + div {
-    height:100%;
+    height: 100%;
 }
 
 .moovie .panels .playlist ol.playlist li {
-    white-space:nowrap;
-    padding:0 5px;
-    -moz-border-radius:4px;
-    -webkit-border-radius:4px;
-    border-radius:4px;
+    border-radius: 4px;
+    padding: 0 5px;
+    white-space: nowrap;
 }
 
 .moovie .panels .playlist ol.playlist li:hover {
-    background:#994004;
+    background-color: #994004;
 }
 
 .moovie .panels .playlist ol.playlist li.active {
-    background:rgba(255,255,255,.2);
+    background-color: rgba(255, 255, 255, 0.2);
 }
 
 .moovie .panels .playlist ol.playlist .label:hover {
-    text-decoration:underline;
-    cursor:pointer;
+    cursor: pointer;
+    text-decoration: underline;
 }
 
 .moovie .panels .playlist ol.playlist {
-    overflow-y:auto;
-    overflow-x:hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
-.moovie .panels {
-    position:absolute;
-    top:5px;
-    bottom:5px;
-    left:5px;
-    right:5px;
-    background:rgba(0,0,0,.8);
-    padding:10px;
-    font-size:.8em;
-    border:1px solid rgba(255,255,255,.25);
-    overflow:hidden;
-    -moz-border-radius:4px;
-    -webkit-border-radius:4px;
-    border-radius:4px;
+.moovie .controls .play, .moovie .controls .stop, .moovie .controls .previous, .moovie .controls .next, .moovie .controls .volume, .moovie .controls .settings, .moovie .controls .more, .moovie .controls .fullscreen {
+    background-color: transparent;
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    flex: 0 0 auto;
+    width: 3em;
+}
+
+.moovie .controls .volume .popup, .moovie .controls .more .popup {
+    background-color: rgba(0, 0, 0, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+    bottom: 100%;
+    color: #FFFFFF;
+    margin: 0 0 -5px 2px;
+    opacity: 0;
+    position: absolute;
+    transition: all 0.2s ease;
+    visibility: hidden;
+    z-index: 98;
+}
+
+.moovie .controls .seekbar .slider .track, .moovie .controls .volume .popup .slider .track {
+    background-color: rgba(255, 255, 255, 0.7);
+    height: 100%;
+    position: relative;
+    width: 100%;
+}
+
+.moovie .controls .seekbar .slider .track .knob, .moovie .controls .volume .popup .slider .track .knob {
+    background-color: #B9DC84;
+    border: 2px solid #FFFFFF;
+    border-radius: 10px;
+    height: 10px;
+    position: absolute;
+    width: 10px;
+}
+
+.moovie .controls .elapsed, .moovie .controls .duration {
+    align-self: center;
+    flex: 0 0 auto;
+    font-size: 1.2em;
+    min-width: 2em;
+    width: auto;
 }
 
 .moovie .controls {
@@ -630,72 +589,54 @@ span.info {
     bottom: 0;
     font-size: .9em;
     transition: all 0.4s ease;
+    display: flex;
+    background: rgba(0, 0, 0, 0.5);
+    height: 3em;
 }
 
-.moovie .controls[data-displaystate="disabled"] {
-    display: none;
-}
-
-.moovie .controls[data-displaystate="hidden"] {
+.moovie .controls[aria-hidden="true"] {
     opacity: 0;
     visibility: hidden;
 }
 
-.moovie .controls[data-displaystate="showing"] {
-    opacity: 1;
-    visibility: visible;
+/* hide controls while "Big Play Button" is showing */
+.moovie[data-playbackstate="stopped"] .controls {
+    display: none;
 }
 
-.moovie .controls > .wrapper {
-    display: table;
-    width: 100%;
-    border-spacing: 10px 5px;
-    opacity: 0.9;
-    background: rgba(0, 0, 0, 0.5);
-}
-
-.moovie .controls > .wrapper > * {
-    display: table-cell;
-    vertical-align: middle;
-    width: 13px;
-    background: none no-repeat center;
-}
-
-.moovie[data-playbackstate="playing"] .controls > .wrapper > .play {
-    background-image: url("http://colinaarts.com/assets/player-pause.png");
-}
-
-.moovie[data-playbackstate="stopped"] .controls > .wrapper > .play,
-.moovie[data-playbackstate="paused"] .controls > .wrapper > .play,
-.moovie[data-playbackstate="ended"] .controls > .wrapper > .play,
-.moovie[data-playbackstate="seeking"] .controls > .wrapper > .play {
+.moovie .controls .play {
     background-image: url("http://colinaarts.com/assets/player-play.png");
 }
 
-.moovie .controls > .wrapper > .stop {
+.moovie[data-playbackstate="playing"] .controls .play {
+    background-image: url("http://colinaarts.com/assets/player-pause.png");
+}
+
+.moovie .controls .stop {
     background-image: url("http://colinaarts.com/assets/player-stop.png");
 }
 
-.moovie .controls > .wrapper > .previous {
+.moovie .controls .previous {
     background-image: url("http://colinaarts.com/assets/player-previous.png");
 }
 
-.moovie .controls > .wrapper > .next {
+.moovie .controls .next {
     background-image: url("http://colinaarts.com/assets/player-next.png");
 }
 
-.moovie .controls > .wrapper > .elapsed {
-    font: monospace;
-    width: 4ex;
-    overflow: hidden;
+.moovie .controls .elapsed {
+    padding: 0 1em 0 0.5em;
 }
 
-.moovie .controls > .wrapper > .seekbar {
-    width: auto;
+.moovie .controls .seekbar {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    min-width: 4em;
     position: relative;
 }
 
-.moovie .controls > .wrapper > .seekbar > .tooltip {
+.moovie .controls .seekbar .tooltip {
     position: absolute;
     padding: 0px 0px 5px 1.5px;
     background: transparent url("http://colinaarts.com/assets/player-progress-time-arrow.png") no-repeat scroll left bottom;
@@ -703,17 +644,17 @@ span.info {
     bottom: 100%;
 }
 
-.moovie .controls > .wrapper > .seekbar > .tooltip[data-displaystate="hidden"] {
+.moovie .controls .seekbar .tooltip[data-displaystate="hidden"] {
     opacity: 0;
     visibility: hidden;
 }
 
-.moovie .controls > .wrapper > .seekbar > .tooltip[data-displaystate="showing"] {
+.moovie .controls .seekbar .tooltip[data-displaystate="showing"] {
     opacity: 1;
     visibility: visible;
 }
 
-.moovie .controls > .wrapper > .seekbar > .tooltip > div {
+.moovie .controls .seekbar .tooltip > div {
     background: rgba(0, 0, 0, 0.7) none repeat scroll 0% 0%;
     padding: 5px;
     border: 1px solid rgba(255, 255, 255, 0.7);
@@ -724,160 +665,99 @@ span.info {
     border-radius: 4px;
 }
 
-.moovie .controls > .wrapper > .seekbar > .slider {
+.moovie .controls .seekbar .slider {
     height: 8px;
     width: 100%;
 }
 
-.moovie .controls > .wrapper > .seekbar > .slider > .track {
-    position: relative;
-    background: rgba(255, 255, 255, 0.7) none repeat scroll 0% 0%;
-    width: 100%;
-    height: 100%;
-}
-
-.moovie .controls > .wrapper > .seekbar > .slider > .track > .buffered {
+.moovie .controls .seekbar .slider .buffered {
     background: rgba(0, 255, 0, 0.3) none repeat scroll 0% 0%;
     position: absolute;
     width: 0%;
     height: 100%;
 }
 
-.moovie .controls > .wrapper > .seekbar > .slider > .track > .played {
+.moovie .controls .seekbar .slider .played {
     position: absolute;
     height: 100%;
     width: 0%;
-    background: rgb(185, 220, 132) none repeat scroll 0% 0%;
+    background: #b9dc84 none repeat scroll 0% 0%;
 }
 
-.moovie .controls > .wrapper > .seekbar > .slider > .track > .knob {
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    border-radius: 10px;
-    border: 2px solid rgb(255, 255, 255);
-    background: rgb(185, 220, 132) none repeat scroll 0% 0%;
+.moovie .controls .seekbar .slider .knob {
     left: -7px;
     top: -3px;
 }
 
-.moovie .controls > .wrapper > .duration {
-    font: monospace;
-    width: 4ex;
-    overflow: hidden;
+.moovie .controls .duration {
+    padding: 0 0.5em 0 1em;
 }
 
-.moovie .controls > .wrapper > .volume {
+.moovie .controls .volume {
     background-image: url("http://colinaarts.com/assets/player-volume.png");
 }
 
-.moovie .controls > .wrapper > .volume[data-muted="true"] {
+.moovie .controls .volume[data-muted="true"] {
     background-image: url("http://colinaarts.com/assets/player-muted.png");
 }
 
-.moovie .controls > .wrapper > .volume > .popup {
-    background: rgba(0, 0, 0, 0.8) none repeat scroll 0% 0%;
-    bottom: 100%;
-    color: #FFF;
-    position: absolute;
-    z-index: 98;
+.moovie .controls .volume .popup {
     padding: 13px 9px;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 4px;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateX(-25%);
-    margin-bottom: -6px;
-    transition: all 0.2s ease;
 }
 
-.moovie .controls > .wrapper > .volume:hover > .popup {
+.moovie .controls .volume:hover .popup {
     opacity: 1;
     visibility: visible;
 }
 
-.moovie .controls > .wrapper > .volume > .popup > .slider {
-
-}
-
-.moovie .controls > .wrapper > .volume > .popup > .slider > .track {
+.moovie .controls .volume .popup .slider {
     height: 50px;
     width: 8px;
-    background: rgba(255, 255, 255, 0.7) none repeat scroll 0% 0%;
 }
 
-.moovie .controls > .wrapper > .volume > .popup > .slider > .track > .knob {
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    border: 2px solid #FFF;
-    background: #B9DC84 none repeat scroll 0% 0%;
-    border-radius: 10px;
-    top: 7px;
-    left: 6px;
+.moovie .controls .volume .knob {
+    top: -7px;
+    left: -3px;
 }
 
-.moovie .controls > .wrapper > .settings {
+.moovie .controls .settings {
     background-image: url("http://colinaarts.com/assets/player-settings.png");
 }
 
-.moovie .controls > .wrapper > .more {
+.moovie .controls .more {
     background-image: url("http://colinaarts.com/assets/player-more.png");
 }
 
-.moovie .controls > .wrapper > .more > .popup {
-    background: rgba(0, 0, 0, 0.8) none repeat scroll 0% 0%;
-    bottom: 100%;
-    color: #FFF;
-    position: absolute;
-    z-index: 98;
+.moovie .controls .more .popup {
     padding: 0 7px;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 4px;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateX(-25%);
-    margin-bottom: -6px;
-    transition: all 0.2s ease;
 }
 
-.moovie .controls > .wrapper > .more:hover > .popup {
+.moovie .controls .more:hover .popup {
     opacity: 1;
     visibility: visible;
 }
 
-.moovie .controls > .wrapper > .more > .popup > * {
+.moovie .controls .more .popup .about {
+    background-image: url("http://colinaarts.com/assets/player-about.png");
     width: 13px;
     height: 13px;
     margin: 10px 0;
 }
 
-.moovie .controls > .wrapper > .more > .popup > .about {
-    background-image: url("http://colinaarts.com/assets/player-about.png");
-}
-
-.moovie .controls > .wrapper > .more > .popup > .info {
+.moovie .controls .more .popup .info {
     background-image: url("http://colinaarts.com/assets/player-info.png");
+    width: 13px;
+    height: 13px;
+    margin: 10px 0;
 }
 
-.moovie .controls > .wrapper > .more > .popup > .playlist {
+.moovie .controls .more .popup .playlist {
     background-image: url("http://colinaarts.com/assets/player-playlist.png");
+    width: 13px;
+    height: 13px;
+    margin: 10px 0;
 }
 
-.moovie .controls > .wrapper > .fullscreen {
+.moovie .controls .fullscreen {
     background-image: url("http://colinaarts.com/assets/player-close.png");
-}
-
-.moovie {
-    left: 50%;
-    position: absolute;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: 852px;
-    max-width: 852px;
-    background: transparent;
-    border: none;
-    padding: 0;
-    box-shadow: 0 0 15px #000000;
-    color: #ffffff;
 }

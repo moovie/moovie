@@ -2,307 +2,13 @@
  * Moovie: an advanced HTML5 video player for MooTools.
  *
  * @see http://colinaarts.com/code/moovie
- * @version 0.3.3
+ * @version 0.3.4
  * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
  * @author Nathan Bishop <nbish11@hotmail.com>
  * @copyright 2010 Colin Aarts
  * @license MIT
  */
-var Moovie = function(videos, options) {
-    'use strict';
-
-    options = options || {};
-
-    // Here for compat with older MooTools versions...
-    Element.implement({
-        show: function () {
-            return this.setStyle('display', '');
-        },
-
-        hide: function () {
-            return this.setStyle('display', 'none');
-        }
-    });
-
-    // Add HTML 5 media events to Element.NativeEvents, if needed.
-    if (!Element.NativeEvents.timeupdate) {
-        Element.NativeEvents = Object.merge(Element.NativeEvents, Moovie.MediaEvents);
-    }
-
-    videos.each(function(el) {
-        if (typeOf(el) == 'element') {
-            el.Moovie = new Moovie.Doit(el, options);
-        } else if (typeOf(el) == 'object') {
-            el.options = el.options || {};
-            el.options.id = el.id || null;
-            el.video.Moovie = new Moovie.Doit(el.video, Object.merge(options, el.options));
-        }
-    });
-};
-
-/**
- * Moovie: an advanced HTML5 video player for MooTools.
- *
- * A plugin to allow Moovie players to view video info live.
- *
- * @version 0.3.3
- * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
- * @author Nathan Bishop <nbish11@hotmail.com>
- * @copyright 2010 Colin Aarts
- * @license MIT
- */
-Moovie.Debugger = new Class({
-    Implements: [Options],
-
-    options: {
-        container: null,
-        disabled: false,
-        monitorProperties: [
-            'autoplay',
-            'controls',
-            'currentSrc',
-            'currentTime',
-            'duration',
-            'ended',
-            'error',
-            'loop',
-            'muted',
-            'networkState',
-            'paused',
-            'playbackRate',
-            'preload',
-            'readyState',
-            'seeking',
-            'volume'
-        ]
-    },
-
-    initialize: function (video, options) {
-        'use strict';
-
-        this.video = document.id(video);
-        this.setOptions(options);
-        this.bound = this.getBoundEvents();
-
-        if (this.options.disabled) {
-            this.build().disable();
-        } else {
-            this.build().enable();
-        }
-    },
-
-    build: function () {
-        'use strict';
-
-        this.element = new Element('div.debug');
-        this.elements = {
-            table: new Element('table'),
-            tbody: new Element('tbody'),
-            p: new Element('p[text=Debugger ready...]')
-        };
-
-        this.options.monitorProperties.each(function (el) {
-            var row = new Element('tr[data-property=' + el + ']');
-            var label = new Element('td[text=' + el + ']');
-            var value = new Element('td[text=' + this.video[el] + ']');
-
-            row.adopt(label, value);
-            this.elements.tbody.grab(row);
-        }, this);
-
-        this.elements.table.grab(this.elements.tbody);
-        this.element.adopt(this.elements.table, this.elements.p);
-
-        if (document.id(this.options.container)) {
-            this.element.inject(document.id(this.options.container));
-        }
-
-        return this;
-    },
-
-    attach: function () {
-        'use strict';
-
-        this.video.addEvents(this.bound);
-
-        return this;
-    },
-
-    detach: function () {
-        'use strict';
-
-        this.video.removeEvents(this.bound);
-
-        return this;
-    },
-
-    enable: function () {
-        'use strict';
-
-        this.element.set('data-disabled', false);
-        this.attach();
-
-        return this;
-    },
-
-    disable: function () {
-        'use strict';
-
-        this.detach();
-        this.element.set('data-disabled', true);
-
-        return this;
-    },
-
-    flashProperty: function (property, value) {
-        'use strict';
-
-        this.elements.tbody
-            .getElement('[data-property=' + property + '] > td + td')
-            .set('text', value || this.video[property])
-            .getParent().highlight();
-
-        return this;
-    },
-
-    flashMessage: function (message) {
-        'use strict';
-
-        this.elements.p.set('html', message).highlight();
-
-        return this;
-    },
-
-    toElement: function () {
-        'use strict';
-
-        return this.element;
-    },
-
-    getBoundEvents: function () {
-        'use strict';
-
-        return {
-            loadstart: function () {
-                this.flashProperty('networkState')
-                    .flashMessage('looking for data...');
-            }.bind(this),
-
-            progress: function () {
-                this.flashProperty('networkState')
-                    .flashMessage('fetching data...');
-            }.bind(this),
-
-            suspend: function () {
-                this.flashProperty('networkState')
-                    .flashMessage('data fetching suspended...');
-            }.bind(this),
-
-            abort: function () {
-                this.flashProperty('networkState')
-                    .flashMessage('data fetching aborted...');
-            }.bind(this),
-
-            error: function () {
-                this.flashProperty('networkState')
-                    .flashProperty('error', this.video.error.code)
-                    .flashMessage('an error occurred while fetching data...');
-            }.bind(this),
-
-            emptied: function () {
-                this.flashProperty('networkState')
-                    .flashMessage('media resource is empty...');
-            }.bind(this),
-
-            stalled: function () {
-                this.flashProperty('networkState')
-                    .flashMessage('stalled while fetching data...');
-            }.bind(this),
-
-            loadedmetadata: function () {
-                this.flashProperty('readyState')
-                    .flashMessage('duration and dimensions have been determined...');
-            }.bind(this),
-
-            loadeddata: function () {
-                this.flashProperty('readyState')
-                    .flashMessage('first frame is available...');
-            }.bind(this),
-
-            waiting: function () {
-                this.flashProperty('readyState')
-                    .flashMessage('waiting for more data...');
-            }.bind(this),
-
-            playing: function () {
-                this.flashProperty('readyState')
-                    .flashMessage('playback has started...');
-            }.bind(this),
-
-            canplay: function () {
-                this.flashProperty('readyState')
-                    .flashMessage('media is ready to be played, but will likely be interrupted for buffering...');
-            }.bind(this),
-
-            canplaythrough: function () {
-                this.flashProperty('readyState')
-                    .flashMessage('media is ready to be played and will most likely play through without stopping...');
-            }.bind(this),
-
-            play: function () {
-                this.flashProperty('paused');
-            }.bind(this),
-
-            pause: function () {
-                this.flashProperty('paused');
-            }.bind(this),
-
-            ended: function () {
-                this.flashProperty('paused')
-                    .flashProperty('ended');
-            }.bind(this),
-
-            timeupdate: function () {
-                this.flashProperty('currentTime', this.video.currentTime.round(3));
-            }.bind(this),
-
-            seeking: function () {
-                this.flashProperty('seeking');
-            }.bind(this),
-
-            seeked: function () {
-                this.flashProperty('seeking');
-            }.bind(this),
-
-            durationchange: function () {
-                this.flashProperty('duration', this.video.duration.round(3));
-            }.bind(this),
-
-            ratechange: function () {
-                this.flashProperty('playbackRate');
-            }.bind(this),
-
-            volumechange: function () {
-                this.flashProperty('muted')
-                    .flashProperty('volume', this.video.volume.round(2));
-            }.bind(this)
-        };
-    }
-});
-
-/**
- * Moovie: an advanced HTML5 video player for MooTools.
- *
- * The main function, which handles one <video> at a time.
- *
- * @see http://www.urbandictionary.com/define.php?term=Doit&defid=3379319
- * @version 0.3.3
- * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
- * @author Nathan Bishop <nbish11@hotmail.com>
- * @copyright 2010 Colin Aarts
- * @license MIT
- */
-Moovie.Doit = new Class({
+var Moovie = new Class({
     Implements: [Options],
 
     options: {
@@ -317,6 +23,12 @@ Moovie.Doit = new Class({
 
         this.setOptions(options);
         options = this.options;
+        video = document.id(video);
+
+        // Add HTML 5 media events to Element.NativeEvents, if needed.
+        if (!Element.NativeEvents.timeupdate) {
+            Element.NativeEvents = Object.merge(Element.NativeEvents, Moovie.MediaEvents);
+        }
 
         var playlist = [];
 
@@ -355,9 +67,7 @@ Moovie.Doit = new Class({
         // player): changing the volume can have an effect on the muted
         // state and vice versa.
         var muted = video.muted;
-        var panelHeightSet = false;
         var self = this;
-        var showControls = video.controls;
 
         this.overlay = new Element('div.overlay');
         this.buildTitle();
@@ -370,8 +80,7 @@ Moovie.Doit = new Class({
         panels.playlist = new Element('div.playlist');
 
         panels.adopt(panels.info, panels.settings, panels.about, panels.playlist);
-        panels.set('tween', { duration: 250 });
-        panels.fade('hide');
+        panels.set('aria-hidden', true);
 
         // Content for `info` panel
         panels.info.set('html', '\
@@ -444,7 +153,7 @@ Moovie.Doit = new Class({
         this.panels = panels;
 
         // Controls ----------------------------------------------------------------
-        this.buildControls(showControls);
+        this.buildControls();
 
         // Inject and do some post-processing --------------------------------------
         wrapper.adopt(this.overlay, this.title, panels, this.controls);
@@ -455,23 +164,13 @@ Moovie.Doit = new Class({
 
         // Panels ------------------------------------------------------------------
         panels.update = function (which) {
-            // Adjust height of panel container to account for controls bar
-            if (panelHeightSet === false) {
-                panelHeightSet = true;
-                panels.setStyle(
-                    'height',
-                    panels.getStyle('height').toInt() -
-                    self.controls.getStyle('height').toInt()
-                );
-            }
-
             if (which == 'none' || this[which].hasClass('active')) {
                 this.getChildren('.active').removeClass('active');
-                this.fade('out');
+                this.set('aria-hidden', true);
             } else {
-                this.getChildren().hide().removeClass('active');
-                this[which].show().addClass('active');
-                this.fade('in');
+                this.getChildren().removeClass('active');
+                this[which].addClass('active');
+                this.set('aria-hidden', false);
             }
         };
 
@@ -504,11 +203,6 @@ Moovie.Doit = new Class({
         this.overlay.addEvent('click', function () {
             video.play();
             self.title.show();
-
-            // re-enable controls once "big play button" has been clicked
-            if (showControls) {
-                self.controls.enable();
-            }
         });
 
         // Panels ------------------------------------------------------------------
@@ -561,11 +255,12 @@ Moovie.Doit = new Class({
             },
 
             play: function() {
-                self.controls.show();
+
             },
 
             playing: function () {
                 container.set('data-playbackstate', 'playing');
+                self.controls.show();
             },
 
             pause: function() {
@@ -684,11 +379,6 @@ Moovie.Doit = new Class({
         // Init ====================================================================
         if (!video.autoplay) {
             container.set('data-playbackstate', 'stopped');
-
-            // hide controls while "big play button" is showing
-            if (showControls) {
-                this.controls.disable();
-            }
         }
 
         // eslint-disable-next-line
@@ -725,13 +415,12 @@ Moovie.Doit = new Class({
         this.title = title;
     },
 
-    buildControls: function (showControls) {
+    buildControls: function () {
         var self = this;
         var panels = this.panels;
         var video = this.video;
 
         this.controls = new Element('div.controls');
-        this.controls.wrapper = new Element('div.wrapper');
         this.controls.play = new Element('div.play[title=Play]');
         this.controls.play.addEvent('click', function () {
             if (video.paused && video.readyState >= 3) {
@@ -782,7 +471,7 @@ Moovie.Doit = new Class({
             screenfull.toggle(self.wrapper);
         });
 
-        this.controls.wrapper.adopt(
+        this.controls.adopt(
             this.controls.play,
             this.controls.stop,
             this.controls.previous,
@@ -796,40 +485,15 @@ Moovie.Doit = new Class({
             this.controls.fullscreen
         );
 
-        this.controls.grab(this.controls.wrapper);
         video.controls = false; // disable native controls
 
         this.controls.show = function () {
-            if (!this.disabled) {
-                this.set('data-displaystate', 'showing');
-            }
-
-            return this;
+            return this.set('aria-hidden', false);
         };
 
         this.controls.hide = function () {
-            if (!this.disabled) {
-                this.set('data-displaystate', 'hidden');
-            }
-
-            return this;
+            return this.set('aria-hidden', true);
         };
-
-        this.controls.enable = function () {
-            this.disabled = false;
-            this.set('data-displaystate', 'showing');
-
-            return this;
-        };
-
-        this.controls.disable = function () {
-            this.disabled = true;
-            this.set('data-displaystate', 'disabled');
-
-            return this;
-        };
-
-        this.controls[showControls ? 'enable' : 'disable']();
     },
 
     createSeekbar: function (video) {
@@ -984,12 +648,245 @@ Moovie.Doit = new Class({
     }
 });
 
+// Allows a group of or a single <video> element to be converted to Moovie instances procedurely.
+Element.implement({
+    toMoovie: function (options) {
+        this.store('moovie', new Moovie(this, options));
+    }
+});
+
+/**
+ * Moovie: an advanced HTML5 video player for MooTools.
+ *
+ * A plugin to allow Moovie players to view video info live.
+ *
+ * @version 0.3.4
+ * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
+ * @author Nathan Bishop <nbish11@hotmail.com>
+ * @copyright 2010 Colin Aarts
+ * @license MIT
+ */
+Moovie.Debugger = new Class({
+    Implements: [Options],
+
+    options: {
+        container: null,
+        disabled: false,
+        monitorProperties: [
+            'autoplay',
+            'controls',
+            'currentSrc',
+            'currentTime',
+            'duration',
+            'ended',
+            'error',
+            'loop',
+            'muted',
+            'networkState',
+            'paused',
+            'playbackRate',
+            'preload',
+            'readyState',
+            'seeking',
+            'volume'
+        ]
+    },
+
+    initialize: function (video, options) {
+        this.video = document.id(video);
+        this.setOptions(options);
+        this.bound = this.getBoundEvents();
+        this.build();
+        this[this.options.disabled ? 'disable' : 'enable']();
+    },
+
+    build: function () {
+        this.element = new Element('div.debug');
+        this.elements = {
+            table: new Element('table'),
+            tbody: new Element('tbody'),
+            p: new Element('p[text=Debugger ready...]')
+        };
+
+        this.options.monitorProperties.each(function (el) {
+            var row = new Element('tr[data-property=' + el + ']');
+            var label = new Element('td[text=' + el + ']');
+            var value = new Element('td[text=' + this.video[el] + ']');
+
+            row.adopt(label, value);
+            this.elements.tbody.grab(row);
+        }, this);
+
+        this.elements.table.grab(this.elements.tbody);
+        this.element.adopt(this.elements.table, this.elements.p);
+
+        if (document.id(this.options.container)) {
+            this.element.inject(document.id(this.options.container));
+        }
+
+        return this;
+    },
+
+    attach: function () {
+        this.video.addEvents(this.bound);
+
+        return this;
+    },
+
+    detach: function () {
+        this.video.removeEvents(this.bound);
+
+        return this;
+    },
+
+    enable: function () {
+        this.disabled = false;
+        this.element.set('aria-disabled', false);
+
+        return this.attach();
+    },
+
+    disable: function () {
+        this.disabled = true;
+        this.element.set('aria-disabled', true);
+
+        return this.detach();
+    },
+
+    flashProperty: function (property, value) {
+        this.elements.tbody
+            .getElement('[data-property=' + property + '] > td + td')
+            .set('text', value || this.video[property])
+            .getParent().highlight();
+
+        return this;
+    },
+
+    flashMessage: function (message) {
+        this.elements.p.set('html', message).highlight();
+
+        return this;
+    },
+
+    toElement: function () {
+        return this.element;
+    },
+
+    getBoundEvents: function () {
+        return {
+            loadstart: function () {
+                this.flashProperty('networkState')
+                    .flashMessage('looking for data...');
+            }.bind(this),
+
+            progress: function () {
+                this.flashProperty('networkState')
+                    .flashMessage('fetching data...');
+            }.bind(this),
+
+            suspend: function () {
+                this.flashProperty('networkState')
+                    .flashMessage('data fetching suspended...');
+            }.bind(this),
+
+            abort: function () {
+                this.flashProperty('networkState')
+                    .flashMessage('data fetching aborted...');
+            }.bind(this),
+
+            error: function () {
+                this.flashProperty('networkState')
+                    .flashProperty('error', this.video.error.code)
+                    .flashMessage('an error occurred while fetching data...');
+            }.bind(this),
+
+            emptied: function () {
+                this.flashProperty('networkState')
+                    .flashMessage('media resource is empty...');
+            }.bind(this),
+
+            stalled: function () {
+                this.flashProperty('networkState')
+                    .flashMessage('stalled while fetching data...');
+            }.bind(this),
+
+            loadedmetadata: function () {
+                this.flashProperty('readyState')
+                    .flashMessage('duration and dimensions have been determined...');
+            }.bind(this),
+
+            loadeddata: function () {
+                this.flashProperty('readyState')
+                    .flashMessage('first frame is available...');
+            }.bind(this),
+
+            waiting: function () {
+                this.flashProperty('readyState')
+                    .flashMessage('waiting for more data...');
+            }.bind(this),
+
+            playing: function () {
+                this.flashProperty('readyState')
+                    .flashMessage('playback has started...');
+            }.bind(this),
+
+            canplay: function () {
+                this.flashProperty('readyState')
+                    .flashMessage('media is ready to be played, but will likely be interrupted for buffering...');
+            }.bind(this),
+
+            canplaythrough: function () {
+                this.flashProperty('readyState')
+                    .flashMessage('media is ready to be played and will most likely play through without stopping...');
+            }.bind(this),
+
+            play: function () {
+                this.flashProperty('paused');
+            }.bind(this),
+
+            pause: function () {
+                this.flashProperty('paused');
+            }.bind(this),
+
+            ended: function () {
+                this.flashProperty('paused')
+                    .flashProperty('ended');
+            }.bind(this),
+
+            timeupdate: function () {
+                this.flashProperty('currentTime', this.video.currentTime.round(3));
+            }.bind(this),
+
+            seeking: function () {
+                this.flashProperty('seeking');
+            }.bind(this),
+
+            seeked: function () {
+                this.flashProperty('seeking');
+            }.bind(this),
+
+            durationchange: function () {
+                this.flashProperty('duration', this.video.duration.round(3));
+            }.bind(this),
+
+            ratechange: function () {
+                this.flashProperty('playbackRate');
+            }.bind(this),
+
+            volumechange: function () {
+                this.flashProperty('muted')
+                    .flashProperty('volume', this.video.volume.round(2));
+            }.bind(this)
+        };
+    }
+});
+
 /**
  * Moovie: an advanced HTML5 video player for MooTools.
  *
  * Currently supported HTML5 media events.
  *
- * @version 0.3.3
+ * @version 0.3.4
  * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
  * @author Nathan Bishop <nbish11@hotmail.com>
  * @copyright 2010 Colin Aarts
@@ -1025,7 +922,7 @@ Moovie.MediaEvents = {
  *
  * Allows manipulation of a collection of videos.
  *
- * @version 0.3.3
+ * @version 0.3.4
  * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
  * @author Nathan Bishop <nbish11@hotmail.com>
  * @copyright 2010 Colin Aarts
@@ -1081,7 +978,7 @@ Moovie.Playlist = new Class({
  *
  * Commonly used functions for the Moovie library.
  *
- * @version 0.3.3
+ * @version 0.3.4
  * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
  * @author Nathan Bishop <nbish11@hotmail.com>
  * @copyright 2010 Colin Aarts
