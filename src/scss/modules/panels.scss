@@ -58,26 +58,27 @@
     height: 100%;
 }
 
-.moovie .panels .playlist ol.playlist li {
+.moovie .panels .playlist ol {
+    list-style: none;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.moovie .panels .playlist ol li {
     border-radius: 4px;
     padding: 0 5px;
     white-space: nowrap;
 }
 
-.moovie .panels .playlist ol.playlist li:hover {
+.moovie .panels .playlist ol li:hover {
     background-color: #994004;
 }
 
-.moovie .panels .playlist ol.playlist li.active {
+.moovie .panels .playlist ol .active {
     background-color: rgba(255, 255, 255, 0.2);
 }
 
-.moovie .panels .playlist ol.playlist .label:hover {
+.moovie .panels .playlist ol .label:hover {
     cursor: pointer;
     text-decoration: underline;
-}
-
-.moovie .panels .playlist ol.playlist {
-    overflow-x: hidden;
-    overflow-y: auto;
 }
