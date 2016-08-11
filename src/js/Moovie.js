@@ -12,10 +12,9 @@ var Moovie = new Class({
     Implements: [Options],
 
     options: {
-        debugger: false,
+        debugger: {},
         autohideControls: true,
-        playlist: [],
-        plugins: ['Debugger']
+        playlist: []
     },
 
     initialize: function (video, options) {
@@ -71,6 +70,7 @@ var Moovie = new Class({
 
         this.overlay = new Element('div.overlay');
         this.buildTitle();
+        this.debugger = new Moovie.Debugger(this.video, this.options.debugger);
 
         // Panels ------------------------------------------------------------------
         var panels      = new Element('div.panels');
@@ -97,14 +97,14 @@ var Moovie = new Class({
             </dl>\
         ');
 
-        var debuggerEnabled = options.debugger === true || options.debugger.disabled === false;
+        var autohideControls = options.autohideControls;
         var showCaptions = !!video.getElement('track[default]');
 
         // Content for `settings` panel
         panels.settings.set('html', '\
             <div class="heading">Settings</div>\
             \
-            <div class="checkbox-widget" data-control="autohideControls" data-checked="' + options.autohideControls + '">\
+            <div class="checkbox-widget" data-control="autohideControls" data-checked="' + autohideControls + '">\
                 <div class="checkbox"></div>\
                 <div class="label">Auto-hide controls</div>\
             </div>\
@@ -116,7 +116,7 @@ var Moovie = new Class({
                 <div class="checkbox"></div>\
                 <div class="label">Show captions</div>\
             </div>\
-            <div class="checkbox-widget" data-control="debugger" data-checked="' + debuggerEnabled + '">\
+            <div class="checkbox-widget" data-control="debugger" data-checked="' + !this.debugger.disabled + '">\
                 <div class="checkbox"></div>\
                 <div class="label">Enable Debugger</div>\
             </div>\
@@ -156,7 +156,7 @@ var Moovie = new Class({
         this.buildControls();
 
         // Inject and do some post-processing --------------------------------------
-        wrapper.adopt(this.overlay, this.title, panels, this.controls);
+        wrapper.adopt(this.overlay, this.title, panels, this.controls, this.debugger);
 
         // Get the knob offsets for later
         this.controls.seekbar.knob.left = this.controls.seekbar.knob.getStyle('left').toInt();
@@ -360,21 +360,6 @@ var Moovie = new Class({
                 // Doit(video);
             }
         });
-
-        // setup plugins...
-        options.plugins.each(function (plugin) {
-            var option = plugin.toLowerCase();
-            var pluginOptions = {};
-
-            if (typeOf(options[option]) === 'boolean') {
-                pluginOptions.disabled = !options[option];
-                pluginOptions.container = container;
-            } else {
-                pluginOptions = options[option];
-            }
-
-            this[option] = new Moovie[plugin](video, pluginOptions);
-        }, this);
 
         // Init ====================================================================
         if (!video.autoplay) {
