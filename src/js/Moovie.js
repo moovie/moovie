@@ -13,6 +13,7 @@ var Moovie = new Class({
 
     options: {
         debugger: {},
+        title: {},
         autohideControls: true,
         playlist: []
     },
@@ -67,9 +68,11 @@ var Moovie = new Class({
         // state and vice versa.
         var muted = video.muted;
         var self = this;
+        var current = this.playlist.current();
 
         this.overlay = new Element('div.overlay');
-        this.buildTitle();
+        this.title = new Moovie.Title(this.options.title);
+        this.title.update(current.title || Moovie.Util.basename(current.src));
         this.debugger = new Moovie.Debugger(this.video, this.options.debugger);
 
         // Panels ------------------------------------------------------------------
@@ -169,6 +172,8 @@ var Moovie = new Class({
         this.playlist.addEvent('select', function (current) {
             panels.info.getElement('dt.title + dd').set('html', current.title || Moovie.Util.basename(current.src));
             panels.info.getElement('dt.url + dd').set('html', current.src);
+            self.title.update(current.title || Moovie.Util.basename(current.src));
+            self.title.show();
 
             video.src = current.src;
             video.load();
@@ -344,30 +349,6 @@ var Moovie = new Class({
                 return el.get('title');
             }
         });
-    },
-
-    buildTitle: function () {
-        var self = this;
-        var title = new Element('div.video-title', {
-            'html': this.playlist.current().title
-        });
-
-        title.show = function() {
-            var index = self.playlist.index;
-            var text   = self.playlist.current().title || Moovie.Util.basename(self.playlist.current().src);
-            title.set('html', (index + 1).toString() + '. ' + text);
-            title.fade('in');
-
-            // eslint-disable-next-line
-            var timer = setTimeout(function() {
-                title.fade('out');
-                timer = null;
-            }, 6000);
-        };
-
-        title.set('tween', { duration: 2000 });
-        title.fade('hide');
-        this.title = title;
     },
 
     buildControls: function () {
