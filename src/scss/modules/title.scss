@@ -1,0 +1,15 @@
+.moovie-title {
+    color: #fff;
+    font-size: 1.6em;
+    padding: 3px;
+    position: absolute;
+    right: 20px;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    top: 5px;
+    transition: all 2s ease 0s;
+
+    &[aria-hidden="true"] {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
