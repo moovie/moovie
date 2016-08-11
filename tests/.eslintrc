@@ -11,6 +11,8 @@
         "Element": false,
         "instanceOf": false,
         "typeOf": false,
-        "Moovie": false
+        "Moovie": false,
+        "sinon": false,
+        "context": false
     }
 }
