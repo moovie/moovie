@@ -13,7 +13,6 @@ Moovie.Debugger = new Class({
     Implements: [Options],
 
     options: {
-        container: null,
         disabled: false,
         monitorProperties: [
             'autoplay',
@@ -62,10 +61,6 @@ Moovie.Debugger = new Class({
 
         this.elements.table.grab(this.elements.tbody);
         this.element.adopt(this.elements.table, this.elements.p);
-
-        if (document.id(this.options.container)) {
-            this.element.inject(document.id(this.options.container));
-        }
 
         return this;
     },
