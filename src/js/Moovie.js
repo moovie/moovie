@@ -77,9 +77,8 @@ var Moovie = new Class({
         panels.info     = new Element('div.info');
         panels.settings = new Element('div.settings');
         panels.about    = new Element('div.about');
-        panels.playlist = new Element('div.playlist');
 
-        panels.adopt(panels.info, panels.settings, panels.about, panels.playlist);
+        panels.adopt(panels.info, panels.settings, panels.about, this.playlist);
         panels.set('aria-hidden', true);
 
         // Content for `info` panel
@@ -130,26 +129,6 @@ var Moovie = new Class({
             <p><a href="http://colinaarts.com/code/moovie/" rel="external">http://colinaarts.com/code/moovie/</a></p>\
         ');
 
-        // Content for `playlist` panel
-        panels.playlist.set('html', '\
-            <div><div class="heading">Playlist</div></div>\
-            <div><ol class="playlist"></ol></div>\
-        ');
-
-        this.playlist.items.each(function(el, index) {
-            panels.playlist.getElement('ol.playlist')
-                .grab(new Element('li', {
-                    'data-index': index,
-                    'class': this.current() === el ? 'active' : '',
-                    'html': '\
-                      <div class="checkbox-widget" data-checked="true">\
-                        <div class="checkbox"></div>\
-                        <div class="label">' + (el.title || Moovie.Util.basename(el.src)) + '</div>\
-                      </div>\
-                    '
-                }));
-        }, this.playlist);
-
         this.panels = panels;
 
         // Controls ----------------------------------------------------------------
@@ -168,26 +147,33 @@ var Moovie = new Class({
                 this.getChildren('.active').removeClass('active');
                 this.set('aria-hidden', true);
             } else {
+                self.playlist.hide();
                 this.getChildren().removeClass('active');
                 this[which].addClass('active');
                 this.set('aria-hidden', false);
             }
         };
 
-        panels.playlist.update = function () {
-            var current = self.playlist.current();
-            var index = self.playlist.index;
+        this.playlist.addEvent('show', function () {
+            panels.update('none');
+            this.element.addClass('active');
+            panels.set('aria-hidden', false);
+        });
 
-            panels.playlist.getElement('ol.playlist li.active').removeClass('active');
-            panels.playlist.getElement('ol.playlist li[data-index="' + index + '"]').addClass('active');
+        this.playlist.addEvent('hide', function () {
+            panels.update('none');
+            this.element.removeClass('active');
+            panels.set('aria-hidden', true);
+        });
 
+        this.playlist.addEvent('select', function (current) {
             panels.info.getElement('dt.title + dd').set('html', current.title || Moovie.Util.basename(current.src));
             panels.info.getElement('dt.url + dd').set('html', current.src);
 
             video.src = current.src;
             video.load();
             video.play();
-        };
+        });
 
         // Masthead ----------------------------------------------------------------
         wrapper.addEvent('mouseenter', function () {
@@ -237,17 +223,6 @@ var Moovie = new Class({
             panels.update('none');
         });
 
-        panels.playlist.addEvent('click:relay(.label)', function (e) {
-            e.stop();
-
-            var item  = this.getParents('li')[0];
-            var index = item.get('data-index').toInt();
-
-            self.playlist.select(index);
-            panels.playlist.update();
-            panels.update('none');
-        });
-
         // Video element -----------------------------------------------------------
         video.addEvents({
             click: function() {
@@ -269,12 +244,7 @@ var Moovie = new Class({
 
             ended: function() {
                 container.set('data-playbackstate', 'ended');
-
-                if (self.playlist.hasNext()) {
-                    self.playlist.next();
-                    panels.playlist.update();
-                    self.title.show();
-                }
+                self.playlist.next();
             },
 
             progress: function(e) {
@@ -425,20 +395,12 @@ var Moovie = new Class({
 
         this.controls.previous = new Element('div.previous[title=Previous]');
         this.controls.previous.addEvent('click', function () {
-            if (self.playlist.hasPrevious()) {
-                self.playlist.previous();
-                panels.playlist.update();
-                self.title.show();
-            }
+            self.playlist.previous();
         });
 
         this.controls.next = new Element('div.next[title=Next]');
         this.controls.next.addEvent('click', function () {
-            if (self.playlist.hasNext()) {
-                self.playlist.next();
-                panels.playlist.update();
-                self.title.show();
-            }
+            self.playlist.next();
         });
 
         this.controls.elapsed = new Element('div.elapsed[text=0:00]');
@@ -609,6 +571,7 @@ var Moovie = new Class({
 
     createMoreControl: function (panels) {
         var more = new Element('div.more');
+        var self = this;
 
         more.popup = new Element('div.popup');
         more.about = new Element('div.about[title=About]');
@@ -623,7 +586,11 @@ var Moovie = new Class({
 
         more.playlist = new Element('div.playlist[title=Playlist]');
         more.playlist.addEvent('click', function () {
-            panels.update('playlist');
+            if (self.playlist.hidden) {
+                self.playlist.show();
+            } else {
+                self.playlist.hide();
+            }
         });
 
         more.popup.adopt(more.about, more.info, more.playlist);
