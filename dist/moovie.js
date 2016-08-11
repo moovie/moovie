@@ -2,7 +2,7 @@
  * Moovie: an advanced HTML5 video player for MooTools.
  *
  * @see http://colinaarts.com/code/moovie
- * @version 0.3.4
+ * @version 0.4.1
  * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
  * @author Nathan Bishop <nbish11@hotmail.com>
  * @copyright 2010 Colin Aarts
@@ -12,10 +12,9 @@ var Moovie = new Class({
     Implements: [Options],
 
     options: {
-        debugger: false,
+        debugger: {},
         autohideControls: true,
-        playlist: [],
-        plugins: ['Debugger']
+        playlist: []
     },
 
     initialize: function (video, options) {
@@ -71,15 +70,15 @@ var Moovie = new Class({
 
         this.overlay = new Element('div.overlay');
         this.buildTitle();
+        this.debugger = new Moovie.Debugger(this.video, this.options.debugger);
 
         // Panels ------------------------------------------------------------------
         var panels      = new Element('div.panels');
         panels.info     = new Element('div.info');
         panels.settings = new Element('div.settings');
         panels.about    = new Element('div.about');
-        panels.playlist = new Element('div.playlist');
 
-        panels.adopt(panels.info, panels.settings, panels.about, panels.playlist);
+        panels.adopt(panels.info, panels.settings, panels.about, this.playlist);
         panels.set('aria-hidden', true);
 
         // Content for `info` panel
@@ -97,14 +96,14 @@ var Moovie = new Class({
             </dl>\
         ');
 
-        var debuggerEnabled = options.debugger === true || options.debugger.disabled === false;
+        var autohideControls = options.autohideControls;
         var showCaptions = !!video.getElement('track[default]');
 
         // Content for `settings` panel
         panels.settings.set('html', '\
             <div class="heading">Settings</div>\
             \
-            <div class="checkbox-widget" data-control="autohideControls" data-checked="' + options.autohideControls + '">\
+            <div class="checkbox-widget" data-control="autohideControls" data-checked="' + autohideControls + '">\
                 <div class="checkbox"></div>\
                 <div class="label">Auto-hide controls</div>\
             </div>\
@@ -116,7 +115,7 @@ var Moovie = new Class({
                 <div class="checkbox"></div>\
                 <div class="label">Show captions</div>\
             </div>\
-            <div class="checkbox-widget" data-control="debugger" data-checked="' + debuggerEnabled + '">\
+            <div class="checkbox-widget" data-control="debugger" data-checked="' + !this.debugger.disabled + '">\
                 <div class="checkbox"></div>\
                 <div class="label">Enable Debugger</div>\
             </div>\
@@ -130,33 +129,13 @@ var Moovie = new Class({
             <p><a href="http://colinaarts.com/code/moovie/" rel="external">http://colinaarts.com/code/moovie/</a></p>\
         ');
 
-        // Content for `playlist` panel
-        panels.playlist.set('html', '\
-            <div><div class="heading">Playlist</div></div>\
-            <div><ol class="playlist"></ol></div>\
-        ');
-
-        this.playlist.items.each(function(el, index) {
-            panels.playlist.getElement('ol.playlist')
-                .grab(new Element('li', {
-                    'data-index': index,
-                    'class': this.current() === el ? 'active' : '',
-                    'html': '\
-                      <div class="checkbox-widget" data-checked="true">\
-                        <div class="checkbox"></div>\
-                        <div class="label">' + (el.title || Moovie.Util.basename(el.src)) + '</div>\
-                      </div>\
-                    '
-                }));
-        }, this.playlist);
-
         this.panels = panels;
 
         // Controls ----------------------------------------------------------------
         this.buildControls();
 
         // Inject and do some post-processing --------------------------------------
-        wrapper.adopt(this.overlay, this.title, panels, this.controls);
+        wrapper.adopt(this.overlay, this.title, panels, this.controls, this.debugger);
 
         // Get the knob offsets for later
         this.controls.seekbar.knob.left = this.controls.seekbar.knob.getStyle('left').toInt();
@@ -168,26 +147,33 @@ var Moovie = new Class({
                 this.getChildren('.active').removeClass('active');
                 this.set('aria-hidden', true);
             } else {
+                self.playlist.hide();
                 this.getChildren().removeClass('active');
                 this[which].addClass('active');
                 this.set('aria-hidden', false);
             }
         };
 
-        panels.playlist.update = function () {
-            var current = self.playlist.current();
-            var index = self.playlist.index;
+        this.playlist.addEvent('show', function () {
+            panels.update('none');
+            this.element.addClass('active');
+            panels.set('aria-hidden', false);
+        });
 
-            panels.playlist.getElement('ol.playlist li.active').removeClass('active');
-            panels.playlist.getElement('ol.playlist li[data-index="' + index + '"]').addClass('active');
+        this.playlist.addEvent('hide', function () {
+            panels.update('none');
+            this.element.removeClass('active');
+            panels.set('aria-hidden', true);
+        });
 
+        this.playlist.addEvent('select', function (current) {
             panels.info.getElement('dt.title + dd').set('html', current.title || Moovie.Util.basename(current.src));
             panels.info.getElement('dt.url + dd').set('html', current.src);
 
             video.src = current.src;
             video.load();
             video.play();
-        };
+        });
 
         // Masthead ----------------------------------------------------------------
         wrapper.addEvent('mouseenter', function () {
@@ -237,17 +223,6 @@ var Moovie = new Class({
             panels.update('none');
         });
 
-        panels.playlist.addEvent('click:relay(.label)', function (e) {
-            e.stop();
-
-            var item  = this.getParents('li')[0];
-            var index = item.get('data-index').toInt();
-
-            self.playlist.select(index);
-            panels.playlist.update();
-            panels.update('none');
-        });
-
         // Video element -----------------------------------------------------------
         video.addEvents({
             click: function() {
@@ -269,12 +244,7 @@ var Moovie = new Class({
 
             ended: function() {
                 container.set('data-playbackstate', 'ended');
-
-                if (self.playlist.hasNext()) {
-                    self.playlist.next();
-                    panels.playlist.update();
-                    self.title.show();
-                }
+                self.playlist.next();
             },
 
             progress: function(e) {
@@ -361,21 +331,6 @@ var Moovie = new Class({
             }
         });
 
-        // setup plugins...
-        options.plugins.each(function (plugin) {
-            var option = plugin.toLowerCase();
-            var pluginOptions = {};
-
-            if (typeOf(options[option]) === 'boolean') {
-                pluginOptions.disabled = !options[option];
-                pluginOptions.container = container;
-            } else {
-                pluginOptions = options[option];
-            }
-
-            this[option] = new Moovie[plugin](video, pluginOptions);
-        }, this);
-
         // Init ====================================================================
         if (!video.autoplay) {
             container.set('data-playbackstate', 'stopped');
@@ -440,20 +395,12 @@ var Moovie = new Class({
 
         this.controls.previous = new Element('div.previous[title=Previous]');
         this.controls.previous.addEvent('click', function () {
-            if (self.playlist.hasPrevious()) {
-                self.playlist.previous();
-                panels.playlist.update();
-                self.title.show();
-            }
+            self.playlist.previous();
         });
 
         this.controls.next = new Element('div.next[title=Next]');
         this.controls.next.addEvent('click', function () {
-            if (self.playlist.hasNext()) {
-                self.playlist.next();
-                panels.playlist.update();
-                self.title.show();
-            }
+            self.playlist.next();
         });
 
         this.controls.elapsed = new Element('div.elapsed[text=0:00]');
@@ -624,6 +571,7 @@ var Moovie = new Class({
 
     createMoreControl: function (panels) {
         var more = new Element('div.more');
+        var self = this;
 
         more.popup = new Element('div.popup');
         more.about = new Element('div.about[title=About]');
@@ -638,7 +586,11 @@ var Moovie = new Class({
 
         more.playlist = new Element('div.playlist[title=Playlist]');
         more.playlist.addEvent('click', function () {
-            panels.update('playlist');
+            if (self.playlist.hidden) {
+                self.playlist.show();
+            } else {
+                self.playlist.hide();
+            }
         });
 
         more.popup.adopt(more.about, more.info, more.playlist);
@@ -660,7 +612,7 @@ Element.implement({
  *
  * A plugin to allow Moovie players to view video info live.
  *
- * @version 0.3.4
+ * @version 0.4.1
  * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
  * @author Nathan Bishop <nbish11@hotmail.com>
  * @copyright 2010 Colin Aarts
@@ -670,7 +622,6 @@ Moovie.Debugger = new Class({
     Implements: [Options],
 
     options: {
-        container: null,
         disabled: false,
         monitorProperties: [
             'autoplay',
@@ -719,10 +670,6 @@ Moovie.Debugger = new Class({
 
         this.elements.table.grab(this.elements.tbody);
         this.element.adopt(this.elements.table, this.elements.p);
-
-        if (document.id(this.options.container)) {
-            this.element.inject(document.id(this.options.container));
-        }
 
         return this;
     },
@@ -886,7 +833,7 @@ Moovie.Debugger = new Class({
  *
  * Currently supported HTML5 media events.
  *
- * @version 0.3.4
+ * @version 0.4.1
  * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
  * @author Nathan Bishop <nbish11@hotmail.com>
  * @copyright 2010 Colin Aarts
@@ -922,16 +869,86 @@ Moovie.MediaEvents = {
  *
  * Allows manipulation of a collection of videos.
  *
- * @version 0.3.4
+ * @version 0.4.1
  * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
  * @author Nathan Bishop <nbish11@hotmail.com>
  * @copyright 2010 Colin Aarts
  * @license MIT
  */
 Moovie.Playlist = new Class({
+    Implements: [Events, Options],
+
+    options: {/*
+        onShow: function () {},
+        onHide: function () {},
+        onSelect: function () {},*/
+    },
+
     initialize: function (items) {
         this.items = typeOf(items) === 'array' ? items : [];
         this.index = this.items.length ? 0 : -1;
+        this.build().attach().hide();
+    },
+
+    attach: function () {
+        var self = this;
+
+        this.element.addEvent('click:relay(.label)', function (e) {
+            e.stop();
+
+            var item = this.getParents('li')[0];
+            var index = item.get('data-index').toInt();
+
+            self.select(index);
+            self.hide();
+        });
+
+        return this;
+    },
+
+    build: function () {
+        this.element = new Element('div.playlist');
+
+        this.element.set('html', '\
+            <div><div class="heading">Playlist</div></div>\
+            <div><ol class="playlist"></ol></div>\
+        ');
+
+        this.items.each(function(el, index) {
+            this.element.getElement('ol.playlist')
+                .grab(new Element('li', {
+                    'data-index': index,
+                    'class': this.current() === el ? 'active' : '',
+                    'html': '\
+                      <div class="checkbox-widget" data-checked="true">\
+                        <div class="checkbox"></div>\
+                        <div class="label">' + (el.title || Moovie.Util.basename(el.src)) + '</div>\
+                      </div>\
+                    '
+                }));
+        }, this);
+
+        return this;
+    },
+
+    active: function () {
+        return this.element.getElement('ol.playlist li.active');
+    },
+
+    show: function () {
+        this.hidden = false;
+        this.element.set('aria-hidden', false);
+        this.fireEvent('show');
+
+        return this;
+    },
+
+    hide: function () {
+        this.hidden = true;
+        this.element.set('aria-hidden', true);
+        this.fireEvent('hide');
+
+        return this;
     },
 
     size: function () {
@@ -947,11 +964,7 @@ Moovie.Playlist = new Class({
     },
 
     previous: function () {
-        if (this.items[this.index--]) {
-            return this.current();
-        }
-
-        return null;
+        return this.select(this.index - 1);
     },
 
     hasNext: function () {
@@ -959,17 +972,26 @@ Moovie.Playlist = new Class({
     },
 
     next: function () {
-        if (this.items[this.index++]) {
-            return this.current();
-        }
-
-        return null;
+        return this.select(this.index + 1);
     },
 
     select: function (index) {
         if (index >= 0 && index < this.items.length) {
             this.index = index;
+            this.active().removeClass('active');
+            this.element.getElement('ol.playlist li[data-index="' + index + '"]').addClass('active');
+            this.fireEvent('select', this.current());
         }
+
+        return this;
+    },
+
+    isHidden: function () {
+        return this.hidden;
+    },
+
+    toElement: function () {
+        return this.element;
     }
 });
 
@@ -978,7 +1000,7 @@ Moovie.Playlist = new Class({
  *
  * Commonly used functions for the Moovie library.
  *
- * @version 0.3.4
+ * @version 0.4.1
  * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
  * @author Nathan Bishop <nbish11@hotmail.com>
  * @copyright 2010 Colin Aarts

@@ -2,7 +2,7 @@
  * Moovie: an advanced HTML5 video player for MooTools.
  *
  * @see http://colinaarts.com/code/moovie
- * @version 0.2.0
+ * @version 0.4.1
  * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
  * @author Nathan Bishop <nbish11@hotmail.com>
  * @copyright 2010 Colin Aarts
@@ -511,28 +511,29 @@ ul li {
     height: 100%;
 }
 
-.moovie .panels .playlist ol.playlist li {
+.moovie .panels .playlist ol {
+    list-style: none;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.moovie .panels .playlist ol li {
     border-radius: 4px;
     padding: 0 5px;
     white-space: nowrap;
 }
 
-.moovie .panels .playlist ol.playlist li:hover {
+.moovie .panels .playlist ol li:hover {
     background-color: #994004;
 }
 
-.moovie .panels .playlist ol.playlist li.active {
+.moovie .panels .playlist ol .active {
     background-color: rgba(255, 255, 255, 0.2);
 }
 
-.moovie .panels .playlist ol.playlist .label:hover {
+.moovie .panels .playlist ol .label:hover {
     cursor: pointer;
     text-decoration: underline;
-}
-
-.moovie .panels .playlist ol.playlist {
-    overflow-x: hidden;
-    overflow-y: auto;
 }
 
 .moovie .controls .play, .moovie .controls .stop, .moovie .controls .previous, .moovie .controls .next, .moovie .controls .volume, .moovie .controls .settings, .moovie .controls .more, .moovie .controls .fullscreen {
