@@ -1,6 +1,410 @@
 /**
  * Moovie: an advanced HTML5 video player for MooTools.
  *
+ * Provides a basic implementation of the W3C HTMLTrackElement IDL.
+ *
+ * @version 0.4.1
+ * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
+ * @author Nathan Bishop <nbish11@hotmail.com>
+ * @copyright 2010 Colin Aarts
+ * @license MIT
+ */
+// @todo sort out crossorigin attribute/property as well...
+function HTMLTrackElement(trackElement) {
+    var readyState = 0;
+    var textTrack = new TextTrack(trackElement);    // sets up defaults from attributes and gets media element
+    var request = new Request({
+        url: trackElement.get('src'),
+        // onLoading: function () {readyState = 1;},
+        onSuccess: function (data) {
+            var parser;
+
+            if (trackElement.get('src').split('.').pop() === 'srt') {
+                parser = new WebSRT.Parser();
+            } else {
+                parser = new WebVTT.Parser(window, WebVTT.StringDecoder());
+            }
+
+            parser.oncue = function (cue) {
+                textTrack.addCue(cue);
+            };
+
+            parser.onparsingerror = function () {
+                readyState = 3;
+            };
+
+            parser.onflush = function () {
+                readyState = 2;
+            };
+
+            parser.parse(data);
+            parser.flush();
+            readyState = 1;
+        },
+        onError: function () {
+            readyState = 3;
+        }
+    });
+
+    request.send();
+
+    Object.defineProperties(trackElement, {
+        kind: {
+            get: function () {
+                return this.get('kind') || textTrack.kind;  // missing value default (retrieved from TextTrack obj)
+            },
+            set: function (kind) {
+                if (TextTrackKind.contains(kind)) {
+                    this.set('kind', kind);
+                } else {
+                    this.set('kind', 'metadata');   // invalid value default
+                }
+            }
+        },
+
+        src: {
+            get: function () {
+                return this.get('src');
+            },
+            set: function (src) {
+                this.set('src', src);
+            }
+        },
+
+        srclang: {
+            get: function () {
+                return this.get('srclang');
+            },
+            set: function (srclang) {
+                this.set('src', srclang);
+            }
+        },
+
+        label: {
+            get: function () {
+                return this.get('label');
+            },
+            set: function (label) {
+                this.set('label', label);
+            }
+        },
+
+        default: {
+            get: function () {
+                return this.hasAttribute('default');
+            },
+            set: function (isDefault) {
+                if (isDefault) {
+                    this.setAttribute('default', '');
+                } else {
+                    this.removeAttribute('default');
+                }
+            }
+        },
+
+        NONE: {
+            get: function () {
+                return 0;
+            }
+        },
+
+        LOADING: {
+            get: function () {
+                return 1;
+            }
+        },
+
+        LOADED: {
+            get: function () {
+                return 2;
+            }
+        },
+
+        ERROR: {
+            get: function () {
+                return 3;
+            }
+        },
+
+        readyState: {
+            get: function () {
+                return readyState;
+            }
+        },
+
+        track: {
+            get: function () {
+                return textTrack;
+            }
+        }
+    });
+
+    // You can check to see if a <track> element has been
+    // polyfilled by Moovie, by checking for this property.
+    trackElement.$track = true;
+
+    return trackElement;
+}
+
+Element.implement({
+    toHTMLTrackElement: function () {
+        // @todo add tag checks
+        return new HTMLTrackElement(this);
+    }
+});
+
+/**
+ * Moovie: an advanced HTML5 video player for MooTools.
+ *
+ * Provides an SRTCue object for the WebSRT parser. While the SRT standard
+ * doesn't really support any of the VTT properties, it does make it easier to
+ * process both .srt and .vtt inside Moovie when vtt.js uses the same cue type.
+ *
+ * @link https://github.com/mozilla/vtt.js
+ * @version 0.4.1
+ * @author vtt.js Contributors (https://github.com/mozilla/vtt.js/blob/master/AUTHORS)
+ * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
+ * @author Nathan Bishop <nbish11@hotmail.com>
+ * @copyright 2010 Colin Aarts
+ * @license MIT
+ */
+window.SRTCue = window.VTTCue;
+
+/**
+ * Moovie: an advanced HTML5 video player for MooTools.
+ *
+ * Provides a basic implementation of the W3C TextTrack IDL.
+ *
+ * @version 0.4.1
+ * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
+ * @author Nathan Bishop <nbish11@hotmail.com>
+ * @copyright 2010 Colin Aarts
+ * @license MIT
+ */
+function TextTrack(trackElement) {  // eslint-disable-line no-unused-vars
+    var kind = '';
+    var label = '';
+    var mode = 'disabled';
+    var language = '';
+    var id = '';
+    var inBandMetadataTrackDispatchType = '';
+    var cues = [];
+    var activeCues = [];
+    var media = trackElement.getParent('video');
+
+    if (!kind) {
+        kind = 'subtitles'; // missing value default
+    } else if (!TextTrackKind.contains(kind)) {
+        kind = 'metadata';  // invalid value default
+    }
+
+    media.addEvent('timeupdate', function () {
+        var processingTime = 0.39;
+        var time = media.currentTime + processingTime;
+        var i;
+        var l;
+        var cue;
+
+        for (i = 0, l = activeCues.length; i < l; i++) {
+            cue = activeCues[i];
+
+            if (cue.startTime > time || cue.endTime < time) {
+                activeCues.splice(i, 1);
+                i--;
+
+                if (cue.pauseOnExit) {
+                    media.pause();
+                }
+
+                // cueexit
+            }
+        }
+
+        for (i = 0, l = cues.length; i < l; i++) {
+            cue = cues[i];
+
+            if ((cue.startTime <= time) && (cue.endTime >= time) && !activeCues.contains(cue)) {
+                //if (mode == 'showing' || mode == 'hidden') {
+                activeCues.push(cue);
+                // cueenter
+                //}
+            }
+        }
+    });
+
+    Object.defineProperties(this, {
+        kind: {
+            get: function () {
+                return kind;
+            }
+        },
+
+        label: {
+            get: function () {
+                return label;
+            }
+        },
+
+        language: {
+            get: function () {
+                return language;
+            }
+        },
+
+        id: {
+            get: function () {
+                return id;
+            }
+        },
+
+        inBandMetadataTrackDispatchType: {
+            get: function () {
+                return inBandMetadataTrackDispatchType;
+            }
+        },
+
+        mode: {
+            get: function () {
+                return mode;
+            },
+
+            set: function (value) {
+                if (TextTrackMode.contains(value)) {
+                    mode = value;
+                }
+            }
+        },
+
+        cues: {
+            get: function () {
+                return cues;
+            }
+        },
+
+        activeCues: {
+            get: function () {
+                return activeCues;
+            }
+        },
+
+        addCue: {
+            value: function (cue) {
+                cues.push(cue);
+            }
+        },
+
+        removeCue: {
+            value: function (cue) {
+                cues.remove(cue);
+            }
+        },
+
+        oncuechange: {
+            value: function () {}
+        }
+    });
+}
+
+/**
+ * Moovie: an advanced HTML5 video player for MooTools.
+ *
+ * Enum for the W3C TextTrackKind IDL.
+ *
+ * @version 0.4.1
+ * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
+ * @author Nathan Bishop <nbish11@hotmail.com>
+ * @copyright 2010 Colin Aarts
+ * @license MIT
+ */
+// eslint-disable-next-line
+var TextTrackKind = ['subtitles', 'captions', 'descriptions', 'chapters', 'metadata'];
+
+/**
+ * Moovie: an advanced HTML5 video player for MooTools.
+ *
+ * Enum for the W3C TextTrackMode IDL.
+ *
+ * @version 0.4.1
+ * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
+ * @author Nathan Bishop <nbish11@hotmail.com>
+ * @copyright 2010 Colin Aarts
+ * @license MIT
+ */
+// eslint-disable-next-line
+var TextTrackMode = ['disabled', 'showing', 'hidden'];
+
+/**
+ * Moovie: an advanced HTML5 video player for MooTools.
+ *
+ * Gives Moovie the ability to support .srt files using <track> elements.
+ *
+ * @version 0.4.1
+ * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
+ * @author Nathan Bishop <nbish11@hotmail.com>
+ * @copyright 2010 Colin Aarts
+ * @license MIT
+ */
+// eslint-disable-next-line
+var WebSRT = {};
+
+WebSRT.Parser = new Class({
+    initialize: function () {
+        this.oncue = function () {};
+        this.onflush = function () {};
+        this.onparsingerror = function () {};
+        this.buffer = '';
+        this.cues = [];
+    },
+
+    computeSeconds: function (h, m, s, f) {
+        return (h | 0) * 3600 + (m | 0) * 60 + (s | 0) + (f | 0) / 1000;
+    },
+
+    // Timestamp must take the form of [hours]:[minutes]:[seconds],[milliseconds]
+    parseTimeStamp: function (input) {
+        var m = input.match(/^(\d{2}):(\d{2}):(\d{2}),(\d{3})/);
+
+        if (!m) {
+            return null;
+        }
+
+        return this.computeSeconds(m[1], m[2], m[3], m[4]);
+    },
+
+    parse: function (data) {
+        this.buffer = this.buffer + data;
+    },
+
+    flush: function () {
+        var self = this;
+        var rawCues = this.buffer.replace(/\r?\n/gm, '\n').trim().split('\n\n');
+
+        rawCues.each(function (cue) {
+            cue = cue.split('\n');
+
+            var cueid = cue.shift();
+            var cuetc = cue.shift().split(' --> ');
+            var cuetx = cue.join('\n');
+
+            cue = new SRTCue(
+                self.parseTimeStamp(cuetc[0]),
+                self.parseTimeStamp(cuetc[1]),
+                cuetx
+            );
+
+            cue.id = cueid;
+
+            self.cues.push(cue);
+            self.oncue.call(self, cue);
+        });
+
+        this.onflush.call(this, self.cues);
+    }
+});
+
+/**
+ * Moovie: an advanced HTML5 video player for MooTools.
+ *
  * @see http://colinaarts.com/code/moovie
  * @version 0.4.1
  * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
@@ -15,7 +419,9 @@ var Moovie = new Class({
         debugger: {},
         title: {},
         autohideControls: true,
-        playlist: []
+        playlist: [],
+        useNativeTextTracks: false,
+        polyfill: false             // disables everything but controls (minimum-style) and overlay
     },
 
     initialize: function (video, options) {
@@ -32,14 +438,19 @@ var Moovie = new Class({
 
         var playlist = [];
 
+        // eslint-disable-next-line
+        var hasFullscreenSupport = 'requestFullscreen' in document.createElement('div');
+        var hasTrackSupport = 'track' in document.createElement('track');
+
         if (typeOf(options.playlist) === 'array') {
             playlist.combine(options.playlist);
 
             // Add the current video to the playlist stack
             playlist.unshift({
                 id: video.get('id'),
+                title: video.get('title') || Moovie.Util.basename(video.currentSrc || video.src),
                 src: video.currentSrc || video.src,
-                title: video.get('title') || Moovie.Util.basename(video.currentSrc || video.src)
+                tracks: this.serializeTracks(video)
             });
         }
 
@@ -47,6 +458,7 @@ var Moovie = new Class({
 
         // Grab some refs
         // @bug Native textTracks won't work unless the video is cloned.
+        // @todo cloning no longer needed as we are rendering the text tracks ourselves
         var container = new Element('div.moovie');
         var wrapper = new Element('div.wrapper');
         container.replaces(video);
@@ -69,6 +481,9 @@ var Moovie = new Class({
         var muted = video.muted;
         var self = this;
         var current = this.playlist.current();
+
+        var textTrackContainer = new Element('div.text-track-container');
+        textTrackContainer.inject(video, 'after');
 
         this.overlay = new Element('div.overlay');
         this.title = new Moovie.Title(this.options.title);
@@ -100,7 +515,7 @@ var Moovie = new Class({
         ');
 
         var autohideControls = options.autohideControls;
-        var showCaptions = !!video.getElement('track[default]');
+        var showCaptions = !!video.getChildren('track').length;
 
         // Content for `settings` panel
         panels.settings.set('html', '\
@@ -157,6 +572,23 @@ var Moovie = new Class({
             }
         };
 
+        textTrackContainer.update = function () {
+            this.setStyles({
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: self.controls.getDimensions().y,
+                'pointer-events': 'none'
+            });
+
+            if (hasTrackSupport) {
+                self.disableNativeTextTracks();
+            }
+
+            self.implementTextTracks();
+        };
+
         this.playlist.addEvent('show', function () {
             panels.update('none');
             this.element.addClass('active');
@@ -170,12 +602,20 @@ var Moovie = new Class({
         });
 
         this.playlist.addEvent('select', function (current) {
+            var trackElements = Array.convert(current.tracks).map(function (trackObj) {
+                return new Element('track', trackObj);
+            });
+
             panels.info.getElement('dt.title + dd').set('html', current.title || Moovie.Util.basename(current.src));
             panels.info.getElement('dt.url + dd').set('html', current.src);
             self.title.update(current.title || Moovie.Util.basename(current.src));
             self.title.show();
 
+            video.getChildren('track').destroy();
+            video.adopt(trackElements);
+            video.poster = current.poster;
             video.src = current.src;
+
             video.load();
             video.play();
         });
@@ -217,7 +657,7 @@ var Moovie = new Class({
                 break;
 
             case 'captions':
-                video.getElement('track[default]').track.mode = (checked === 'true' ? 'showing' : 'hidden');
+                textTrackContainer.setStyle('display', checked == 'true' ? 'block' : 'none');
                 break;
 
             case 'debugger':
@@ -283,10 +723,18 @@ var Moovie = new Class({
                 var pct = video.currentTime / video.duration * 100;
                 var offset = self.controls.seekbar.track.getSize().x / 100 * pct;
                 var pos = offset + self.controls.seekbar.knob.left;
+                var trackElements = self.video.getChildren('track');
+                var activeCues = [];
 
                 self.controls.elapsed.set('text', Moovie.Util.formatTime(video.currentTime));
                 self.controls.seekbar.played.setStyle('width', pct + '%');
                 self.controls.seekbar.knob.setStyle('left', pos + 'px');
+
+                Array.each(trackElements, function (trackElement) {
+                    return activeCues.combine(trackElement.track.activeCues);
+                });
+
+                WebVTT.processCues(window, activeCues, wrapper.getElement('.text-track-container'));
             },
 
             durationchange: function() {
@@ -330,9 +778,9 @@ var Moovie = new Class({
                 // Doit(video);
             },
 
-            emptied: function() {
-                // video.Moovie = null;
-                // Doit(video);
+            loadstart: function () {
+                textTrackContainer.update();
+                //console.log('loadstart');
             }
         });
 
@@ -340,6 +788,12 @@ var Moovie = new Class({
         if (!video.autoplay) {
             container.set('data-playbackstate', 'stopped');
         }
+
+        if (video.readyState >= 1) {
+            textTrackContainer.update();
+        }
+
+        textTrackContainer.setStyle('display', showCaptions ? 'block' : 'none');
 
         // eslint-disable-next-line
         var tips = new Tips(wrapper.getElements('[title]'), {
@@ -349,6 +803,30 @@ var Moovie = new Class({
                 return el.get('title');
             }
         });
+    },
+
+    serializeTracks: function (video) {
+        return video.getChildren('track')
+            .map(function (trackElement) {
+                var serialized = {};
+                var attributes = trackElement.attributes;
+
+                for (var i = 0, l = attributes.length; i < l; i++) {
+                    serialized[attributes[i].name] = attributes[i].value;
+                }
+
+                return serialized;
+            });
+    },
+
+    disableNativeTextTracks: function () {
+        for (var i = 0, l = this.video.textTracks; i < l; i++) {
+            this.video.textTracks[i].mode = 'disabled';
+        }
+    },
+
+    implementTextTracks: function () {
+        this.video.getChildren('track').toHTMLTrackElement();
     },
 
     buildControls: function () {

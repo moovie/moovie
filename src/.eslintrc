@@ -50,6 +50,12 @@
         "Window": false,
 
         "Moovie": false,
+        "WebVTT": false,
+        "WebSRT": false,
+        "TextTrackKind": false,
+        "TextTrackMode": false,
+        "SRTCue": false,
+        "VTTCue": false,
         "screenfull": false
     }
 }

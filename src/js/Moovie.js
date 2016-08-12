@@ -15,7 +15,9 @@ var Moovie = new Class({
         debugger: {},
         title: {},
         autohideControls: true,
-        playlist: []
+        playlist: [],
+        useNativeTextTracks: false,
+        polyfill: false             // disables everything but controls (minimum-style) and overlay
     },
 
     initialize: function (video, options) {
@@ -32,14 +34,19 @@ var Moovie = new Class({
 
         var playlist = [];
 
+        // eslint-disable-next-line
+        var hasFullscreenSupport = 'requestFullscreen' in document.createElement('div');
+        var hasTrackSupport = 'track' in document.createElement('track');
+
         if (typeOf(options.playlist) === 'array') {
             playlist.combine(options.playlist);
 
             // Add the current video to the playlist stack
             playlist.unshift({
                 id: video.get('id'),
+                title: video.get('title') || Moovie.Util.basename(video.currentSrc || video.src),
                 src: video.currentSrc || video.src,
-                title: video.get('title') || Moovie.Util.basename(video.currentSrc || video.src)
+                tracks: this.serializeTracks(video)
             });
         }
 
@@ -47,6 +54,7 @@ var Moovie = new Class({
 
         // Grab some refs
         // @bug Native textTracks won't work unless the video is cloned.
+        // @todo cloning no longer needed as we are rendering the text tracks ourselves
         var container = new Element('div.moovie');
         var wrapper = new Element('div.wrapper');
         container.replaces(video);
@@ -69,6 +77,9 @@ var Moovie = new Class({
         var muted = video.muted;
         var self = this;
         var current = this.playlist.current();
+
+        var textTrackContainer = new Element('div.text-track-container');
+        textTrackContainer.inject(video, 'after');
 
         this.overlay = new Element('div.overlay');
         this.title = new Moovie.Title(this.options.title);
@@ -100,7 +111,7 @@ var Moovie = new Class({
         ');
 
         var autohideControls = options.autohideControls;
-        var showCaptions = !!video.getElement('track[default]');
+        var showCaptions = !!video.getChildren('track').length;
 
         // Content for `settings` panel
         panels.settings.set('html', '\
@@ -157,6 +168,23 @@ var Moovie = new Class({
             }
         };
 
+        textTrackContainer.update = function () {
+            this.setStyles({
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: self.controls.getDimensions().y,
+                'pointer-events': 'none'
+            });
+
+            if (hasTrackSupport) {
+                self.disableNativeTextTracks();
+            }
+
+            self.implementTextTracks();
+        };
+
         this.playlist.addEvent('show', function () {
             panels.update('none');
             this.element.addClass('active');
@@ -170,12 +198,20 @@ var Moovie = new Class({
         });
 
         this.playlist.addEvent('select', function (current) {
+            var trackElements = Array.convert(current.tracks).map(function (trackObj) {
+                return new Element('track', trackObj);
+            });
+
             panels.info.getElement('dt.title + dd').set('html', current.title || Moovie.Util.basename(current.src));
             panels.info.getElement('dt.url + dd').set('html', current.src);
             self.title.update(current.title || Moovie.Util.basename(current.src));
             self.title.show();
 
+            video.getChildren('track').destroy();
+            video.adopt(trackElements);
+            video.poster = current.poster;
             video.src = current.src;
+
             video.load();
             video.play();
         });
@@ -217,7 +253,7 @@ var Moovie = new Class({
                 break;
 
             case 'captions':
-                video.getElement('track[default]').track.mode = (checked === 'true' ? 'showing' : 'hidden');
+                textTrackContainer.setStyle('display', checked == 'true' ? 'block' : 'none');
                 break;
 
             case 'debugger':
@@ -283,10 +319,18 @@ var Moovie = new Class({
                 var pct = video.currentTime / video.duration * 100;
                 var offset = self.controls.seekbar.track.getSize().x / 100 * pct;
                 var pos = offset + self.controls.seekbar.knob.left;
+                var trackElements = self.video.getChildren('track');
+                var activeCues = [];
 
                 self.controls.elapsed.set('text', Moovie.Util.formatTime(video.currentTime));
                 self.controls.seekbar.played.setStyle('width', pct + '%');
                 self.controls.seekbar.knob.setStyle('left', pos + 'px');
+
+                Array.each(trackElements, function (trackElement) {
+                    return activeCues.combine(trackElement.track.activeCues);
+                });
+
+                WebVTT.processCues(window, activeCues, wrapper.getElement('.text-track-container'));
             },
 
             durationchange: function() {
@@ -330,9 +374,9 @@ var Moovie = new Class({
                 // Doit(video);
             },
 
-            emptied: function() {
-                // video.Moovie = null;
-                // Doit(video);
+            loadstart: function () {
+                textTrackContainer.update();
+                //console.log('loadstart');
             }
         });
 
@@ -340,6 +384,12 @@ var Moovie = new Class({
         if (!video.autoplay) {
             container.set('data-playbackstate', 'stopped');
         }
+
+        if (video.readyState >= 1) {
+            textTrackContainer.update();
+        }
+
+        textTrackContainer.setStyle('display', showCaptions ? 'block' : 'none');
 
         // eslint-disable-next-line
         var tips = new Tips(wrapper.getElements('[title]'), {
@@ -349,6 +399,30 @@ var Moovie = new Class({
                 return el.get('title');
             }
         });
+    },
+
+    serializeTracks: function (video) {
+        return video.getChildren('track')
+            .map(function (trackElement) {
+                var serialized = {};
+                var attributes = trackElement.attributes;
+
+                for (var i = 0, l = attributes.length; i < l; i++) {
+                    serialized[attributes[i].name] = attributes[i].value;
+                }
+
+                return serialized;
+            });
+    },
+
+    disableNativeTextTracks: function () {
+        for (var i = 0, l = this.video.textTracks; i < l; i++) {
+            this.video.textTracks[i].mode = 'disabled';
+        }
+    },
+
+    implementTextTracks: function () {
+        this.video.getChildren('track').toHTMLTrackElement();
     },
 
     buildControls: function () {
