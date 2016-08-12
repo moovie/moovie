@@ -3,7 +3,7 @@
  *
  * The "Title" module for the Moovie player.
  *
- * @version 0.4.1
+ * @version 0.4.2
  * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
  * @author Nathan Bishop <nbish11@hotmail.com>
  * @copyright 2010 Colin Aarts
