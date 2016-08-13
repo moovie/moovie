@@ -1,7 +1,7 @@
 /**
  * Moovie: an advanced HTML5 video player for MooTools.
  *
- * A plugin to allow Moovie players to view video info live.
+ * Currently supported HTML5 media events.
  *
  * @version 0.4.2
  * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
@@ -9,7 +9,7 @@
  * @copyright 2010 Colin Aarts
  * @license MIT
  */
-Moovie.Debugger = new Class({
+const Debugger = new Class({
     Implements: [Options],
 
     options: {
@@ -218,3 +218,5 @@ Moovie.Debugger = new Class({
         };
     }
 });
+
+export { Debugger as default };

@@ -9,5 +9,12 @@
  * @copyright 2010 Colin Aarts
  * @license MIT
  */
-// eslint-disable-next-line
-var TextTrackKind = ['subtitles', 'captions', 'descriptions', 'chapters', 'metadata'];
+const TextTrackKind = [
+    'subtitles',
+    'captions',
+    'descriptions',
+    'chapters',
+    'metadata'
+];
+
+export { TextTrackKind as default };

@@ -20,12 +20,8 @@
         </video>
 
         <script src="vendor/mootools/dist/mootools-core.min.js"></script>
-        <script src="vendor/mootools-more/Source/Types/URI.js"></script>
-        <script src="vendor/mootools-more/Source/Drag/Drag.js"></script>
-        <script src="vendor/mootools-more/Source/Interface/Tips.js"></script>
         <script src="vendor/mootools-more/Source/Element/Element.Measure.js"></script>
-        <script src="vendor/screenfull/dist/screenfull.min.js"></script>
-        <script src="vendor/vtt.js/vtt.min.js"></script>
+        <script src="vendor/mootools-more/Source/Interface/Tips.js"></script>
         <script src="dist/moovie.js"></script>
         <script>
             (function () {

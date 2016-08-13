@@ -1,7 +1,7 @@
 /**
  * Moovie: an advanced HTML5 video player for MooTools.
  *
- * The "Title" module for the Moovie player.
+ * Currently supported HTML5 media events.
  *
  * @version 0.4.2
  * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
@@ -9,7 +9,7 @@
  * @copyright 2010 Colin Aarts
  * @license MIT
  */
-Moovie.Title = new Class({
+const Title = new Class({
     Implements: [Events, Options],
 
     options: {/*
@@ -72,3 +72,5 @@ Moovie.Title = new Class({
         return this.element;
     }
 });
+
+export { Title as default };

@@ -1,4 +1,7 @@
-describe('Moovie.Playlist', function () {
+import sinon from 'sinon';
+import Playlist from '../../src/js/Playlist.js';
+
+describe('Playlist', function () {
     beforeEach(function () {
         this.items = [
             {
@@ -16,21 +19,17 @@ describe('Moovie.Playlist', function () {
         ];
     });
 
-    it('should be defined', function () {
-        expect(Moovie.Playlist).toBeDefined();
-    });
-
-    describe('initialize()', function () {
+    describe('#initialize()', function () {
         it('should be hidden', function () {
-            var playlist = new Moovie.Playlist();
+            var playlist = new Playlist();
 
             expect(playlist.isHidden()).toBe(true);
         });
     });
 
-    describe('show()', function () {
+    describe('#show()', function () {
         it('should not be hidden', function () {
-            var playlist = new Moovie.Playlist();
+            var playlist = new Playlist();
 
             playlist.show();
 
@@ -38,7 +37,7 @@ describe('Moovie.Playlist', function () {
         });
 
         it('should fire an event', function () {
-            var playlist = new Moovie.Playlist();
+            var playlist = new Playlist();
             var spy = sinon.spy();
 
             playlist.addEvent('show', spy);
@@ -48,15 +47,15 @@ describe('Moovie.Playlist', function () {
         });
 
         it('should be chainable', function () {
-            var playlist = new Moovie.Playlist();
+            var playlist = new Playlist();
 
             expect(playlist.previous()).toBe(playlist);
         });
     });
 
-    describe('hide()', function () {
+    describe('#hide()', function () {
         it('should be hidden', function () {
-            var playlist = new Moovie.Playlist();
+            var playlist = new Playlist();
 
             playlist.hide();
 
@@ -64,7 +63,7 @@ describe('Moovie.Playlist', function () {
         });
 
         it('should fire an event', function () {
-            var playlist = new Moovie.Playlist();
+            var playlist = new Playlist();
             var spy = sinon.spy();
 
             playlist.addEvent('hide', spy);
@@ -74,68 +73,68 @@ describe('Moovie.Playlist', function () {
         });
 
         it('should be chainable', function () {
-            var playlist = new Moovie.Playlist();
+            var playlist = new Playlist();
 
             expect(playlist.previous()).toBe(playlist);
         });
     });
 
-    describe('size()', function () {
+    describe('#size()', function () {
         it('should return zero if the playlist is empty', function () {
-            var playlist = new Moovie.Playlist();
+            var playlist = new Playlist();
 
             expect(playlist.size()).toBe(0);
         });
 
         it('should return one if the playlist has only one item', function () {
-            var playlist = new Moovie.Playlist([this.items[0]]);
+            var playlist = new Playlist([this.items[0]]);
 
             expect(playlist.size()).toBe(1);
         });
 
         it('should return the correct size if the playlist contains multiple items', function () {
-            var playlist = new Moovie.Playlist(this.items);
+            var playlist = new Playlist(this.items);
 
             expect(playlist.size()).toBe(3);
         });
     });
 
-    describe('current()', function () {
+    describe('#current()', function () {
         it('should return nothing if the playlist is empty', function () {
-            var playlist = new Moovie.Playlist();
+            var playlist = new Playlist();
 
             expect(playlist.current()).toBe(null);
         });
 
         it('should return that item if the playlist only has one item', function () {
-            var playlist = new Moovie.Playlist([this.items[0]]);
+            var playlist = new Playlist([this.items[0]]);
 
             expect(playlist.current()).toBe(this.items[0]);
         });
 
         it('should return the first item if the playlist has multiple items', function () {
-            var playlist = new Moovie.Playlist(this.items);
+            var playlist = new Playlist(this.items);
 
             expect(playlist.current()).toBe(this.items[0]);
         });
     });
 
-    describe('hasPrevious()', function () {
+    describe('#hasPrevious()', function () {
         it('should return false if the playlist is empty', function () {
-            var playlist = new Moovie.Playlist();
+            var playlist = new Playlist();
 
             expect(playlist.hasPrevious()).toBe(false);
         });
 
         it('should return false if the playlist contains only one item', function () {
-            var playlist = new Moovie.Playlist([this.items[0]]);
+            var playlist = new Playlist([this.items[0]]);
 
             expect(playlist.hasPrevious()).toBe(false);
         });
 
-        context('if the playlist contains multiple items', function () {
+        context('when the playlist contains multiple items', function () {
             it('will return false if the first item is selected', function () {
-                var playlist = new Moovie.Playlist(this.items);
+                var playlist = new Playlist(this.items);
 
                 playlist.select(0);
 
@@ -143,7 +142,7 @@ describe('Moovie.Playlist', function () {
             });
 
             it('will return true if the first item is not selected', function () {
-                var playlist = new Moovie.Playlist(this.items);
+                var playlist = new Playlist(this.items);
 
                 playlist.select(1);
 
@@ -154,9 +153,9 @@ describe('Moovie.Playlist', function () {
 
     // Tests should not really have more than one expectaion, but here it is
     // neccessary. This simplifies our tests significantly.
-    describe('previous()', function () {
+    describe('#previous()', function () {
         it('should decline to the previous item until the first item is reached', function () {
-            var playlist = new Moovie.Playlist(this.items);
+            var playlist = new Playlist(this.items);
 
             playlist.select(2);
 
@@ -171,7 +170,7 @@ describe('Moovie.Playlist', function () {
         });
 
         it('should fire an event every time the playlist actually declines', function () {
-            var playlist = new Moovie.Playlist(this.items);
+            var playlist = new Playlist(this.items);
             var spy = sinon.spy();
 
             playlist.select(2);
@@ -188,28 +187,28 @@ describe('Moovie.Playlist', function () {
         });
 
         it('should be chainable', function () {
-            var playlist = new Moovie.Playlist();
+            var playlist = new Playlist();
 
             expect(playlist.previous()).toBe(playlist);
         });
     });
 
-    describe('hasNext()', function () {
+    describe('#hasNext()', function () {
         it('should return false if the playlist is empty', function () {
-            var playlist = new Moovie.Playlist();
+            var playlist = new Playlist();
 
             expect(playlist.hasNext()).toBe(false);
         });
 
         it('should return false if the playlist contains only one item', function () {
-            var playlist = new Moovie.Playlist([this.items[0]]);
+            var playlist = new Playlist([this.items[0]]);
 
             expect(playlist.hasNext()).toBe(false);
         });
 
-        context('if the playlist contains multiple items', function () {
+        context('when the playlist contains multiple items', function () {
             it('will return false if the last item is selected', function () {
-                var playlist = new Moovie.Playlist(this.items);
+                var playlist = new Playlist(this.items);
 
                 playlist.select(2);
 
@@ -217,7 +216,7 @@ describe('Moovie.Playlist', function () {
             });
 
             it('will return true if the last item is not selected', function () {
-                var playlist = new Moovie.Playlist(this.items);
+                var playlist = new Playlist(this.items);
 
                 playlist.select(1);
 
@@ -228,9 +227,9 @@ describe('Moovie.Playlist', function () {
 
     // Tests should not really have more than one expectaion, but here it is
     // neccessary. This simplifies our tests significantly.
-    describe('next()', function () {
+    describe('#next()', function () {
         it('should advance to the next item until the last item is reached', function () {
-            var playlist = new Moovie.Playlist(this.items);
+            var playlist = new Playlist(this.items);
 
             playlist.select(0);
 
@@ -245,7 +244,7 @@ describe('Moovie.Playlist', function () {
         });
 
         it('should fire an event every time the playlist actually advances', function () {
-            var playlist = new Moovie.Playlist(this.items);
+            var playlist = new Playlist(this.items);
             var spy = sinon.spy();
 
             playlist.select(0);
@@ -262,22 +261,22 @@ describe('Moovie.Playlist', function () {
         });
 
         it('should be chainable', function () {
-            var playlist = new Moovie.Playlist();
+            var playlist = new Playlist();
 
             expect(playlist.next()).toBe(playlist);
         });
     });
 
-    describe('select()', function () {
+    describe('#select()', function () {
         it('should be chainable', function () {
-            var playlist = new Moovie.Playlist();
+            var playlist = new Playlist();
 
             expect(playlist.select(0)).toBe(playlist);
         });
 
-        context('an empty playlist', function () {
+        context('when the playlist is empty', function () {
             it('does not change the current item when attempting to select an item', function () {
-                var playlist = new Moovie.Playlist();
+                var playlist = new Playlist();
 
                 playlist.select(0);
 
@@ -285,7 +284,7 @@ describe('Moovie.Playlist', function () {
             });
 
             it('does not fire an event when attempting to select an item', function () {
-                var playlist = new Moovie.Playlist();
+                var playlist = new Playlist();
                 var spy = sinon.spy();
 
                 playlist.addEvent('select', spy);
@@ -295,9 +294,9 @@ describe('Moovie.Playlist', function () {
             });
         });
 
-        context('a playlist consisting of only one item', function () {
+        context('when the playlist only has one item', function () {
             it('always returns the same item regardless of the value', function () {
-                var playlist = new Moovie.Playlist([this.items[0]]);
+                var playlist = new Playlist([this.items[0]]);
                 var current = playlist.current();
 
                 playlist.select(-1);
@@ -311,7 +310,7 @@ describe('Moovie.Playlist', function () {
             });
 
             it('never fires an event unless the value is zero', function () {
-                var playlist = new Moovie.Playlist([this.items[0]]);
+                var playlist = new Playlist([this.items[0]]);
                 var spy = sinon.spy();
 
                 playlist.addEvent('select', spy);
@@ -324,9 +323,9 @@ describe('Moovie.Playlist', function () {
             });
         });
 
-        context('a playlist consisting of multiple items', function () {
+        context('when the playlist contains multiple items', function () {
             it('does not change the current item if the value is negative', function () {
-                var playlist = new Moovie.Playlist(this.items);
+                var playlist = new Playlist(this.items);
                 var current = playlist.current();
 
                 playlist.select(-1);
@@ -335,7 +334,7 @@ describe('Moovie.Playlist', function () {
             });
 
             it('does not change the current item if the value is equal to the playlist size', function () {
-                var playlist = new Moovie.Playlist(this.items);
+                var playlist = new Playlist(this.items);
                 var current = playlist.current();
 
                 playlist.select(playlist.size());
@@ -344,7 +343,7 @@ describe('Moovie.Playlist', function () {
             });
 
             it('does not change the current item if the value is greater than the playlist size', function () {
-                var playlist = new Moovie.Playlist(this.items);
+                var playlist = new Playlist(this.items);
                 var current = playlist.current();
 
                 playlist.select(playlist.size() + 1);
@@ -353,7 +352,7 @@ describe('Moovie.Playlist', function () {
             });
 
             it('does not fire an event if the value is negative', function () {
-                var playlist = new Moovie.Playlist(this.items);
+                var playlist = new Playlist(this.items);
                 var spy = sinon.spy();
 
                 playlist.addEvent('select', spy);
@@ -363,7 +362,7 @@ describe('Moovie.Playlist', function () {
             });
 
             it('does not fire an event if the value is equal to the playlist size', function () {
-                var playlist = new Moovie.Playlist(this.items);
+                var playlist = new Playlist(this.items);
                 var spy = sinon.spy();
 
                 playlist.addEvent('select', spy);
@@ -373,7 +372,7 @@ describe('Moovie.Playlist', function () {
             });
 
             it('does not fire an event if the value is greater than the playlist size', function () {
-                var playlist = new Moovie.Playlist(this.items);
+                var playlist = new Playlist(this.items);
                 var spy = sinon.spy();
 
                 playlist.addEvent('select', spy);
@@ -383,7 +382,7 @@ describe('Moovie.Playlist', function () {
             });
 
             it('will change the current item if the value is valid', function () {
-                var playlist = new Moovie.Playlist(this.items);
+                var playlist = new Playlist(this.items);
 
                 playlist.select(1);
 
@@ -391,7 +390,7 @@ describe('Moovie.Playlist', function () {
             });
 
             it('will fire an event if the value is valid', function () {
-                var playlist = new Moovie.Playlist(this.items);
+                var playlist = new Playlist(this.items);
                 var spy = sinon.spy();
 
                 playlist.addEvent('select', spy);

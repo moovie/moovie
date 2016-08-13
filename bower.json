@@ -25,8 +25,6 @@
   ],
   "dependencies": {
     "mootools": "^1.6.0",
-    "mootools-more": "^1.6.0",
-    "screenfull": "^3.0.0",
-    "vtt.js": "^0.12.1"
+    "mootools-more": "^1.6.0"
   }
 }

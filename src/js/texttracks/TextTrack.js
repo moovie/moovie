@@ -9,7 +9,10 @@
  * @copyright 2010 Colin Aarts
  * @license MIT
  */
-function TextTrack(trackElement) {  // eslint-disable-line no-unused-vars
+import TextTrackKind from './TextTrackKind';
+import TextTrackMode from './TextTrackMode';
+
+const TextTrack = function TextTrack(trackElement) {
     var kind = '';
     var label = '';
     var mode = 'disabled';
@@ -131,4 +134,6 @@ function TextTrack(trackElement) {  // eslint-disable-line no-unused-vars
             value: function () {}
         }
     });
-}
+};
+
+export { TextTrack as default };

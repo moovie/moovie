@@ -9,8 +9,9 @@
  * @copyright 2010 Colin Aarts
  * @license MIT
  */
-// eslint-disable-next-line
-var WebSRT = {};
+import SRTCue from './SRTCue';
+
+const WebSRT = {};
 
 WebSRT.Parser = new Class({
     initialize: function () {
@@ -66,3 +67,5 @@ WebSRT.Parser = new Class({
         this.onflush.call(this, self.cues);
     }
 });
+
+export { WebSRT as default };

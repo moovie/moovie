@@ -9,8 +9,14 @@
  * @copyright 2010 Colin Aarts
  * @license MIT
  */
+// import window from 'global/window';
+import TextTrack from './TextTrack.js';
+import { WebVTT } from 'vtt.js';
+import WebSRT from './WebSRT.js';
+import TextTrackKind from './TextTrackKind';
+
 // @todo sort out crossorigin attribute/property as well...
-function HTMLTrackElement(trackElement) {
+const HTMLTrackElement = function HTMLTrackElement(trackElement) {
     var readyState = 0;
     var textTrack = new TextTrack(trackElement);    // sets up defaults from attributes and gets media element
     var request = new Request({
@@ -144,11 +150,6 @@ function HTMLTrackElement(trackElement) {
     trackElement.$track = true;
 
     return trackElement;
-}
+};
 
-Element.implement({
-    toHTMLTrackElement: function () {
-        // @todo add tag checks
-        return new HTMLTrackElement(this);
-    }
-});
+export { HTMLTrackElement as default };

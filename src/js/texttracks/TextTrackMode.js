@@ -9,5 +9,10 @@
  * @copyright 2010 Colin Aarts
  * @license MIT
  */
-// eslint-disable-next-line
-var TextTrackMode = ['disabled', 'showing', 'hidden'];
+const TextTrackMode = [
+    'disabled',
+    'showing',
+    'hidden'
+];
+
+export { TextTrackMode as default };

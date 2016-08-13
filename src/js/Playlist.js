@@ -1,7 +1,7 @@
 /**
  * Moovie: an advanced HTML5 video player for MooTools.
  *
- * Allows manipulation of a collection of videos.
+ * Currently supported HTML5 media events.
  *
  * @version 0.4.2
  * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
@@ -9,7 +9,9 @@
  * @copyright 2010 Colin Aarts
  * @license MIT
  */
-Moovie.Playlist = new Class({
+import basename from './utils/basename.js';
+
+const Playlist = new Class({
     Implements: [Events, Options],
 
     options: {/*
@@ -56,7 +58,7 @@ Moovie.Playlist = new Class({
                     'html': '\
                       <div class="checkbox-widget" data-checked="true">\
                         <div class="checkbox"></div>\
-                        <div class="label">' + (el.title || Moovie.Util.basename(el.src)) + '</div>\
+                        <div class="label">' + (el.title || basename(el.src)) + '</div>\
                       </div>\
                     '
                 }));
@@ -128,3 +130,5 @@ Moovie.Playlist = new Class({
         return this.element;
     }
 });
+
+export { Playlist as default };

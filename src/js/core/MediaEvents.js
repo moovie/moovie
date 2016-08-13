@@ -9,7 +9,8 @@
  * @copyright 2010 Colin Aarts
  * @license MIT
  */
-Moovie.MediaEvents = {
+// @todo change to enum type
+const MediaEvents = {
     abort: 1,
     canplay: 1,
     canplaythrough: 1,
@@ -33,3 +34,5 @@ Moovie.MediaEvents = {
     volumechange: 1,
     waiting: 1
 };
+
+export { MediaEvents as default };

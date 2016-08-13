@@ -1,9 +1,11 @@
 {
     "env": {
-        "browser": true,
-        "node": true,
-        "jasmine": true,
-        "phantomjs": true
+        "jasmine": true
+    },
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module",
+        "impliedStrict": true
     },
     "globals": {
         "$": false,
@@ -11,8 +13,6 @@
         "Element": false,
         "instanceOf": false,
         "typeOf": false,
-        "Moovie": false,
-        "sinon": false,
         "context": false
     }
 }

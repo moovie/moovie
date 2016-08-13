@@ -4,44 +4,33 @@ module.exports = function (config) {
 
     config.set({
         // base path that will be used to resolve all patterns (eg. files, exclude)
-        basePath: '',
+        basePath: '../',
 
         // frameworks to use
         // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-        frameworks: ['mocha', 'sinon'],
+        frameworks: ['browserify', 'mocha', 'detectBrowsers'],
 
         // list of files / patterns to load in the browser
         files: [
-            // dependencies
             'vendor/mootools/dist/mootools-core.min.js',
-            'vendor/mootools-more/Source/Types/URI.js',
-            'vendor/mootools-more/Source/Drag/Drag.js',
+            'vendor/mootools-more/Source/Element/Element.Measure.js',
             'vendor/mootools-more/Source/Interface/Tips.js',
-            'vendor/screenfull/dist/screenfull.min.js',
-
-            // source
-            'src/js/Moovie.js',
-            'src/js/Moovie.*.js',
-
-            // specs
-            'tests/specs/Moovie.js',
-            'tests/specs/Moovie.*.js'
+            'tests/**/*.js'
         ],
 
         // list of files to exclude
-        exclude: [
-        ],
+        exclude: [],
 
         // preprocess matching files before serving them to the browser
         // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
         preprocessors: {
-            'src/js/*.js': ['coverage']
+            'tests/**/*.js': ['browserify'],
         },
 
         // test results reporter to use
         // possible values: 'dots', 'progress'
         // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-        reporters: ['mocha', 'coverage'],
+        reporters: ['mocha'],
 
         // web server port
         port: 9876,
@@ -58,7 +47,7 @@ module.exports = function (config) {
 
         // start these browsers
         // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-        browsers: [/*'Chrome',*/ 'Firefox', /*'Safari', 'Opera', 'IE',*/],
+        browsers: [],
 
         // Continuous Integration mode
         // if true, Karma captures browsers, runs the tests and exits
@@ -68,7 +57,13 @@ module.exports = function (config) {
         // how many browser should be started simultaneous
         concurrency: Infinity,
 
-        // mocha options
+        browserify: {
+            debug: true,
+            transform: [
+                ['babelify', { presets: ['es2015'] }]
+            ]
+        },
+
         client: {
             mocha: {
                 // I'm using Jasmine-style matchers here.
@@ -79,22 +74,9 @@ module.exports = function (config) {
             }
         },
 
-        // All coverage can be found in either the "build/coverage"
-        // or "build/logs" directories
-        coverageReporter: {
-            dir: 'build',
-            reporters: [
-                {
-                    type: 'html',
-                    subdir: function (browser) {
-                        return 'coverage/' + browser.toLowerCase().split(/[ /-]/)[0];
-                    }
-                },
-                {
-                    type: 'lcovonly',
-                    subdir: 'logs'
-                }
-            ]
+        detectBrowsers: {
+            // phantomjs does not support the <video> element
+            usePhantomJS: false,
         }
     });
 };

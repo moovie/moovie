@@ -2,6 +2,11 @@
     "env": {
         "browser": true
     },
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module",
+        "impliedStrict": true
+    },
     "globals": {
         "$": false,
         "$$": false,
@@ -47,15 +52,6 @@
         "Type": false,
         "typeOf": false,
         "URI": false,
-        "Window": false,
-
-        "Moovie": false,
-        "WebVTT": false,
-        "WebSRT": false,
-        "TextTrackKind": false,
-        "TextTrackMode": false,
-        "SRTCue": false,
-        "VTTCue": false,
-        "screenfull": false
+        "Window": false
     }
 }

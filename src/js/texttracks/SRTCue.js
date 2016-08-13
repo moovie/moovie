@@ -13,4 +13,8 @@
  * @copyright 2010 Colin Aarts
  * @license MIT
  */
-window.SRTCue = window.VTTCue;
+import { VTTCue } from 'vtt.js';
+
+const SRTCue = VTTCue;
+
+export { SRTCue as default };

@@ -1,14 +1,26 @@
 /**
  * Moovie: an advanced HTML5 video player for MooTools.
  *
- * @see http://colinaarts.com/code/moovie
+ * Currently supported HTML5 media events.
+ *
  * @version 0.4.2
  * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
  * @author Nathan Bishop <nbish11@hotmail.com>
  * @copyright 2010 Colin Aarts
  * @license MIT
  */
-var Moovie = new Class({
+import window from 'global/window';
+import screenfull from 'screenfull';
+import { WebVTT } from 'vtt.js';
+import HTMLTrackElement from './texttracks/HTMLTrackElement.js';
+import Debugger from './Debugger.js';
+import Title from './Title.js';
+import MediaEvents from './core/MediaEvents.js';
+import Playlist from './Playlist.js';
+import formatSeconds from './utils/formatSeconds.js';
+import basename from './utils/basename.js';
+
+const Moovie = new Class({
     Implements: [Options],
 
     options: {
@@ -29,7 +41,7 @@ var Moovie = new Class({
 
         // Add HTML 5 media events to Element.NativeEvents, if needed.
         if (!Element.NativeEvents.timeupdate) {
-            Element.NativeEvents = Object.merge(Element.NativeEvents, Moovie.MediaEvents);
+            Element.NativeEvents = Object.merge(Element.NativeEvents, MediaEvents);
         }
 
         var playlist = [];
@@ -44,13 +56,13 @@ var Moovie = new Class({
             // Add the current video to the playlist stack
             playlist.unshift({
                 id: video.get('id'),
-                title: video.get('title') || Moovie.Util.basename(video.currentSrc || video.src),
+                title: video.get('title') || basename(video.currentSrc || video.src),
                 src: video.currentSrc || video.src,
                 tracks: this.serializeTracks(video)
             });
         }
 
-        this.playlist = new Moovie.Playlist(playlist);
+        this.playlist = new Playlist(playlist);
 
         // Grab some refs
         // @bug Native textTracks won't work unless the video is cloned.
@@ -82,9 +94,9 @@ var Moovie = new Class({
         textTrackContainer.inject(video, 'after');
 
         this.overlay = new Element('div.overlay');
-        this.title = new Moovie.Title(this.options.title);
-        this.title.update(current.title || Moovie.Util.basename(current.src));
-        this.debugger = new Moovie.Debugger(this.video, this.options.debugger);
+        this.title = new Title(this.options.title);
+        this.title.update(current.title || basename(current.src));
+        this.debugger = new Debugger(this.video, this.options.debugger);
 
         // Panels ------------------------------------------------------------------
         var panels      = new Element('div.panels');
@@ -202,9 +214,9 @@ var Moovie = new Class({
                 return new Element('track', trackObj);
             });
 
-            panels.info.getElement('dt.title + dd').set('html', current.title || Moovie.Util.basename(current.src));
+            panels.info.getElement('dt.title + dd').set('html', current.title || basename(current.src));
             panels.info.getElement('dt.url + dd').set('html', current.src);
-            self.title.update(current.title || Moovie.Util.basename(current.src));
+            self.title.update(current.title || basename(current.src));
             self.title.show();
 
             video.getChildren('track').destroy();
@@ -322,7 +334,7 @@ var Moovie = new Class({
                 var trackElements = self.video.getChildren('track');
                 var activeCues = [];
 
-                self.controls.elapsed.set('text', Moovie.Util.formatTime(video.currentTime));
+                self.controls.elapsed.set('text', formatSeconds(video.currentTime));
                 self.controls.seekbar.played.setStyle('width', pct + '%');
                 self.controls.seekbar.knob.setStyle('left', pos + 'px');
 
@@ -334,7 +346,7 @@ var Moovie = new Class({
             },
 
             durationchange: function() {
-                self.controls.duration.set('text', Moovie.Util.formatTime(video.duration));
+                self.controls.duration.set('text', formatSeconds(video.duration));
             },
 
             volumechange: function() {
@@ -418,11 +430,14 @@ var Moovie = new Class({
     disableNativeTextTracks: function () {
         for (var i = 0, l = this.video.textTracks; i < l; i++) {
             this.video.textTracks[i].mode = 'disabled';
+            //this.video.textTracks[i].mode = TextTrackMode.disabled;
         }
     },
 
     implementTextTracks: function () {
-        this.video.getChildren('track').toHTMLTrackElement();
+        this.video.getChildren('track').each(function (track) {
+            new HTMLTrackElement(track);
+        });
     },
 
     buildControls: function () {
@@ -546,10 +561,10 @@ var Moovie = new Class({
                 if (e.target == seekbar.knob) {
                     pos = sliderX - barX - seekbar.knob.left;
                     time = sliderX - seekbar.knob.left;
-                    time = Moovie.Util.formatTime(locToTime(time));
+                    time = formatSeconds(locToTime(time));
                 } else {
                     pos = e.page.x - barX;
-                    time = Moovie.Util.formatTime(locToTime(e.page.x));
+                    time = formatSeconds(locToTime(e.page.x));
                 }
 
                 seekbar.time.set('data-displaystate', 'showing');
@@ -655,9 +670,11 @@ var Moovie = new Class({
     }
 });
 
-// Allows a group of or a single <video> element to be converted to Moovie instances procedurely.
 Element.implement({
+    // method to polyfill <video> tags
     toMoovie: function (options) {
         this.store('moovie', new Moovie(this, options));
     }
 });
+
+export { Moovie as default };
