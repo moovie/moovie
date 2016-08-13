@@ -41,7 +41,7 @@
     "pretest": "npm run lint",
     "test": "karma start tests/karma.conf.js",
     "minify": "npm-run-all -p minify:*",
-    "minify:js": "",
+    "minify:js": "browserify src/js/Moovie.js -t [ babelify --presets [ es2015 ] ] -s Moovie | uglifyjs -c > dist/moovie.min.js",
     "minify:css": "node-sass src/scss/main.scss dist/moovie.min.css --output-style=compressed --linefeed=lf",
     "compile": "npm-run-all -p compile:*",
     "compile:js": "browserify src/js/Moovie.js -t [ babelify --presets [ es2015 ] ] -s Moovie -o dist/moovie.js",
