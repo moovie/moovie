@@ -15,26 +15,31 @@ const WebSRT = {};
 
 WebSRT.Parser = new Class({
     initialize: function () {
-        this.oncue = function () {};
-        this.onflush = function () {};
-        this.onparsingerror = function () {};
+        this.oncue = Function.from();
+        this.onflush = Function.from();
+        this.onparsingerror = Function.from();
         this.buffer = '';
         this.cues = [];
     },
 
     computeSeconds: function (h, m, s, f) {
-        return (h | 0) * 3600 + (m | 0) * 60 + (s | 0) + (f | 0) / 1000;
+        const hours = h.toInt() * 3600;
+        const minutes = m.toInt() * 60;
+        const seconds = s.toInt();
+        const milliseconds = f.toInt() / 1000;
+
+        return hours + minutes + seconds + milliseconds;
     },
 
     // Timestamp must take the form of [hours]:[minutes]:[seconds],[milliseconds]
     parseTimeStamp: function (input) {
-        var m = input.match(/^(\d{2}):(\d{2}):(\d{2}),(\d{3})/);
+        const matches = input.match(/^(\d{2}):(\d{2}):(\d{2}),(\d{3})/);
 
-        if (!m) {
+        if (!matches) {
             return null;
         }
 
-        return this.computeSeconds(m[1], m[2], m[3], m[4]);
+        return this.computeSeconds(matches[1], matches[2], matches[3], matches[4]);
     },
 
     parse: function (data) {
@@ -42,29 +47,23 @@ WebSRT.Parser = new Class({
     },
 
     flush: function () {
-        var self = this;
-        var rawCues = this.buffer.replace(/\r?\n/gm, '\n').trim().split('\n\n');
+        const rawCues = this.buffer.replace(/\r?\n/gm, '\n').trim().split('\n\n');
 
-        rawCues.each(function (cue) {
-            cue = cue.split('\n');
-
-            var cueid = cue.shift();
-            var cuetc = cue.shift().split(' --> ');
-            var cuetx = cue.join('\n');
-
-            cue = new SRTCue(
-                self.parseTimeStamp(cuetc[0]),
-                self.parseTimeStamp(cuetc[1]),
-                cuetx
+        rawCues.each((rawCueBlock) => {
+            const cueLines = rawCueBlock.split('\n');
+            const cueid = cueLines.shift();
+            const cuetc = cueLines.shift().split(' --> ');
+            const cueobj = new SRTCue(
+                this.parseTimeStamp(cuetc[0]),
+                this.parseTimeStamp(cuetc[1]),
+                cueLines.join('\n')
             );
 
-            cue.id = cueid;
-
-            self.cues.push(cue);
-            self.oncue.call(self, cue);
+            cueobj.id = cueid;
+            this.oncue.call(this, cueobj);
         });
 
-        this.onflush.call(this, self.cues);
+        this.onflush.call(this);
     }
 });
 

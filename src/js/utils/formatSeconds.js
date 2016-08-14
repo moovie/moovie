@@ -9,16 +9,17 @@
  * @copyright 2010 Colin Aarts
  * @license MIT
  */
+
 const parse = function (input) {
     return {
         hh: Math.floor(input / 3600),
-        mm: Math.floor((input % 3600) / 60),
-        ss: Math.ceil((input % 3600) % 60)
+        mm: Math.floor(input % 3600 / 60),
+        ss: Math.ceil(input % 3600 % 60)
     };
 };
 
 const format = function (input) {
-    let {hh, mm, ss} = parse(input);
+    let { hh, mm, ss } = parse(input);
 
     if (ss === 60) {
         ss = 0;
@@ -39,10 +40,10 @@ const format = function (input) {
     }
 
     if (hh === 0) {
-        return mm + ':' + ss;
-    } else {
-        return hh + ':' + mm + ':' + ss;
+        return `${mm}:${ss}`;
     }
+
+    return `${hh}:${mm}:${ss}`;
 };
 
 export { format as default };

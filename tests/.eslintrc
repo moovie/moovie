@@ -1,18 +1,13 @@
 {
+    "plugins": ["mootools"],
     "env": {
-        "jasmine": true
-    },
-    "parserOptions": {
-        "ecmaVersion": 6,
-        "sourceType": "module",
-        "impliedStrict": true
+        "mocha": true,
+        "mootools/core": true
     },
     "globals": {
-        "$": false,
-        "$$": false,
-        "Element": false,
-        "instanceOf": false,
-        "typeOf": false,
-        "context": false
+        "expect": false
+    },
+    "rules": {
+        "max-nested-callbacks": ["error", 4]
     }
 }

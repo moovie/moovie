@@ -13,52 +13,44 @@ import TextTrackKind from './TextTrackKind';
 import TextTrackMode from './TextTrackMode';
 
 const TextTrack = function TextTrack(trackElement) {
-    var kind = '';
-    var label = '';
-    var mode = 'disabled';
-    var language = '';
-    var id = '';
-    var inBandMetadataTrackDispatchType = '';
-    var cues = [];
-    var activeCues = [];
-    var media = trackElement.getParent('video');
+    let kind = '';
+    let label = '';
+    let mode = 'disabled';
+    let language = '';
+    let id = '';
+    let inBandMetadataTrackDispatchType = '';
+    const cues = [];
+    const activeCues = [];
+    const media = trackElement.getParent('video');
 
-    if (!kind) {
+    if (!trackElement.get('kind')) {
         kind = 'subtitles'; // missing value default
-    } else if (!TextTrackKind.contains(kind)) {
+    } else if (!TextTrackKind.contains(trackElement.get('kind'))) {
         kind = 'metadata';  // invalid value default
     }
 
-    media.addEvent('timeupdate', function () {
-        var processingTime = 0.39;
-        var time = media.currentTime + processingTime;
-        var i;
-        var l;
-        var cue;
+    media.addEvent('timeupdate', () => {
+        const processingTime = 0.39;
+        const time = media.currentTime + processingTime;
+        let i = 0;
 
-        for (i = 0, l = activeCues.length; i < l; i++) {
-            cue = activeCues[i];
-
-            if (cue.startTime > time || cue.endTime < time) {
-                activeCues.splice(i, 1);
-                i--;
-
-                if (cue.pauseOnExit) {
+        // cueexit
+        i = activeCues.length;
+        while (i--) {
+            if (activeCues[i].startTime > time || activeCues[i].endTime < time) {
+                if (activeCues[i].pauseOnExit) {
                     media.pause();
                 }
 
-                // cueexit
+                activeCues.splice(i, 1);
             }
         }
 
-        for (i = 0, l = cues.length; i < l; i++) {
-            cue = cues[i];
-
-            if ((cue.startTime <= time) && (cue.endTime >= time) && !activeCues.contains(cue)) {
-                //if (mode == 'showing' || mode == 'hidden') {
-                activeCues.push(cue);
-                // cueenter
-                //}
+        // cueenter
+        i = cues.length;
+        while (i--) {
+            if (cues[i].startTime <= time && cues[i].endTime >= time) {
+                activeCues.include(cues[i]);
             }
         }
     });
@@ -131,7 +123,7 @@ const TextTrack = function TextTrack(trackElement) {
         },
 
         oncuechange: {
-            value: function () {}
+            value: Function.from()
         }
     });
 };

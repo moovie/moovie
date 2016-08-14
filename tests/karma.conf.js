@@ -1,7 +1,5 @@
-/* globals module:false, require:false */
+/* eslint-env node */
 module.exports = function (config) {
-    'use strict';
-
     config.set({
         // base path that will be used to resolve all patterns (eg. files, exclude)
         basePath: '../',
@@ -24,7 +22,7 @@ module.exports = function (config) {
         // preprocess matching files before serving them to the browser
         // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
         preprocessors: {
-            'tests/**/*.js': ['browserify'],
+            'tests/**/*.js': ['browserify']
         },
 
         // test results reporter to use
@@ -63,13 +61,13 @@ module.exports = function (config) {
                 // I don't mind chaining, but I think at a certain
                 // point it becomes a bit too much (looking at you Chai).
                 require: [require.resolve('expectations')],
-                ui: 'bdd',
+                ui: 'bdd'
             }
         },
 
         detectBrowsers: {
             // phantomjs does not support the <video> element
-            usePhantomJS: false,
+            usePhantomJS: false
         },
 
         browserify: {

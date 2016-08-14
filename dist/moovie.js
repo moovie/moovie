@@ -1,17 +1,4 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.Moovie = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-(function (global){
-if (typeof window !== "undefined") {
-    module.exports = window;
-} else if (typeof global !== "undefined") {
-    module.exports = global;
-} else if (typeof self !== "undefined"){
-    module.exports = self;
-} else {
-    module.exports = {};
-}
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],2:[function(require,module,exports){
 /*!
 * screenfull
 * v3.0.0 - 2015-11-24
@@ -158,7 +145,7 @@ if (typeof window !== "undefined") {
 	}
 })();
 
-},{}],3:[function(require,module,exports){
+},{}],2:[function(require,module,exports){
 /**
  * Copyright 2013 vtt.js Contributors
  *
@@ -185,7 +172,7 @@ module.exports = {
   VTTRegion: require("./vttregion-extended.js").VTTRegion
 };
 
-},{"./vtt.js":4,"./vttcue-extended.js":5,"./vttregion-extended.js":7}],4:[function(require,module,exports){
+},{"./vtt.js":3,"./vttcue-extended.js":4,"./vttregion-extended.js":6}],3:[function(require,module,exports){
 /**
  * Copyright 2013 vtt.js Contributors
  *
@@ -1659,7 +1646,7 @@ module.exports = {
 
 }(this));
 
-},{}],5:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 /**
  * Copyright 2013 vtt.js Contributors
  *
@@ -1721,7 +1708,7 @@ if (typeof module !== "undefined" && module.exports) {
 
 }(this));
 
-},{"./vttcue":6}],6:[function(require,module,exports){
+},{"./vttcue":5}],5:[function(require,module,exports){
 /**
  * Copyright 2013 vtt.js Contributors
  *
@@ -2031,7 +2018,7 @@ if (typeof module !== "undefined" && module.exports) {
   root.VTTCue = VTTCue || root.VTTCue;
 }(this));
 
-},{}],7:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 /**
  * Copyright 2013 vtt.js Contributors
  *
@@ -2076,7 +2063,7 @@ if (typeof module !== "undefined" && module.exports) {
 
 }(this));
 
-},{"./vttregion":8}],8:[function(require,module,exports){
+},{"./vttregion":7}],7:[function(require,module,exports){
 /**
  * Copyright 2013 vtt.js Contributors
  *
@@ -2215,7 +2202,7 @@ if (typeof module !== "undefined" && module.exports) {
   root.VTTRegion = root.VTTRegion || VTTRegion;
 }(this));
 
-},{}],9:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2226,7 +2213,7 @@ Object.defineProperty(exports, "__esModule", {
  *
  * Currently supported HTML5 media events.
  *
- * @version 0.4.2
+ * @version 0.4.3
  * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
  * @author Nathan Bishop <nbish11@hotmail.com>
  * @copyright 2010 Colin Aarts
@@ -2249,6 +2236,8 @@ var Debugger = new Class({
     },
 
     build: function build() {
+        var _this = this;
+
         this.element = new Element('div.debug');
         this.elements = {
             table: new Element('table'),
@@ -2256,14 +2245,14 @@ var Debugger = new Class({
             p: new Element('p[text=Debugger ready...]')
         };
 
-        this.options.monitorProperties.each(function (el) {
-            var row = new Element('tr[data-property=' + el + ']');
-            var label = new Element('td[text=' + el + ']');
-            var value = new Element('td[text=' + this.video[el] + ']');
+        this.options.monitorProperties.forEach(function (property) {
+            var row = new Element('tr[data-property=' + property + ']');
+            var label = new Element('td[text=' + property + ']');
+            var value = new Element('td[text=' + _this.video[property] + ']');
 
             row.adopt(label, value);
-            this.elements.tbody.grab(row);
-        }, this);
+            _this.elements.tbody.grab(row);
+        });
 
         this.elements.table.grab(this.elements.tbody);
         this.element.adopt(this.elements.table, this.elements.p);
@@ -2314,101 +2303,103 @@ var Debugger = new Class({
     },
 
     getBoundEvents: function getBoundEvents() {
+        var _this2 = this;
+
         return {
-            loadstart: function () {
-                this.flashProperty('networkState').flashMessage('looking for data...');
-            }.bind(this),
+            loadstart: function loadstart() {
+                _this2.flashProperty('networkState').flashMessage('looking for data...');
+            },
 
-            progress: function () {
-                this.flashProperty('networkState').flashMessage('fetching data...');
-            }.bind(this),
+            progress: function progress() {
+                _this2.flashProperty('networkState').flashMessage('fetching data...');
+            },
 
-            suspend: function () {
-                this.flashProperty('networkState').flashMessage('data fetching suspended...');
-            }.bind(this),
+            suspend: function suspend() {
+                _this2.flashProperty('networkState').flashMessage('data fetching suspended...');
+            },
 
-            abort: function () {
-                this.flashProperty('networkState').flashMessage('data fetching aborted...');
-            }.bind(this),
+            abort: function abort() {
+                _this2.flashProperty('networkState').flashMessage('data fetching aborted...');
+            },
 
-            error: function () {
-                this.flashProperty('networkState').flashProperty('error', this.video.error.code).flashMessage('an error occurred while fetching data...');
-            }.bind(this),
+            error: function error() {
+                _this2.flashProperty('networkState').flashProperty('error', _this2.video.error.code).flashMessage('an error occurred while fetching data...');
+            },
 
-            emptied: function () {
-                this.flashProperty('networkState').flashMessage('media resource is empty...');
-            }.bind(this),
+            emptied: function emptied() {
+                _this2.flashProperty('networkState').flashMessage('media resource is empty...');
+            },
 
-            stalled: function () {
-                this.flashProperty('networkState').flashMessage('stalled while fetching data...');
-            }.bind(this),
+            stalled: function stalled() {
+                _this2.flashProperty('networkState').flashMessage('stalled while fetching data...');
+            },
 
-            loadedmetadata: function () {
-                this.flashProperty('readyState').flashMessage('duration and dimensions have been determined...');
-            }.bind(this),
+            loadedmetadata: function loadedmetadata() {
+                _this2.flashProperty('readyState').flashMessage('duration and dimensions have been determined...');
+            },
 
-            loadeddata: function () {
-                this.flashProperty('readyState').flashMessage('first frame is available...');
-            }.bind(this),
+            loadeddata: function loadeddata() {
+                _this2.flashProperty('readyState').flashMessage('first frame is available...');
+            },
 
-            waiting: function () {
-                this.flashProperty('readyState').flashMessage('waiting for more data...');
-            }.bind(this),
+            waiting: function waiting() {
+                _this2.flashProperty('readyState').flashMessage('waiting for more data...');
+            },
 
-            playing: function () {
-                this.flashProperty('readyState').flashMessage('playback has started...');
-            }.bind(this),
+            playing: function playing() {
+                _this2.flashProperty('readyState').flashMessage('playback has started...');
+            },
 
-            canplay: function () {
-                this.flashProperty('readyState').flashMessage('media is ready to be played, but will likely be interrupted for buffering...');
-            }.bind(this),
+            canplay: function canplay() {
+                _this2.flashProperty('readyState').flashMessage('media is ready to be played, but will likely be interrupted for buffering...');
+            },
 
-            canplaythrough: function () {
-                this.flashProperty('readyState').flashMessage('media is ready to be played and will most likely play through without stopping...');
-            }.bind(this),
+            canplaythrough: function canplaythrough() {
+                _this2.flashProperty('readyState').flashMessage('media is ready to be played and will most likely play through without stopping...');
+            },
 
-            play: function () {
-                this.flashProperty('paused');
-            }.bind(this),
+            play: function play() {
+                _this2.flashProperty('paused');
+            },
 
-            pause: function () {
-                this.flashProperty('paused');
-            }.bind(this),
+            pause: function pause() {
+                _this2.flashProperty('paused');
+            },
 
-            ended: function () {
-                this.flashProperty('paused').flashProperty('ended');
-            }.bind(this),
+            ended: function ended() {
+                _this2.flashProperty('paused').flashProperty('ended');
+            },
 
-            timeupdate: function () {
-                this.flashProperty('currentTime', this.video.currentTime.round(3));
-            }.bind(this),
+            timeupdate: function timeupdate() {
+                _this2.flashProperty('currentTime', _this2.video.currentTime.round(3));
+            },
 
-            seeking: function () {
-                this.flashProperty('seeking');
-            }.bind(this),
+            seeking: function seeking() {
+                _this2.flashProperty('seeking');
+            },
 
-            seeked: function () {
-                this.flashProperty('seeking');
-            }.bind(this),
+            seeked: function seeked() {
+                _this2.flashProperty('seeking');
+            },
 
-            durationchange: function () {
-                this.flashProperty('duration', this.video.duration.round(3));
-            }.bind(this),
+            durationchange: function durationchange() {
+                _this2.flashProperty('duration', _this2.video.duration.round(3));
+            },
 
-            ratechange: function () {
-                this.flashProperty('playbackRate');
-            }.bind(this),
+            ratechange: function ratechange() {
+                _this2.flashProperty('playbackRate');
+            },
 
-            volumechange: function () {
-                this.flashProperty('muted').flashProperty('volume', this.video.volume.round(2));
-            }.bind(this)
+            volumechange: function volumechange() {
+                _this2.flashProperty('muted').flashProperty('volume', _this2.video.volume.round(2));
+            }
         };
     }
 });
 
 exports.default = Debugger;
 
-},{}],10:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2416,15 +2407,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = undefined;
 
-var _window = require('global/window');
-
-var _window2 = _interopRequireDefault(_window);
-
 var _screenfull = require('screenfull');
 
 var _screenfull2 = _interopRequireDefault(_screenfull);
-
-var _vtt = require('vtt.js');
 
 var _HTMLTrackElement = require('./texttracks/HTMLTrackElement.js');
 
@@ -2454,19 +2439,23 @@ var _basename = require('./utils/basename.js');
 
 var _basename2 = _interopRequireDefault(_basename);
 
+var _vtt = require('vtt.js');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-/**
- * Moovie: an advanced HTML5 video player for MooTools.
- *
- * Currently supported HTML5 media events.
- *
- * @version 0.4.2
- * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
- * @author Nathan Bishop <nbish11@hotmail.com>
- * @copyright 2010 Colin Aarts
- * @license MIT
- */
+var HAS_TRACK_SUPPORT = 'track' in document.createElement('track'); /**
+                                                                     * Moovie: an advanced HTML5 video player for MooTools.
+                                                                     *
+                                                                     * Currently supported HTML5 media events.
+                                                                     *
+                                                                     * @version 0.4.3
+                                                                     * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
+                                                                     * @author Nathan Bishop <nbish11@hotmail.com>
+                                                                     * @copyright 2010 Colin Aarts
+                                                                     * @license MIT
+                                                                     */
+
+
 var Moovie = new Class({
     Implements: [Options],
 
@@ -2480,50 +2469,17 @@ var Moovie = new Class({
     },
 
     initialize: function initialize(video, options) {
-        'use strict';
+        var _this = this;
 
+        this.video = document.id(video);
         this.setOptions(options);
-        options = this.options;
-        video = document.id(video);
 
-        // Add HTML 5 media events to Element.NativeEvents, if needed.
-        if (!Element.NativeEvents.timeupdate) {
-            Element.NativeEvents = Object.merge(Element.NativeEvents, _MediaEvents2.default);
-        }
+        this.buildPlaylist();
 
-        var playlist = [];
-
-        // eslint-disable-next-line
-        var hasFullscreenSupport = 'requestFullscreen' in document.createElement('div');
-        var hasTrackSupport = 'track' in document.createElement('track');
-
-        if (typeOf(options.playlist) === 'array') {
-            playlist.combine(options.playlist);
-
-            // Add the current video to the playlist stack
-            playlist.unshift({
-                id: video.get('id'),
-                title: video.get('title') || (0, _basename2.default)(video.currentSrc || video.src),
-                src: video.currentSrc || video.src,
-                tracks: this.serializeTracks(video)
-            });
-        }
-
-        this.playlist = new _Playlist2.default(playlist);
-
-        // Grab some refs
-        // @bug Native textTracks won't work unless the video is cloned.
-        // @todo cloning no longer needed as we are rendering the text tracks ourselves
-        var container = new Element('div.moovie');
-        var wrapper = new Element('div.wrapper');
-        container.replaces(video);
-        var newVideo = video.clone(true, true);
-        video.destroy();
-        video = newVideo;
-        wrapper.grab(video);
-        container.grab(wrapper);
-        this.video = video;
-        this.wrapper = wrapper;
+        this.container = new Element('div.moovie');
+        this.wrapper = new Element('div.wrapper');
+        this.wrapper.wraps(this.video);
+        this.container.wraps(this.wrapper);
 
         // Unfortunately, the media API only defines one volume-related
         // event: `volumechange`. This event is fired whenever the media's
@@ -2533,127 +2489,35 @@ var Moovie = new Class({
         // be able to provide the advanced volume control (a la YouTube's
         // player): changing the volume can have an effect on the muted
         // state and vice versa.
-        var muted = video.muted;
-        var self = this;
+        var muted = this.video.muted;
         var current = this.playlist.current();
 
-        var textTrackContainer = new Element('div.text-track-container');
-        textTrackContainer.inject(video, 'after');
+        this.buildTextTrackContainer();
 
         this.overlay = new Element('div.overlay');
         this.title = new _Title2.default(this.options.title);
         this.title.update(current.title || (0, _basename2.default)(current.src));
         this.debugger = new _Debugger2.default(this.video, this.options.debugger);
+        this.showCaptions = Boolean(this.video.getChildren('track').length);
 
-        // Panels ------------------------------------------------------------------
-        var panels = new Element('div.panels');
-        panels.info = new Element('div.info');
-        panels.settings = new Element('div.settings');
-        panels.about = new Element('div.about');
-
-        panels.adopt(panels.info, panels.settings, panels.about, this.playlist);
-        panels.set('aria-hidden', true);
-
-        // Content for `info` panel
-        panels.info.set('html', '\
-            <div class="heading">Video information</div>\
-            <dl>\
-                <dt class="title">Title</dt>\
-                <dd>' + this.playlist.current().title + '</dd>\
-                \
-                <dt class="url">URL</dt>\
-                <dd>' + video.src + '</dd>\
-                \
-                <dt class="size">Size</dt>\
-                <dd></dd>\
-            </dl>\
-        ');
-
-        var autohideControls = options.autohideControls;
-        var showCaptions = !!video.getChildren('track').length;
-
-        // Content for `settings` panel
-        panels.settings.set('html', '\
-            <div class="heading">Settings</div>\
-            \
-            <div class="checkbox-widget" data-control="autohideControls" data-checked="' + autohideControls + '">\
-                <div class="checkbox"></div>\
-                <div class="label">Auto-hide controls</div>\
-            </div>\
-            <div class="checkbox-widget" data-control="loop" data-checked="' + (video.loop || false) + '">\
-                <div class="checkbox"></div>\
-                <div class="label">Loop video</div>\
-            </div>\
-            <div class="checkbox-widget" data-control="captions" data-checked="' + showCaptions + '">\
-                <div class="checkbox"></div>\
-                <div class="label">Show captions</div>\
-            </div>\
-            <div class="checkbox-widget" data-control="debugger" data-checked="' + !this.debugger.disabled + '">\
-                <div class="checkbox"></div>\
-                <div class="label">Enable Debugger</div>\
-            </div>\
-        ');
-
-        // Content for `about` panel
-        panels.about.set('html', '\
-            <div class="heading">About this player</div>\
-            <p><b>Moovie</b> v1.0 <i>alpha</i></p>\
-            <p>Copyright Â© 2010, Colin Aarts</p>\
-            <p><a href="http://colinaarts.com/code/moovie/" rel="external">http://colinaarts.com/code/moovie/</a></p>\
-        ');
-
-        this.panels = panels;
-
-        // Controls ----------------------------------------------------------------
+        this.buildPanels();
         this.buildControls();
 
         // Inject and do some post-processing --------------------------------------
-        wrapper.adopt(this.overlay, this.title, panels, this.controls, this.debugger);
+        this.wrapper.adopt(this.overlay, this.title, this.panels, this.controls, this.debugger);
 
         // Get the knob offsets for later
         this.controls.seekbar.knob.left = this.controls.seekbar.knob.getStyle('left').toInt();
         this.controls.volume.knob.top = this.controls.volume.knob.getStyle('top').toInt();
 
-        // Panels ------------------------------------------------------------------
-        panels.update = function (which) {
-            if (which == 'none' || this[which].hasClass('active')) {
-                this.getChildren('.active').removeClass('active');
-                this.set('aria-hidden', true);
-            } else {
-                self.playlist.hide();
-                this.getChildren().removeClass('active');
-                this[which].addClass('active');
-                this.set('aria-hidden', false);
-            }
-        };
-
-        textTrackContainer.update = function () {
-            this.setStyles({
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: self.controls.getDimensions().y,
-                'pointer-events': 'none'
-            });
-
-            if (hasTrackSupport) {
-                self.disableNativeTextTracks();
-            }
-
-            self.implementTextTracks();
-        };
-
         this.playlist.addEvent('show', function () {
-            panels.update('none');
-            this.element.addClass('active');
-            panels.set('aria-hidden', false);
+            _this.panels.update('none');
+            _this.panels.set('aria-hidden', false);
         });
 
         this.playlist.addEvent('hide', function () {
-            panels.update('none');
-            this.element.removeClass('active');
-            panels.set('aria-hidden', true);
+            _this.panels.update('none');
+            _this.panels.set('aria-hidden', true);
         });
 
         this.playlist.addEvent('select', function (current) {
@@ -2661,88 +2525,53 @@ var Moovie = new Class({
                 return new Element('track', trackObj);
             });
 
-            panels.info.getElement('dt.title + dd').set('html', current.title || (0, _basename2.default)(current.src));
-            panels.info.getElement('dt.url + dd').set('html', current.src);
-            self.title.update(current.title || (0, _basename2.default)(current.src));
-            self.title.show();
+            _this.panels.info.getElement('dt.title + dd').set('html', current.title || (0, _basename2.default)(current.src));
+            _this.panels.info.getElement('dt.url + dd').set('html', current.src);
+            _this.title.update(current.title || (0, _basename2.default)(current.src));
+            _this.title.show();
 
-            video.getChildren('track').destroy();
-            video.adopt(trackElements);
-            video.poster = current.poster;
-            video.src = current.src;
-
-            video.load();
-            video.play();
+            _this.video.getChildren('track').destroy();
+            _this.video.adopt(trackElements);
+            _this.video.poster = current.poster;
+            _this.video.src = current.src;
+            _this.video.load();
+            _this.video.play();
         });
 
         // Masthead ----------------------------------------------------------------
-        wrapper.addEvent('mouseenter', function () {
-            self.controls.show();
+        this.wrapper.addEvent('mouseenter', function () {
+            _this.controls.show();
         });
 
-        wrapper.addEvent('mouseleave', function () {
-            if (options.autohideControls) {
-                self.controls.hide();
+        this.wrapper.addEvent('mouseleave', function () {
+            if (_this.options.autohideControls) {
+                _this.controls.hide();
             }
         });
 
         this.overlay.addEvent('click', function () {
-            video.play();
-            self.title.show();
-        });
-
-        // Panels ------------------------------------------------------------------
-        panels.settings.addEvent('click:relay(.checkbox-widget)', function () {
-            if (this.get('data-checked') == 'false') {
-                this.set('data-checked', 'true');
-            } else {
-                this.set('data-checked', 'false');
-            }
-
-            var control = this.get('data-control');
-            var checked = this.get('data-checked');
-
-            switch (control) {
-                case 'autohideControls':
-                    options.autohideControls = checked == 'true';
-                    break;
-
-                case 'loop':
-                    video.loop = checked == 'true';
-                    break;
-
-                case 'captions':
-                    textTrackContainer.setStyle('display', checked == 'true' ? 'block' : 'none');
-                    break;
-
-                case 'debugger':
-                    self.debugger[checked !== 'true' ? 'disable' : 'enable']();
-                    break;
-            }
-
-            panels.update('none');
+            _this.video.play();
+            _this.title.show();
         });
 
         // Video element -----------------------------------------------------------
         video.addEvents({
             click: function click() {
-                video.pause();
+                _this.video.pause();
             },
 
-            play: function play() {},
-
             playing: function playing() {
-                container.set('data-playbackstate', 'playing');
-                self.controls.show();
+                _this.container.set('data-playbackstate', 'playing');
+                _this.controls.show();
             },
 
             pause: function pause() {
-                container.set('data-playbackstate', 'paused');
+                _this.container.set('data-playbackstate', 'paused');
             },
 
             ended: function ended() {
-                container.set('data-playbackstate', 'ended');
-                self.playlist.next();
+                _this.container.set('data-playbackstate', 'ended');
+                _this.playlist.next();
             },
 
             progress: function progress(e) {
@@ -2752,50 +2581,53 @@ var Moovie = new Class({
                 if (e.event.lengthComputable) {
                     mb = (e.event.total / 1024 / 1024).round(2);
                     percent = e.event.loaded / e.event.total * 100;
-                } else if (video.buffered.length) {
-                    var buffered = video.buffered.end(video.buffered.length - 1);
-                    percent = buffered / video.duration * 100;
+                } else if (_this.video.buffered.length) {
+                    var buffered = _this.video.buffered.end(_this.video.buffered.length - 1);
+
+                    percent = buffered / _this.video.duration * 100;
                 }
 
-                self.controls.seekbar.buffered.setStyle('width', percent + '%');
-                panels.info.getElement('dt.size + dd').set('html', mb + ' MB');
+                _this.controls.seekbar.buffered.setStyle('width', percent + '%');
+                _this.panels.info.getElement('dt.size + dd').set('html', mb + ' MB');
             },
 
             seeking: function seeking() {
-                container.set('data-playbackstate', 'seeking');
+                _this.container.set('data-playbackstate', 'seeking');
             },
 
             seeked: function seeked() {
                 // @bug pressing stop button still shows "seeking" state. This get around that.
-                if (video.paused) {
-                    container.set('data-playbackstate', 'paused');
+                if (_this.video.paused) {
+                    _this.container.set('data-playbackstate', 'paused');
                 }
             },
 
             timeupdate: function timeupdate() {
-                var pct = video.currentTime / video.duration * 100;
-                var offset = self.controls.seekbar.track.getSize().x / 100 * pct;
-                var pos = offset + self.controls.seekbar.knob.left;
-                var trackElements = self.video.getChildren('track');
+                var percent = _this.video.currentTime / _this.video.duration * 100;
+                var offset = _this.controls.seekbar.track.getSize().x / 100 * percent;
+                var position = offset + _this.controls.seekbar.knob.left;
+                var trackElements = _this.video.getChildren('track');
                 var activeCues = [];
 
-                self.controls.elapsed.set('text', (0, _formatSeconds2.default)(video.currentTime));
-                self.controls.seekbar.played.setStyle('width', pct + '%');
-                self.controls.seekbar.knob.setStyle('left', pos + 'px');
+                _this.controls.elapsed.set('text', (0, _formatSeconds2.default)(_this.video.currentTime));
+                _this.controls.seekbar.played.setStyle('width', percent + '%');
+                _this.controls.seekbar.knob.setStyle('left', position + 'px');
 
                 Array.each(trackElements, function (trackElement) {
                     return activeCues.combine(trackElement.track.activeCues);
                 });
 
-                _vtt.WebVTT.processCues(_window2.default, activeCues, wrapper.getElement('.text-track-container'));
+                _vtt.WebVTT.processCues(window, activeCues, _this.wrapper.getElement('.text-track-container'));
             },
 
             durationchange: function durationchange() {
-                self.controls.duration.set('text', (0, _formatSeconds2.default)(video.duration));
+                _this.controls.duration.set('text', (0, _formatSeconds2.default)(_this.video.duration));
             },
 
             volumechange: function volumechange() {
-                var mutedChanged = muted != video.muted;
+                var video = _this.video;
+                var mutedChanged = muted !== video.muted;
+
                 muted = video.muted;
 
                 // Un-muted with volume at 0 -- pick a sane default. This
@@ -2813,49 +2645,152 @@ var Moovie = new Class({
                     video.muted = true;
                 }
 
-                self.controls.volume.set('data-muted', video.muted);
-                self.controls.volume.set('data-level', video.volume.round(2));
+                _this.controls.volume.set('data-muted', video.muted);
+                _this.controls.volume.set('data-level', video.volume.round(2));
 
                 // If muted, assume 0 for volume to visualize the
                 // muted state in the slider as well. Don't actually
                 // change the volume, though, so when un-muted, the
                 // slider simply goes back to its former value.
                 var volume = video.muted && mutedChanged ? 0 : video.volume;
-                var barSize = self.controls.volume.track.getSize().y;
+                var barSize = _this.controls.volume.track.getSize().y;
                 var offset = barSize - volume * barSize;
-                self.controls.volume.knob.setStyle('top', offset + self.controls.volume.knob.top);
-            },
 
-            abort: function abort() {
-                // video.Moovie = null;
-                // Doit(video);
+                _this.controls.volume.knob.setStyle('top', offset + _this.controls.volume.knob.top);
             },
 
             loadstart: function loadstart() {
-                textTrackContainer.update();
-                //console.log('loadstart');
+                _this.textTrackContainer.update();
             }
         });
 
-        // Init ====================================================================
-        if (!video.autoplay) {
-            container.set('data-playbackstate', 'stopped');
+        if (!this.video.autoplay) {
+            this.container.set('data-playbackstate', 'stopped');
         }
 
-        if (video.readyState >= 1) {
-            textTrackContainer.update();
+        if (this.video.readyState >= 1) {
+            this.textTrackContainer.update();
         }
 
-        textTrackContainer.setStyle('display', showCaptions ? 'block' : 'none');
+        this.textTrackContainer.setStyle('display', this.showCaptions ? 'block' : 'none');
 
         // eslint-disable-next-line
-        var tips = new Tips(wrapper.getElements('[title]'), {
+        var tips = new Tips(this.wrapper.getElements('[title]'), {
             className: 'video-tip',
             title: '',
             text: function text(el) {
                 return el.get('title');
             }
         });
+    },
+
+    buildPlaylist: function buildPlaylist() {
+        var video = this.video;
+        var items = [];
+
+        if (typeOf(this.options.playlist) === 'array') {
+            items.combine(this.options.playlist);
+
+            // Add the current video to the playlist stack
+            items.unshift({
+                id: video.get('id'),
+                title: video.get('title') || (0, _basename2.default)(video.currentSrc || video.src),
+                src: video.currentSrc || video.src,
+                tracks: this.serializeTracks(video)
+            });
+        }
+
+        this.playlist = new _Playlist2.default(items);
+    },
+
+    buildTextTrackContainer: function buildTextTrackContainer() {
+        var self = this;
+
+        this.textTrackContainer = new Element('div.text-track-container');
+
+        this.textTrackContainer.update = function () {
+            this.setStyles({
+                'position': 'absolute',
+                'top': 0,
+                'left': 0,
+                'right': 0,
+                'bottom': self.controls.getDimensions().y,
+                'pointer-events': 'none'
+            });
+
+            if (HAS_TRACK_SUPPORT) {
+                self.disableNativeTextTracks();
+            }
+
+            self.implementTextTracks();
+        };
+
+        this.textTrackContainer.inject(this.video, 'after');
+    },
+
+    buildPanels: function buildPanels() {
+        var self = this;
+        var autohideControls = this.options.autohideControls;
+
+        this.panels = new Element('div.panels');
+        this.panels.info = new Element('div.info', {
+            html: '<div class="heading">Video information</div>\n            <dl>\n                <dt class="title">Title</dt>\n                <dd>' + this.playlist.current().title + '</dd>\n                <dt class="url">URL</dt>\n                <dd>' + this.video.src + '</dd>\n                <dt class="size">Size</dt>\n                <dd></dd>\n            </dl>'
+        });
+
+        this.panels.settings = new Element('div.settings', {
+            html: '<div class="heading">Settings</div>\n            <div class="checkbox-widget" data-control="autohideControls" data-checked="' + autohideControls + '">\n                <div class="checkbox"></div>\n                <div class="label">Auto-hide controls</div>\n            </div>\n            <div class="checkbox-widget" data-control="loop" data-checked="' + (this.video.loop || false) + '">\n                <div class="checkbox"></div>\n                <div class="label">Loop video</div>\n            </div>\n            <div class="checkbox-widget" data-control="captions" data-checked="' + this.showCaptions + '">\n                <div class="checkbox"></div>\n                <div class="label">Show captions</div>\n            </div>\n            <div class="checkbox-widget" data-control="debugger" data-checked="' + !this.debugger.disabled + '">\n                <div class="checkbox"></div>\n                <div class="label">Enable Debugger</div>\n            </div>'
+        });
+
+        this.panels.settings.addEvent('click:relay(.checkbox-widget)', function () {
+            if (this.get('data-checked') === 'false') {
+                this.set('data-checked', 'true');
+            } else {
+                this.set('data-checked', 'false');
+            }
+
+            var control = this.get('data-control');
+            var checked = this.get('data-checked');
+
+            switch (control) {
+                case 'autohideControls':
+                    self.options.autohideControls = checked === 'true';
+                    break;
+
+                case 'loop':
+                    self.video.loop = checked === 'true';
+                    break;
+
+                case 'captions':
+                    self.textTrackContainer.setStyle('display', checked === 'true' ? 'block' : 'none');
+                    break;
+
+                case 'debugger':
+                    self.debugger[checked === 'false' ? 'disable' : 'enable']();
+                    break;
+
+                // no default
+            }
+
+            self.panels.update('none');
+        });
+
+        this.panels.about = new Element('div.about', {
+            html: '<div class="heading">About this player</div>\n            <p><strong>Moovie</strong> v0.4.3-<em>alpha</em></p>\n            <p>Copyright &copy; 2010, Colin Aarts</p>\n            <p><a href="http://colinaarts.com/code/moovie/" rel="external">http://colinaarts.com/code/moovie/</a></p>'
+        });
+
+        this.panels.update = function (which) {
+            if (which === 'none' || this[which].hasClass('active')) {
+                this.getChildren('.active').removeClass('active');
+                this.set('aria-hidden', true);
+            } else {
+                this.getChildren().removeClass('active');
+                this[which].addClass('active');
+                this.set('aria-hidden', false);
+            }
+        };
+
+        this.panels.adopt(this.panels.info, this.panels.settings, this.panels.about, this.playlist);
+        this.panels.set('aria-hidden', true);
     },
 
     serializeTracks: function serializeTracks(video) {
@@ -2874,67 +2809,64 @@ var Moovie = new Class({
     disableNativeTextTracks: function disableNativeTextTracks() {
         for (var i = 0, l = this.video.textTracks; i < l; i++) {
             this.video.textTracks[i].mode = 'disabled';
-            //this.video.textTracks[i].mode = TextTrackMode.disabled;
         }
     },
 
     implementTextTracks: function implementTextTracks() {
         this.video.getChildren('track').each(function (track) {
-            new _HTMLTrackElement2.default(track);
+            return new _HTMLTrackElement2.default(track);
         });
     },
 
     buildControls: function buildControls() {
-        var self = this;
-        var panels = this.panels;
-        var video = this.video;
+        var _this2 = this;
 
         this.controls = new Element('div.controls');
         this.controls.play = new Element('div.play[title=Play]');
         this.controls.play.addEvent('click', function () {
-            if (video.paused && video.readyState >= 3) {
-                video.play();
-            } else if (!video.paused && video.ended) {
-                video.currentTime = 0;
-            } else if (!video.paused) {
-                video.pause();
+            if (_this2.video.paused && _this2.video.readyState >= 3) {
+                _this2.video.play();
+            } else if (!_this2.video.paused && _this2.video.ended) {
+                _this2.video.currentTime = 0;
+            } else if (!_this2.video.paused) {
+                _this2.video.pause();
             }
         });
 
         this.controls.stop = new Element('div.stop[title=Stop]');
         this.controls.stop.addEvent('click', function () {
-            video.currentTime = 0;
-            video.pause();
+            _this2.video.currentTime = 0;
+            _this2.video.pause();
         });
 
         this.controls.previous = new Element('div.previous[title=Previous]');
         this.controls.previous.addEvent('click', function () {
-            self.playlist.previous();
+            _this2.playlist.previous();
         });
 
         this.controls.next = new Element('div.next[title=Next]');
         this.controls.next.addEvent('click', function () {
-            self.playlist.next();
+            _this2.playlist.next();
         });
 
         this.controls.elapsed = new Element('div.elapsed[text=0:00]');
-        this.controls.seekbar = this.createSeekbar(video);
+        this.controls.seekbar = this.createSeekbar();
         this.controls.duration = new Element('div.duration[text=0:00]');
-        this.controls.volume = this.createVolumeControl(video);
+        this.controls.volume = this.createVolumeControl();
         this.controls.settings = new Element('div.settings[title=Settings]');
         this.controls.settings.addEvent('click', function () {
-            panels.update('settings');
+            _this2.panels.update('settings');
         });
 
-        this.controls.more = this.createMoreControl(panels);
+        this.controls.more = this.createMoreControl();
         this.controls.fullscreen = new Element('div.fullscreen[title=Fullscreen]');
         this.controls.fullscreen.addEvent('click', function () {
-            _screenfull2.default.toggle(self.wrapper);
+            _screenfull2.default.toggle(_this2.wrapper);
         });
 
         this.controls.adopt(this.controls.play, this.controls.stop, this.controls.previous, this.controls.next, this.controls.elapsed, this.controls.seekbar, this.controls.duration, this.controls.volume, this.controls.settings, this.controls.more, this.controls.fullscreen);
 
-        video.controls = false; // disable native controls
+        this.video.controls = false; // disable native controls
 
         this.controls.show = function () {
             return this.set('aria-hidden', false);
@@ -2943,38 +2875,42 @@ var Moovie = new Class({
         this.controls.hide = function () {
             return this.set('aria-hidden', true);
         };
+
+        this.controls.elapsed.set('text', (0, _formatSeconds2.default)(this.video.currentTime || 0));
+        this.controls.duration.set('text', (0, _formatSeconds2.default)(this.video.duration || 0));
     },
 
-    createSeekbar: function createSeekbar(video) {
+    createSeekbar: function createSeekbar() {
+        var video = this.video;
         var seekbar = new Element('div.seekbar');
 
-        var locToTime = function locToTime(val) {
-            var barX = seekbar.track.getPosition().x;
-            var barW = seekbar.track.getSize().x;
-            var offsetPx = val - barX;
-            var offsetPc = offsetPx / barW * 100;
-            var time = (video.duration || 0) / 100 * offsetPc;
-            return time;
+        var locToTime = function locToTime(value) {
+            var position = seekbar.track.getPosition().x;
+            var width = seekbar.track.getSize().x;
+            var offsetPx = value - position;
+            var offsetPc = offsetPx / width * 100;
+
+            return video.duration / 100 * offsetPc;
         };
 
         seekbar.addEvent('mousedown', function (e) {
-            function update(e) {
+            var update = function update(e) {
                 var offset = e.page.x - seekbar.track.getPosition().x;
                 var pct = offset / seekbar.track.getSize().x;
 
                 video.pause();
                 video.currentTime = (pct * video.duration).limit(0, video.duration);
-            }
+            };
 
-            function move(e) {
+            var move = function move(e) {
                 update(e);
-            }
+            };
 
-            function stop() {
+            var stop = function stop() {
                 document.removeEvent('mousemove', move);
                 document.removeEvent('mouseup', stop);
                 video.play();
-            }
+            };
 
             document.addEvent('mousemove', move);
             document.addEvent('mouseup', stop);
@@ -2987,20 +2923,20 @@ var Moovie = new Class({
             mousemove: function mousemove(e) {
                 var barX = seekbar.track.getPosition().x;
                 var sliderX = seekbar.knob.getPosition().x;
-                var pos, time;
+                var position = 0;
+                var time = 0;
 
-                // does the "snap" like effect when the mouse is over the slider's knob
-                if (e.target == seekbar.knob) {
-                    pos = sliderX - barX - seekbar.knob.left;
-                    time = sliderX - seekbar.knob.left;
-                    time = (0, _formatSeconds2.default)(locToTime(time));
+                // provides the "snap" like effect when the mouse is over the slider's knob
+                if (e.target === seekbar.knob) {
+                    position = sliderX - barX - seekbar.knob.left;
+                    time = (0, _formatSeconds2.default)(locToTime(sliderX - seekbar.knob.left));
                 } else {
-                    pos = e.page.x - barX;
+                    position = e.page.x - barX;
                     time = (0, _formatSeconds2.default)(locToTime(e.page.x));
                 }
 
                 seekbar.time.set('data-displaystate', 'showing');
-                seekbar.time.setStyle('left', pos + 'px');
+                seekbar.time.setStyle('left', position + 'px');
                 seekbar.time.getFirst().set('text', time);
             },
 
@@ -3023,7 +2959,8 @@ var Moovie = new Class({
         return seekbar;
     },
 
-    createVolumeControl: function createVolumeControl(video) {
+    createVolumeControl: function createVolumeControl() {
+        var video = this.video;
         var volume = new Element('div.volume[title=Mute]');
 
         volume.addEvent('click', function () {
@@ -3031,28 +2968,28 @@ var Moovie = new Class({
         });
 
         volume.popup = new Element('div.popup');
-        volume.popup.addEvent('click', function (e) {
+        volume.popup.addEvent('click', function () {
             // stop child elements from triggering the mute when clicked
-            e.stop();
+            return false;
         });
 
         volume.slider = new Element('div.slider');
         volume.slider.addEvent('mousedown', function (e) {
-            function update(e) {
+            var update = function update(e) {
                 var offset = e.page.y - volume.track.getPosition().y;
                 var pct = offset / volume.track.getSize().y;
 
                 video.volume = (1 - pct * 1).limit(0, 1);
-            }
+            };
 
-            function move(e) {
+            var move = function move(e) {
                 update(e);
-            }
+            };
 
-            function stop() {
+            var stop = function stop() {
                 document.removeEvent('mousemove', move);
                 document.removeEvent('mouseup', stop);
-            }
+            };
 
             document.addEvent('mousemove', move);
             document.addEvent('mouseup', stop);
@@ -3071,9 +3008,10 @@ var Moovie = new Class({
         return volume;
     },
 
-    createMoreControl: function createMoreControl(panels) {
+    createMoreControl: function createMoreControl() {
+        var playlist = this.playlist;
+        var panels = this.panels;
         var more = new Element('div.more');
-        var self = this;
 
         more.popup = new Element('div.popup');
         more.about = new Element('div.about[title=About]');
@@ -3088,10 +3026,10 @@ var Moovie = new Class({
 
         more.playlist = new Element('div.playlist[title=Playlist]');
         more.playlist.addEvent('click', function () {
-            if (self.playlist.hidden) {
-                self.playlist.show();
+            if (playlist.hidden) {
+                playlist.show();
             } else {
-                self.playlist.hide();
+                playlist.hide();
             }
         });
 
@@ -3109,9 +3047,14 @@ Element.implement({
     }
 });
 
+// Add HTML 5 media events to Element.NativeEvents, if needed.
+if (!Element.NativeEvents.timeupdate) {
+    Element.NativeEvents = Object.merge(Element.NativeEvents, _MediaEvents2.default);
+}
+
 exports.default = Moovie;
 
-},{"./Debugger.js":9,"./Playlist.js":11,"./Title.js":12,"./core/MediaEvents.js":13,"./texttracks/HTMLTrackElement.js":14,"./utils/basename.js":20,"./utils/formatSeconds.js":21,"global/window":1,"screenfull":2,"vtt.js":3}],11:[function(require,module,exports){
+},{"./Debugger.js":8,"./Playlist.js":10,"./Title.js":11,"./core/MediaEvents.js":12,"./texttracks/HTMLTrackElement.js":13,"./utils/basename.js":19,"./utils/formatSeconds.js":20,"screenfull":1,"vtt.js":2}],10:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3141,41 +3084,34 @@ var Playlist = new Class({
     },
 
     attach: function attach() {
-        var self = this;
+        var _this = this;
 
         this.element.addEvent('click:relay(.label)', function (e) {
-            e.stop();
-
-            var item = this.getParents('li')[0];
+            var item = _this.getParents('li')[0];
             var index = item.get('data-index').toInt();
 
-            self.select(index);
-            self.hide();
+            e.stop(); // @todo check if "return false;" will work
+            _this.select(index);
+            _this.hide();
         });
 
         return this;
     },
 
     build: function build() {
-        this.element = new Element('div.playlist');
+        var _this2 = this;
 
-        this.element.set('html', '\
-            <div><div class="heading">Playlist</div></div>\
-            <div><ol class="playlist"></ol></div>\
-        ');
+        this.element = new Element('div.playlist', {
+            html: '<div><div class="heading">Playlist</div></div><div><ol class="playlist"></ol></div>'
+        });
 
-        this.items.each(function (el, index) {
-            this.element.getElement('ol.playlist').grab(new Element('li', {
+        this.items.each(function (item, index) {
+            _this2.element.getElement('ol.playlist').grab(new Element('li', {
                 'data-index': index,
-                'class': this.current() === el ? 'active' : '',
-                'html': '\
-                      <div class="checkbox-widget" data-checked="true">\
-                        <div class="checkbox"></div>\
-                        <div class="label">' + (el.title || (0, _basename2.default)(el.src)) + '</div>\
-                      </div>\
-                    '
+                'class': _this2.current() === item ? 'active' : '',
+                'html': '<div class="checkbox-widget" data-checked="true">\n                        <div class="checkbox"></div>\n                        <div class="label">' + (item.title || (0, _basename2.default)(item.src)) + '</div>\n                    </div>'
             }));
-        }, this);
+        });
 
         return this;
     },
@@ -3188,6 +3124,7 @@ var Playlist = new Class({
         this.hidden = false;
         this.element.set('aria-hidden', false);
         this.fireEvent('show');
+        this.element.addClass('active');
 
         return this;
     },
@@ -3196,6 +3133,7 @@ var Playlist = new Class({
         this.hidden = true;
         this.element.set('aria-hidden', true);
         this.fireEvent('hide');
+        this.element.removeClass('active');
 
         return this;
     },
@@ -3247,7 +3185,7 @@ var Playlist = new Class({
      *
      * Currently supported HTML5 media events.
      *
-     * @version 0.4.2
+     * @version 0.4.3
      * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
      * @author Nathan Bishop <nbish11@hotmail.com>
      * @copyright 2010 Colin Aarts
@@ -3255,7 +3193,7 @@ var Playlist = new Class({
      */
 exports.default = Playlist;
 
-},{"./utils/basename.js":20}],12:[function(require,module,exports){
+},{"./utils/basename.js":19}],11:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3266,7 +3204,7 @@ Object.defineProperty(exports, "__esModule", {
  *
  * Currently supported HTML5 media events.
  *
- * @version 0.4.2
+ * @version 0.4.3
  * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
  * @author Nathan Bishop <nbish11@hotmail.com>
  * @copyright 2010 Colin Aarts
@@ -3309,7 +3247,7 @@ var Title = new Class({
 
         // prevents a whole host of bugs
         if (this.id) {
-            clearTimeout(this.id);
+            clearTimeout(this.id); // eslint-disable-line no-undef
         }
 
         if (this.options.autohide) {
@@ -3338,7 +3276,7 @@ var Title = new Class({
 
 exports.default = Title;
 
-},{}],13:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3383,7 +3321,7 @@ var MediaEvents = {
 
 exports.default = MediaEvents;
 
-},{}],14:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3395,8 +3333,6 @@ var _TextTrack = require('./TextTrack.js');
 
 var _TextTrack2 = _interopRequireDefault(_TextTrack);
 
-var _vtt = require('vtt.js');
-
 var _WebSRT = require('./WebSRT.js');
 
 var _WebSRT2 = _interopRequireDefault(_WebSRT);
@@ -3405,35 +3341,45 @@ var _TextTrackKind = require('./TextTrackKind');
 
 var _TextTrackKind2 = _interopRequireDefault(_TextTrackKind);
 
+var _vtt = require('vtt.js');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// @todo sort out crossorigin attribute/property as well...
 /**
  * Moovie: an advanced HTML5 video player for MooTools.
  *
  * Provides a basic implementation of the W3C HTMLTrackElement IDL.
  *
- * @version 0.4.2
+ * @version 0.4.3
  * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
  * @author Nathan Bishop <nbish11@hotmail.com>
  * @copyright 2010 Colin Aarts
  * @license MIT
  */
-// import window from 'global/window';
+var getParser = function getParser(extension) {
+    switch (extension) {
+        case 'srt':
+            return new _WebSRT2.default.Parser();
+
+        case 'vtt':
+            return new _vtt.WebVTT.Parser(window, _vtt.WebVTT.StringDecoder());
+
+        default:
+            throw new Error('Unsupported file type: ' + extension);
+    }
+};
+
+// @todo sort out crossorigin attribute/property as well...
 var HTMLTrackElement = function HTMLTrackElement(trackElement) {
     var readyState = 0;
     var textTrack = new _TextTrack2.default(trackElement); // sets up defaults from attributes and gets media element
     var request = new Request({
         url: trackElement.get('src'),
-        // onLoading: function () {readyState = 1;},
-        onSuccess: function onSuccess(data) {
-            var parser;
 
-            if (trackElement.get('src').split('.').pop() === 'srt') {
-                parser = new _WebSRT2.default.Parser();
-            } else {
-                parser = new _vtt.WebVTT.Parser(window, _vtt.WebVTT.StringDecoder());
-            }
+        // onLoading: function () {readyState = 1;},
+
+        onSuccess: function onSuccess(data) {
+            var parser = getParser(trackElement.get('src').split('.').pop());
 
             parser.oncue = function (cue) {
                 textTrack.addCue(cue);
@@ -3451,11 +3397,13 @@ var HTMLTrackElement = function HTMLTrackElement(trackElement) {
             parser.flush();
             readyState = 1;
         },
+
         onError: function onError() {
             readyState = 3;
         }
     });
 
+    // @todo change to Promises
     request.send();
 
     Object.defineProperties(trackElement, {
@@ -3464,11 +3412,7 @@ var HTMLTrackElement = function HTMLTrackElement(trackElement) {
                 return this.get('kind') || textTrack.kind; // missing value default (retrieved from TextTrack obj)
             },
             set: function set(kind) {
-                if (_TextTrackKind2.default.contains(kind)) {
-                    this.set('kind', kind);
-                } else {
-                    this.set('kind', 'metadata'); // invalid value default
-                }
+                this.set('kind', _TextTrackKind2.default.contains(kind) ? kind : 'metadata');
             }
         },
 
@@ -3513,27 +3457,23 @@ var HTMLTrackElement = function HTMLTrackElement(trackElement) {
         },
 
         NONE: {
-            get: function get() {
-                return 0;
-            }
+            value: 0,
+            writeable: false
         },
 
         LOADING: {
-            get: function get() {
-                return 1;
-            }
+            value: 1,
+            writeable: false
         },
 
         LOADED: {
-            get: function get() {
-                return 2;
-            }
+            value: 2,
+            writeable: false
         },
 
         ERROR: {
-            get: function get() {
-                return 3;
-            }
+            value: 3,
+            writeable: false
         },
 
         readyState: {
@@ -3546,19 +3486,22 @@ var HTMLTrackElement = function HTMLTrackElement(trackElement) {
             get: function get() {
                 return textTrack;
             }
+        },
+
+        // You can check to see if a <track> element has been
+        // polyfilled by Moovie, by checking for this property.
+        $track: {
+            value: true,
+            writeable: false
         }
     });
-
-    // You can check to see if a <track> element has been
-    // polyfilled by Moovie, by checking for this property.
-    trackElement.$track = true;
 
     return trackElement;
 };
 
 exports.default = HTMLTrackElement;
 
-},{"./TextTrack.js":16,"./TextTrackKind":17,"./WebSRT.js":19,"vtt.js":3}],15:[function(require,module,exports){
+},{"./TextTrack.js":15,"./TextTrackKind":16,"./WebSRT.js":18,"vtt.js":2}],14:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3576,7 +3519,7 @@ var SRTCue = _vtt.VTTCue; /**
                            * process both .srt and .vtt inside Moovie when vtt.js uses the same cue type.
                            *
                            * @link https://github.com/mozilla/vtt.js
-                           * @version 0.4.2
+                           * @version 0.4.3
                            * @author vtt.js Contributors (https://github.com/mozilla/vtt.js/blob/master/AUTHORS)
                            * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
                            * @author Nathan Bishop <nbish11@hotmail.com>
@@ -3585,7 +3528,7 @@ var SRTCue = _vtt.VTTCue; /**
                            */
 exports.default = SRTCue;
 
-},{"vtt.js":3}],16:[function(require,module,exports){
+},{"vtt.js":2}],15:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3608,7 +3551,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * Provides a basic implementation of the W3C TextTrack IDL.
  *
- * @version 0.4.2
+ * @version 0.4.3
  * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
  * @author Nathan Bishop <nbish11@hotmail.com>
  * @copyright 2010 Colin Aarts
@@ -3625,42 +3568,34 @@ var TextTrack = function TextTrack(trackElement) {
     var activeCues = [];
     var media = trackElement.getParent('video');
 
-    if (!kind) {
+    if (!trackElement.get('kind')) {
         kind = 'subtitles'; // missing value default
-    } else if (!_TextTrackKind2.default.contains(kind)) {
+    } else if (!_TextTrackKind2.default.contains(trackElement.get('kind'))) {
         kind = 'metadata'; // invalid value default
     }
 
     media.addEvent('timeupdate', function () {
         var processingTime = 0.39;
         var time = media.currentTime + processingTime;
-        var i;
-        var l;
-        var cue;
+        var i = 0;
 
-        for (i = 0, l = activeCues.length; i < l; i++) {
-            cue = activeCues[i];
-
-            if (cue.startTime > time || cue.endTime < time) {
-                activeCues.splice(i, 1);
-                i--;
-
-                if (cue.pauseOnExit) {
+        // cueexit
+        i = activeCues.length;
+        while (i--) {
+            if (activeCues[i].startTime > time || activeCues[i].endTime < time) {
+                if (activeCues[i].pauseOnExit) {
                     media.pause();
                 }
 
-                // cueexit
+                activeCues.splice(i, 1);
             }
         }
 
-        for (i = 0, l = cues.length; i < l; i++) {
-            cue = cues[i];
-
-            if (cue.startTime <= time && cue.endTime >= time && !activeCues.contains(cue)) {
-                //if (mode == 'showing' || mode == 'hidden') {
-                activeCues.push(cue);
-                // cueenter
-                //}
+        // cueenter
+        i = cues.length;
+        while (i--) {
+            if (cues[i].startTime <= time && cues[i].endTime >= time) {
+                activeCues.include(cues[i]);
             }
         }
     });
@@ -3733,14 +3668,14 @@ var TextTrack = function TextTrack(trackElement) {
         },
 
         oncuechange: {
-            value: function value() {}
+            value: Function.from()
         }
     });
 };
 
 exports.default = TextTrack;
 
-},{"./TextTrackKind":17,"./TextTrackMode":18}],17:[function(require,module,exports){
+},{"./TextTrackKind":16,"./TextTrackMode":17}],16:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3751,7 +3686,7 @@ Object.defineProperty(exports, "__esModule", {
  *
  * Enum for the W3C TextTrackKind IDL.
  *
- * @version 0.4.2
+ * @version 0.4.3
  * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
  * @author Nathan Bishop <nbish11@hotmail.com>
  * @copyright 2010 Colin Aarts
@@ -3761,7 +3696,7 @@ var TextTrackKind = ['subtitles', 'captions', 'descriptions', 'chapters', 'metad
 
 exports.default = TextTrackKind;
 
-},{}],18:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3772,7 +3707,7 @@ Object.defineProperty(exports, "__esModule", {
  *
  * Enum for the W3C TextTrackMode IDL.
  *
- * @version 0.4.2
+ * @version 0.4.3
  * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
  * @author Nathan Bishop <nbish11@hotmail.com>
  * @copyright 2010 Colin Aarts
@@ -3782,7 +3717,7 @@ var TextTrackMode = ['disabled', 'showing', 'hidden'];
 
 exports.default = TextTrackMode;
 
-},{}],19:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3801,7 +3736,7 @@ var WebSRT = {}; /**
                   *
                   * Gives Moovie the ability to support .srt files using <track> elements.
                   *
-                  * @version 0.4.2
+                  * @version 0.4.3
                   * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
                   * @author Nathan Bishop <nbish11@hotmail.com>
                   * @copyright 2010 Colin Aarts
@@ -3811,26 +3746,31 @@ var WebSRT = {}; /**
 
 WebSRT.Parser = new Class({
     initialize: function initialize() {
-        this.oncue = function () {};
-        this.onflush = function () {};
-        this.onparsingerror = function () {};
+        this.oncue = Function.from();
+        this.onflush = Function.from();
+        this.onparsingerror = Function.from();
         this.buffer = '';
         this.cues = [];
     },
 
     computeSeconds: function computeSeconds(h, m, s, f) {
-        return (h | 0) * 3600 + (m | 0) * 60 + (s | 0) + (f | 0) / 1000;
+        var hours = h.toInt() * 3600;
+        var minutes = m.toInt() * 60;
+        var seconds = s.toInt();
+        var milliseconds = f.toInt() / 1000;
+
+        return hours + minutes + seconds + milliseconds;
     },
 
     // Timestamp must take the form of [hours]:[minutes]:[seconds],[milliseconds]
     parseTimeStamp: function parseTimeStamp(input) {
-        var m = input.match(/^(\d{2}):(\d{2}):(\d{2}),(\d{3})/);
+        var matches = input.match(/^(\d{2}):(\d{2}):(\d{2}),(\d{3})/);
 
-        if (!m) {
+        if (!matches) {
             return null;
         }
 
-        return this.computeSeconds(m[1], m[2], m[3], m[4]);
+        return this.computeSeconds(matches[1], matches[2], matches[3], matches[4]);
     },
 
     parse: function parse(data) {
@@ -3838,31 +3778,27 @@ WebSRT.Parser = new Class({
     },
 
     flush: function flush() {
-        var self = this;
+        var _this = this;
+
         var rawCues = this.buffer.replace(/\r?\n/gm, '\n').trim().split('\n\n');
 
-        rawCues.each(function (cue) {
-            cue = cue.split('\n');
+        rawCues.each(function (rawCueBlock) {
+            var cueLines = rawCueBlock.split('\n');
+            var cueid = cueLines.shift();
+            var cuetc = cueLines.shift().split(' --> ');
+            var cueobj = new _SRTCue2.default(_this.parseTimeStamp(cuetc[0]), _this.parseTimeStamp(cuetc[1]), cueLines.join('\n'));
 
-            var cueid = cue.shift();
-            var cuetc = cue.shift().split(' --> ');
-            var cuetx = cue.join('\n');
-
-            cue = new _SRTCue2.default(self.parseTimeStamp(cuetc[0]), self.parseTimeStamp(cuetc[1]), cuetx);
-
-            cue.id = cueid;
-
-            self.cues.push(cue);
-            self.oncue.call(self, cue);
+            cueobj.id = cueid;
+            _this.oncue.call(_this, cueobj);
         });
 
-        this.onflush.call(this, self.cues);
+        this.onflush.call(this);
     }
 });
 
 exports.default = WebSRT;
 
-},{"./SRTCue":15}],20:[function(require,module,exports){
+},{"./SRTCue":14}],19:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3900,7 +3836,7 @@ var basename = function basename(path, suffix) {
 
 exports.default = basename;
 
-},{}],21:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3917,6 +3853,7 @@ Object.defineProperty(exports, "__esModule", {
  * @copyright 2010 Colin Aarts
  * @license MIT
  */
+
 var parse = function parse(input) {
     return {
         hh: Math.floor(input / 3600),
@@ -3953,12 +3890,12 @@ var format = function format(input) {
 
     if (hh === 0) {
         return mm + ':' + ss;
-    } else {
-        return hh + ':' + mm + ':' + ss;
     }
+
+    return hh + ':' + mm + ':' + ss;
 };
 
 exports.default = format;
 
-},{}]},{},[10])(10)
+},{}]},{},[9])(9)
 });

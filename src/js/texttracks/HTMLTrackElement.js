@@ -9,27 +9,35 @@
  * @copyright 2010 Colin Aarts
  * @license MIT
  */
-// import window from 'global/window';
 import TextTrack from './TextTrack.js';
-import { WebVTT } from 'vtt.js';
 import WebSRT from './WebSRT.js';
 import TextTrackKind from './TextTrackKind';
+import { WebVTT } from 'vtt.js';
+
+const getParser = function (extension) {
+    switch (extension) {
+        case 'srt':
+            return new WebSRT.Parser();
+
+        case 'vtt':
+            return new WebVTT.Parser(window, WebVTT.StringDecoder());
+
+        default:
+            throw new Error(`Unsupported file type: ${extension}`);
+    }
+};
 
 // @todo sort out crossorigin attribute/property as well...
 const HTMLTrackElement = function HTMLTrackElement(trackElement) {
-    var readyState = 0;
-    var textTrack = new TextTrack(trackElement);    // sets up defaults from attributes and gets media element
-    var request = new Request({
+    let readyState = 0;
+    const textTrack = new TextTrack(trackElement);    // sets up defaults from attributes and gets media element
+    const request = new Request({
         url: trackElement.get('src'),
-        // onLoading: function () {readyState = 1;},
-        onSuccess: function (data) {
-            var parser;
 
-            if (trackElement.get('src').split('.').pop() === 'srt') {
-                parser = new WebSRT.Parser();
-            } else {
-                parser = new WebVTT.Parser(window, WebVTT.StringDecoder());
-            }
+        // onLoading: function () {readyState = 1;},
+
+        onSuccess: function (data) {
+            const parser = getParser(trackElement.get('src').split('.').pop());
 
             parser.oncue = function (cue) {
                 textTrack.addCue(cue);
@@ -47,11 +55,13 @@ const HTMLTrackElement = function HTMLTrackElement(trackElement) {
             parser.flush();
             readyState = 1;
         },
+
         onError: function () {
             readyState = 3;
         }
     });
 
+    // @todo change to Promises
     request.send();
 
     Object.defineProperties(trackElement, {
@@ -60,11 +70,7 @@ const HTMLTrackElement = function HTMLTrackElement(trackElement) {
                 return this.get('kind') || textTrack.kind;  // missing value default (retrieved from TextTrack obj)
             },
             set: function (kind) {
-                if (TextTrackKind.contains(kind)) {
-                    this.set('kind', kind);
-                } else {
-                    this.set('kind', 'metadata');   // invalid value default
-                }
+                this.set('kind', TextTrackKind.contains(kind) ? kind : 'metadata');
             }
         },
 
@@ -109,27 +115,23 @@ const HTMLTrackElement = function HTMLTrackElement(trackElement) {
         },
 
         NONE: {
-            get: function () {
-                return 0;
-            }
+            value: 0,
+            writeable: false
         },
 
         LOADING: {
-            get: function () {
-                return 1;
-            }
+            value: 1,
+            writeable: false
         },
 
         LOADED: {
-            get: function () {
-                return 2;
-            }
+            value: 2,
+            writeable: false
         },
 
         ERROR: {
-            get: function () {
-                return 3;
-            }
+            value: 3,
+            writeable: false
         },
 
         readyState: {
@@ -142,12 +144,15 @@ const HTMLTrackElement = function HTMLTrackElement(trackElement) {
             get: function () {
                 return textTrack;
             }
+        },
+
+        // You can check to see if a <track> element has been
+        // polyfilled by Moovie, by checking for this property.
+        $track: {
+            value: true,
+            writeable: false
         }
     });
-
-    // You can check to see if a <track> element has been
-    // polyfilled by Moovie, by checking for this property.
-    trackElement.$track = true;
 
     return trackElement;
 };

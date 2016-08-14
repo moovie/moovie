@@ -27,42 +27,34 @@ const Playlist = new Class({
     },
 
     attach: function () {
-        var self = this;
+        this.element.addEvent('click:relay(.label)', (e) => {
+            const item = this.getParents('li')[0];
+            const index = item.get('data-index').toInt();
 
-        this.element.addEvent('click:relay(.label)', function (e) {
-            e.stop();
-
-            var item = this.getParents('li')[0];
-            var index = item.get('data-index').toInt();
-
-            self.select(index);
-            self.hide();
+            e.stop();   // @todo check if "return false;" will work
+            this.select(index);
+            this.hide();
         });
 
         return this;
     },
 
     build: function () {
-        this.element = new Element('div.playlist');
+        this.element = new Element('div.playlist', {
+            html: '<div><div class="heading">Playlist</div></div><div><ol class="playlist"></ol></div>'
+        });
 
-        this.element.set('html', '\
-            <div><div class="heading">Playlist</div></div>\
-            <div><ol class="playlist"></ol></div>\
-        ');
-
-        this.items.each(function(el, index) {
+        this.items.each((item, index) => {
             this.element.getElement('ol.playlist')
                 .grab(new Element('li', {
                     'data-index': index,
-                    'class': this.current() === el ? 'active' : '',
-                    'html': '\
-                      <div class="checkbox-widget" data-checked="true">\
-                        <div class="checkbox"></div>\
-                        <div class="label">' + (el.title || basename(el.src)) + '</div>\
-                      </div>\
-                    '
+                    'class': this.current() === item ? 'active' : '',
+                    'html': `<div class="checkbox-widget" data-checked="true">
+                        <div class="checkbox"></div>
+                        <div class="label">${item.title || basename(item.src)}</div>
+                    </div>`
                 }));
-        }, this);
+        });
 
         return this;
     },
@@ -75,6 +67,7 @@ const Playlist = new Class({
         this.hidden = false;
         this.element.set('aria-hidden', false);
         this.fireEvent('show');
+        this.element.addClass('active');
 
         return this;
     },
@@ -83,6 +76,7 @@ const Playlist = new Class({
         this.hidden = true;
         this.element.set('aria-hidden', true);
         this.fireEvent('hide');
+        this.element.removeClass('active');
 
         return this;
     },
@@ -115,7 +109,7 @@ const Playlist = new Class({
         if (index >= 0 && index < this.items.length) {
             this.index = index;
             this.active().removeClass('active');
-            this.element.getElement('ol.playlist li[data-index="' + index + '"]').addClass('active');
+            this.element.getElement(`ol.playlist li[data-index="${index}"]`).addClass('active');
             this.fireEvent('select', this.current());
         }
 

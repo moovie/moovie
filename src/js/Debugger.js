@@ -50,14 +50,14 @@ const Debugger = new Class({
             p: new Element('p[text=Debugger ready...]')
         };
 
-        this.options.monitorProperties.each(function (el) {
-            var row = new Element('tr[data-property=' + el + ']');
-            var label = new Element('td[text=' + el + ']');
-            var value = new Element('td[text=' + this.video[el] + ']');
+        this.options.monitorProperties.forEach((property) => {
+            const row = new Element(`tr[data-property=${property}]`);
+            const label = new Element(`td[text=${property}]`);
+            const value = new Element(`td[text=${this.video[property]}]`);
 
             row.adopt(label, value);
             this.elements.tbody.grab(row);
-        }, this);
+        });
 
         this.elements.table.grab(this.elements.tbody);
         this.element.adopt(this.elements.table, this.elements.p);
@@ -93,7 +93,7 @@ const Debugger = new Class({
 
     flashProperty: function (property, value) {
         this.elements.tbody
-            .getElement('[data-property=' + property + '] > td + td')
+            .getElement(`[data-property=${property}] > td + td`)
             .set('text', value || this.video[property])
             .getParent().highlight();
 
@@ -112,109 +112,109 @@ const Debugger = new Class({
 
     getBoundEvents: function () {
         return {
-            loadstart: function () {
+            loadstart: () => {
                 this.flashProperty('networkState')
                     .flashMessage('looking for data...');
-            }.bind(this),
+            },
 
-            progress: function () {
+            progress: () => {
                 this.flashProperty('networkState')
                     .flashMessage('fetching data...');
-            }.bind(this),
+            },
 
-            suspend: function () {
+            suspend: () => {
                 this.flashProperty('networkState')
                     .flashMessage('data fetching suspended...');
-            }.bind(this),
+            },
 
-            abort: function () {
+            abort: () => {
                 this.flashProperty('networkState')
                     .flashMessage('data fetching aborted...');
-            }.bind(this),
+            },
 
-            error: function () {
+            error: () => {
                 this.flashProperty('networkState')
                     .flashProperty('error', this.video.error.code)
                     .flashMessage('an error occurred while fetching data...');
-            }.bind(this),
+            },
 
-            emptied: function () {
+            emptied: () => {
                 this.flashProperty('networkState')
                     .flashMessage('media resource is empty...');
-            }.bind(this),
+            },
 
-            stalled: function () {
+            stalled: () => {
                 this.flashProperty('networkState')
                     .flashMessage('stalled while fetching data...');
-            }.bind(this),
+            },
 
-            loadedmetadata: function () {
+            loadedmetadata: () => {
                 this.flashProperty('readyState')
                     .flashMessage('duration and dimensions have been determined...');
-            }.bind(this),
+            },
 
-            loadeddata: function () {
+            loadeddata: () => {
                 this.flashProperty('readyState')
                     .flashMessage('first frame is available...');
-            }.bind(this),
+            },
 
-            waiting: function () {
+            waiting: () => {
                 this.flashProperty('readyState')
                     .flashMessage('waiting for more data...');
-            }.bind(this),
+            },
 
-            playing: function () {
+            playing: () => {
                 this.flashProperty('readyState')
                     .flashMessage('playback has started...');
-            }.bind(this),
+            },
 
-            canplay: function () {
+            canplay: () => {
                 this.flashProperty('readyState')
                     .flashMessage('media is ready to be played, but will likely be interrupted for buffering...');
-            }.bind(this),
+            },
 
-            canplaythrough: function () {
+            canplaythrough: () => {
                 this.flashProperty('readyState')
                     .flashMessage('media is ready to be played and will most likely play through without stopping...');
-            }.bind(this),
+            },
 
-            play: function () {
+            play: () => {
                 this.flashProperty('paused');
-            }.bind(this),
+            },
 
-            pause: function () {
+            pause: () => {
                 this.flashProperty('paused');
-            }.bind(this),
+            },
 
-            ended: function () {
+            ended: () => {
                 this.flashProperty('paused')
                     .flashProperty('ended');
-            }.bind(this),
+            },
 
-            timeupdate: function () {
+            timeupdate: () => {
                 this.flashProperty('currentTime', this.video.currentTime.round(3));
-            }.bind(this),
+            },
 
-            seeking: function () {
+            seeking: () => {
                 this.flashProperty('seeking');
-            }.bind(this),
+            },
 
-            seeked: function () {
+            seeked: () => {
                 this.flashProperty('seeking');
-            }.bind(this),
+            },
 
-            durationchange: function () {
+            durationchange: () => {
                 this.flashProperty('duration', this.video.duration.round(3));
-            }.bind(this),
+            },
 
-            ratechange: function () {
+            ratechange: () => {
                 this.flashProperty('playbackRate');
-            }.bind(this),
+            },
 
-            volumechange: function () {
+            volumechange: () => {
                 this.flashProperty('muted')
                     .flashProperty('volume', this.video.volume.round(2));
-            }.bind(this)
+            }
         };
     }
 });

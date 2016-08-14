@@ -21,7 +21,7 @@ describe('Playlist', function () {
 
     describe('#initialize()', function () {
         it('should be hidden', function () {
-            var playlist = new Playlist();
+            const playlist = new Playlist();
 
             expect(playlist.isHidden()).toBe(true);
         });
@@ -29,7 +29,7 @@ describe('Playlist', function () {
 
     describe('#show()', function () {
         it('should not be hidden', function () {
-            var playlist = new Playlist();
+            const playlist = new Playlist();
 
             playlist.show();
 
@@ -37,8 +37,8 @@ describe('Playlist', function () {
         });
 
         it('should fire an event', function () {
-            var playlist = new Playlist();
-            var spy = sinon.spy();
+            const playlist = new Playlist();
+            const spy = sinon.spy();
 
             playlist.addEvent('show', spy);
             playlist.show();
@@ -47,7 +47,7 @@ describe('Playlist', function () {
         });
 
         it('should be chainable', function () {
-            var playlist = new Playlist();
+            const playlist = new Playlist();
 
             expect(playlist.previous()).toBe(playlist);
         });
@@ -55,7 +55,7 @@ describe('Playlist', function () {
 
     describe('#hide()', function () {
         it('should be hidden', function () {
-            var playlist = new Playlist();
+            const playlist = new Playlist();
 
             playlist.hide();
 
@@ -63,8 +63,8 @@ describe('Playlist', function () {
         });
 
         it('should fire an event', function () {
-            var playlist = new Playlist();
-            var spy = sinon.spy();
+            const playlist = new Playlist();
+            const spy = sinon.spy();
 
             playlist.addEvent('hide', spy);
             playlist.hide();
@@ -73,7 +73,7 @@ describe('Playlist', function () {
         });
 
         it('should be chainable', function () {
-            var playlist = new Playlist();
+            const playlist = new Playlist();
 
             expect(playlist.previous()).toBe(playlist);
         });
@@ -81,19 +81,19 @@ describe('Playlist', function () {
 
     describe('#size()', function () {
         it('should return zero if the playlist is empty', function () {
-            var playlist = new Playlist();
+            const playlist = new Playlist();
 
             expect(playlist.size()).toBe(0);
         });
 
         it('should return one if the playlist has only one item', function () {
-            var playlist = new Playlist([this.items[0]]);
+            const playlist = new Playlist([this.items[0]]);
 
             expect(playlist.size()).toBe(1);
         });
 
         it('should return the correct size if the playlist contains multiple items', function () {
-            var playlist = new Playlist(this.items);
+            const playlist = new Playlist(this.items);
 
             expect(playlist.size()).toBe(3);
         });
@@ -101,19 +101,19 @@ describe('Playlist', function () {
 
     describe('#current()', function () {
         it('should return nothing if the playlist is empty', function () {
-            var playlist = new Playlist();
+            const playlist = new Playlist();
 
             expect(playlist.current()).toBe(null);
         });
 
         it('should return that item if the playlist only has one item', function () {
-            var playlist = new Playlist([this.items[0]]);
+            const playlist = new Playlist([this.items[0]]);
 
             expect(playlist.current()).toBe(this.items[0]);
         });
 
         it('should return the first item if the playlist has multiple items', function () {
-            var playlist = new Playlist(this.items);
+            const playlist = new Playlist(this.items);
 
             expect(playlist.current()).toBe(this.items[0]);
         });
@@ -121,20 +121,20 @@ describe('Playlist', function () {
 
     describe('#hasPrevious()', function () {
         it('should return false if the playlist is empty', function () {
-            var playlist = new Playlist();
+            const playlist = new Playlist();
 
             expect(playlist.hasPrevious()).toBe(false);
         });
 
         it('should return false if the playlist contains only one item', function () {
-            var playlist = new Playlist([this.items[0]]);
+            const playlist = new Playlist([this.items[0]]);
 
             expect(playlist.hasPrevious()).toBe(false);
         });
 
         context('when the playlist contains multiple items', function () {
             it('will return false if the first item is selected', function () {
-                var playlist = new Playlist(this.items);
+                const playlist = new Playlist(this.items);
 
                 playlist.select(0);
 
@@ -142,7 +142,7 @@ describe('Playlist', function () {
             });
 
             it('will return true if the first item is not selected', function () {
-                var playlist = new Playlist(this.items);
+                const playlist = new Playlist(this.items);
 
                 playlist.select(1);
 
@@ -155,7 +155,7 @@ describe('Playlist', function () {
     // neccessary. This simplifies our tests significantly.
     describe('#previous()', function () {
         it('should decline to the previous item until the first item is reached', function () {
-            var playlist = new Playlist(this.items);
+            const playlist = new Playlist(this.items);
 
             playlist.select(2);
 
@@ -170,8 +170,8 @@ describe('Playlist', function () {
         });
 
         it('should fire an event every time the playlist actually declines', function () {
-            var playlist = new Playlist(this.items);
-            var spy = sinon.spy();
+            const playlist = new Playlist(this.items);
+            const spy = sinon.spy();
 
             playlist.select(2);
             playlist.addEvent('select', spy);
@@ -187,7 +187,7 @@ describe('Playlist', function () {
         });
 
         it('should be chainable', function () {
-            var playlist = new Playlist();
+            const playlist = new Playlist();
 
             expect(playlist.previous()).toBe(playlist);
         });
@@ -195,20 +195,20 @@ describe('Playlist', function () {
 
     describe('#hasNext()', function () {
         it('should return false if the playlist is empty', function () {
-            var playlist = new Playlist();
+            const playlist = new Playlist();
 
             expect(playlist.hasNext()).toBe(false);
         });
 
         it('should return false if the playlist contains only one item', function () {
-            var playlist = new Playlist([this.items[0]]);
+            const playlist = new Playlist([this.items[0]]);
 
             expect(playlist.hasNext()).toBe(false);
         });
 
         context('when the playlist contains multiple items', function () {
             it('will return false if the last item is selected', function () {
-                var playlist = new Playlist(this.items);
+                const playlist = new Playlist(this.items);
 
                 playlist.select(2);
 
@@ -216,7 +216,7 @@ describe('Playlist', function () {
             });
 
             it('will return true if the last item is not selected', function () {
-                var playlist = new Playlist(this.items);
+                const playlist = new Playlist(this.items);
 
                 playlist.select(1);
 
@@ -229,7 +229,7 @@ describe('Playlist', function () {
     // neccessary. This simplifies our tests significantly.
     describe('#next()', function () {
         it('should advance to the next item until the last item is reached', function () {
-            var playlist = new Playlist(this.items);
+            const playlist = new Playlist(this.items);
 
             playlist.select(0);
 
@@ -244,8 +244,8 @@ describe('Playlist', function () {
         });
 
         it('should fire an event every time the playlist actually advances', function () {
-            var playlist = new Playlist(this.items);
-            var spy = sinon.spy();
+            const playlist = new Playlist(this.items);
+            const spy = sinon.spy();
 
             playlist.select(0);
             playlist.addEvent('select', spy);
@@ -261,7 +261,7 @@ describe('Playlist', function () {
         });
 
         it('should be chainable', function () {
-            var playlist = new Playlist();
+            const playlist = new Playlist();
 
             expect(playlist.next()).toBe(playlist);
         });
@@ -269,14 +269,14 @@ describe('Playlist', function () {
 
     describe('#select()', function () {
         it('should be chainable', function () {
-            var playlist = new Playlist();
+            const playlist = new Playlist();
 
             expect(playlist.select(0)).toBe(playlist);
         });
 
         context('when the playlist is empty', function () {
             it('does not change the current item when attempting to select an item', function () {
-                var playlist = new Playlist();
+                const playlist = new Playlist();
 
                 playlist.select(0);
 
@@ -284,8 +284,8 @@ describe('Playlist', function () {
             });
 
             it('does not fire an event when attempting to select an item', function () {
-                var playlist = new Playlist();
-                var spy = sinon.spy();
+                const playlist = new Playlist();
+                const spy = sinon.spy();
 
                 playlist.addEvent('select', spy);
                 playlist.select(0);
@@ -296,8 +296,8 @@ describe('Playlist', function () {
 
         context('when the playlist only has one item', function () {
             it('always returns the same item regardless of the value', function () {
-                var playlist = new Playlist([this.items[0]]);
-                var current = playlist.current();
+                const playlist = new Playlist([this.items[0]]);
+                const current = playlist.current();
 
                 playlist.select(-1);
                 expect(playlist.current()).toBe(current);
@@ -310,8 +310,8 @@ describe('Playlist', function () {
             });
 
             it('never fires an event unless the value is zero', function () {
-                var playlist = new Playlist([this.items[0]]);
-                var spy = sinon.spy();
+                const playlist = new Playlist([this.items[0]]);
+                const spy = sinon.spy();
 
                 playlist.addEvent('select', spy);
                 playlist.select(-1);
@@ -325,8 +325,8 @@ describe('Playlist', function () {
 
         context('when the playlist contains multiple items', function () {
             it('does not change the current item if the value is negative', function () {
-                var playlist = new Playlist(this.items);
-                var current = playlist.current();
+                const playlist = new Playlist(this.items);
+                const current = playlist.current();
 
                 playlist.select(-1);
 
@@ -334,8 +334,8 @@ describe('Playlist', function () {
             });
 
             it('does not change the current item if the value is equal to the playlist size', function () {
-                var playlist = new Playlist(this.items);
-                var current = playlist.current();
+                const playlist = new Playlist(this.items);
+                const current = playlist.current();
 
                 playlist.select(playlist.size());
 
@@ -343,8 +343,8 @@ describe('Playlist', function () {
             });
 
             it('does not change the current item if the value is greater than the playlist size', function () {
-                var playlist = new Playlist(this.items);
-                var current = playlist.current();
+                const playlist = new Playlist(this.items);
+                const current = playlist.current();
 
                 playlist.select(playlist.size() + 1);
 
@@ -352,8 +352,8 @@ describe('Playlist', function () {
             });
 
             it('does not fire an event if the value is negative', function () {
-                var playlist = new Playlist(this.items);
-                var spy = sinon.spy();
+                const playlist = new Playlist(this.items);
+                const spy = sinon.spy();
 
                 playlist.addEvent('select', spy);
                 playlist.select(-1);
@@ -362,8 +362,8 @@ describe('Playlist', function () {
             });
 
             it('does not fire an event if the value is equal to the playlist size', function () {
-                var playlist = new Playlist(this.items);
-                var spy = sinon.spy();
+                const playlist = new Playlist(this.items);
+                const spy = sinon.spy();
 
                 playlist.addEvent('select', spy);
                 playlist.select(playlist.size());
@@ -372,8 +372,8 @@ describe('Playlist', function () {
             });
 
             it('does not fire an event if the value is greater than the playlist size', function () {
-                var playlist = new Playlist(this.items);
-                var spy = sinon.spy();
+                const playlist = new Playlist(this.items);
+                const spy = sinon.spy();
 
                 playlist.addEvent('select', spy);
                 playlist.select(playlist.size() + 1);
@@ -382,7 +382,7 @@ describe('Playlist', function () {
             });
 
             it('will change the current item if the value is valid', function () {
-                var playlist = new Playlist(this.items);
+                const playlist = new Playlist(this.items);
 
                 playlist.select(1);
 
@@ -390,8 +390,8 @@ describe('Playlist', function () {
             });
 
             it('will fire an event if the value is valid', function () {
-                var playlist = new Playlist(this.items);
-                var spy = sinon.spy();
+                const playlist = new Playlist(this.items);
+                const spy = sinon.spy();
 
                 playlist.addEvent('select', spy);
                 playlist.select(1);

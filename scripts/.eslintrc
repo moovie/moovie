@@ -1,34 +1,5 @@
 {
     "env": {
         "node": true
-    },
-    "globals": {
-        "cd": false,
-        "pwd": false,
-        "ls": false,
-        "find": false,
-        "cp": false,
-        "rm": false,
-        "mv": false,
-        "mkdir": false,
-        "test": false,
-        "cat": false,
-        "head": false,
-        "tail": false,
-        "sed": false,
-        "sort": false,
-        "grep": false,
-        "which": false,
-        "echo": false,
-        "pushd": false,
-        "popd": false,
-        "dirs": false,
-        "ln": false,
-        "exit": false,
-        "env": false,
-        "exec": false,
-        "chmod": false,
-        "touch": false,
-        "set": false
     }
 }

@@ -11,9 +11,9 @@
  * @param  {string} suffix If specified, removes suffix from returned string.
  * @return {string}        [description]
  */
-const basename = function basename(path, suffix) {
-    var b = path;
-    var lastChar = b.charAt(b.length - 1);
+const basename = function (path, suffix) {
+    let b = path;
+    const lastChar = b.charAt(b.length - 1);
 
     if (lastChar === '/' || lastChar === '\\') {
         b = b.slice(0, -1);
