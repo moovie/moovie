@@ -3,7 +3,7 @@
  *
  * Enum for the W3C TextTrackMode IDL.
  *
- * @version 0.4.2
+ * @version 0.4.3
  * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
  * @author Nathan Bishop <nbish11@hotmail.com>
  * @copyright 2010 Colin Aarts
