@@ -8,7 +8,7 @@ module.exports = function (config) {
 
         // frameworks to use
         // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-        frameworks: ['browserify', 'mocha', 'detectBrowsers'],
+        frameworks: ['mocha', 'browserify', 'detectBrowsers'],
 
         // list of files / patterns to load in the browser
         files: [
@@ -30,7 +30,7 @@ module.exports = function (config) {
         // test results reporter to use
         // possible values: 'dots', 'progress'
         // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-        reporters: ['mocha'],
+        reporters: ['mocha', 'coverage'],
 
         // web server port
         port: 9876,
@@ -70,6 +70,30 @@ module.exports = function (config) {
         detectBrowsers: {
             // phantomjs does not support the <video> element
             usePhantomJS: false,
+        },
+
+        browserify: {
+            debug: true,
+            transform: [
+                require('browserify-istanbul')({
+                    instrumenter: require('isparta'),
+                    instrumenterConfig: {
+                        embedSource: true
+                    }
+                })
+            ]
+        },
+
+        coverageReporter: {
+            dir: 'coverage',
+            reporters: [
+                {
+                    type: 'html',
+                    subdir: function (browser) {
+                        return browser.toLowerCase().split(/[ /-]/)[0];
+                    }
+                }
+            ]
         }
     });
 };

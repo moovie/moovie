@@ -1,5 +1,5 @@
 assets/
-build/
+coverage/
 dist/
 node_modules/
 vendor/
