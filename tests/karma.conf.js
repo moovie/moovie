@@ -57,13 +57,6 @@ module.exports = function (config) {
         // how many browser should be started simultaneous
         concurrency: Infinity,
 
-        browserify: {
-            debug: true,
-            transform: [
-                ['babelify', { presets: ['es2015'] }]
-            ]
-        },
-
         client: {
             mocha: {
                 // I'm using Jasmine-style matchers here.

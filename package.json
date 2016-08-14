@@ -41,10 +41,10 @@
     "pretest": "npm run lint",
     "test": "karma start tests/karma.conf.js",
     "minify": "npm-run-all -p minify:*",
-    "minify:js": "browserify src/js/Moovie.js -t [ babelify --presets [ es2015 ] ] -s Moovie | uglifyjs -c > dist/moovie.min.js",
+    "minify:js": "browserify src/js/Moovie.js -s Moovie | uglifyjs -c > dist/moovie.min.js",
     "minify:css": "node-sass src/scss/main.scss dist/moovie.min.css --output-style=compressed --linefeed=lf",
     "compile": "npm-run-all -p compile:*",
-    "compile:js": "browserify src/js/Moovie.js -t [ babelify --presets [ es2015 ] ] -s Moovie -o dist/moovie.js",
+    "compile:js": "browserify src/js/Moovie.js -s Moovie > dist/moovie.js",
     "compile:scss": "node-sass src/scss/main.scss dist/moovie.css --output-style=expanded --linefeed=lf",
     "preversion": "npm test",
     "version": "node scripts/bump.js && git add .",
@@ -73,5 +73,9 @@
   "bugs": {
     "url": "https://github.com/moovie/moovie/issues"
   },
-  "homepage": "https://github.com/moovie/moovie#readme"
+  "homepage": "https://github.com/moovie/moovie#readme",
+  "browserify": {
+    "debug": true,
+    "transform": ["babelify"]
+  }
 }
