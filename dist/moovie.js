@@ -3356,7 +3356,7 @@ Object.defineProperty(exports, "__esModule", {
  * @license MIT
  */
 // @todo change to enum type
-exports.default = {
+var MediaEvents = {
     abort: 1,
     canplay: 1,
     canplaythrough: 1,
@@ -3380,6 +3380,8 @@ exports.default = {
     volumechange: 1,
     waiting: 1
 };
+
+exports.default = MediaEvents;
 
 },{}],14:[function(require,module,exports){
 'use strict';
