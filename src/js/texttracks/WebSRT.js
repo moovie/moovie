@@ -3,7 +3,7 @@
  *
  * Gives Moovie the ability to support .srt files using <track> elements.
  *
- * @version 0.4.3
+ * @version 0.4.4
  * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
  * @author Nathan Bishop <nbish11@hotmail.com>
  * @copyright 2010 Colin Aarts
