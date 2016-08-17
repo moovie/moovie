@@ -67,7 +67,20 @@ module.exports = function (config) {
 
         detectBrowsers: {
             // phantomjs does not support the <video> element
-            usePhantomJS: false
+            usePhantomJS: false,
+
+            postDetection: function (availableBrowsers) {
+                const result = availableBrowsers;
+
+                // There seems to be a problem with Chrome and Travis...
+                if (process.env.TRAVIS) {
+                    if (availableBrowsers.indexOf('Chrome') > -1) {
+                        result.splice(result.indexOf('Chrome'), 1);
+                    }
+                }
+
+                return result;
+            }
         },
 
         browserify: {
