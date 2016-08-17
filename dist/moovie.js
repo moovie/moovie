@@ -2213,7 +2213,7 @@ Object.defineProperty(exports, "__esModule", {
  *
  * Currently supported HTML5 media events.
  *
- * @version 0.4.4
+ * @version 0.4.5
  * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
  * @author Nathan Bishop <nbish11@hotmail.com>
  * @copyright 2010 Colin Aarts
@@ -2448,7 +2448,7 @@ var HAS_TRACK_SUPPORT = 'track' in document.createElement('track'); /**
                                                                      *
                                                                      * Currently supported HTML5 media events.
                                                                      *
-                                                                     * @version 0.4.4
+                                                                     * @version 0.4.5
                                                                      * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
                                                                      * @author Nathan Bishop <nbish11@hotmail.com>
                                                                      * @copyright 2010 Colin Aarts
@@ -3185,7 +3185,7 @@ var Playlist = new Class({
      *
      * Currently supported HTML5 media events.
      *
-     * @version 0.4.4
+     * @version 0.4.5
      * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
      * @author Nathan Bishop <nbish11@hotmail.com>
      * @copyright 2010 Colin Aarts
@@ -3204,7 +3204,7 @@ Object.defineProperty(exports, "__esModule", {
  *
  * Currently supported HTML5 media events.
  *
- * @version 0.4.4
+ * @version 0.4.5
  * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
  * @author Nathan Bishop <nbish11@hotmail.com>
  * @copyright 2010 Colin Aarts
@@ -3350,7 +3350,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * Provides a basic implementation of the W3C HTMLTrackElement IDL.
  *
- * @version 0.4.4
+ * @version 0.4.5
  * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
  * @author Nathan Bishop <nbish11@hotmail.com>
  * @copyright 2010 Colin Aarts
@@ -3519,7 +3519,7 @@ var SRTCue = _vtt.VTTCue; /**
                            * process both .srt and .vtt inside Moovie when vtt.js uses the same cue type.
                            *
                            * @link https://github.com/mozilla/vtt.js
-                           * @version 0.4.4
+                           * @version 0.4.5
                            * @author vtt.js Contributors (https://github.com/mozilla/vtt.js/blob/master/AUTHORS)
                            * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
                            * @author Nathan Bishop <nbish11@hotmail.com>
@@ -3551,7 +3551,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * Provides a basic implementation of the W3C TextTrack IDL.
  *
- * @version 0.4.4
+ * @version 0.4.5
  * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
  * @author Nathan Bishop <nbish11@hotmail.com>
  * @copyright 2010 Colin Aarts
@@ -3686,7 +3686,7 @@ Object.defineProperty(exports, "__esModule", {
  *
  * Enum for the W3C TextTrackKind IDL.
  *
- * @version 0.4.4
+ * @version 0.4.5
  * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
  * @author Nathan Bishop <nbish11@hotmail.com>
  * @copyright 2010 Colin Aarts
@@ -3707,7 +3707,7 @@ Object.defineProperty(exports, "__esModule", {
  *
  * Enum for the W3C TextTrackMode IDL.
  *
- * @version 0.4.4
+ * @version 0.4.5
  * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
  * @author Nathan Bishop <nbish11@hotmail.com>
  * @copyright 2010 Colin Aarts
@@ -3736,7 +3736,7 @@ var WebSRT = {}; /**
                   *
                   * Gives Moovie the ability to support .srt files using <track> elements.
                   *
-                  * @version 0.4.4
+                  * @version 0.4.5
                   * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
                   * @author Nathan Bishop <nbish11@hotmail.com>
                   * @copyright 2010 Colin Aarts
