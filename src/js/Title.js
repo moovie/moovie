@@ -3,7 +3,7 @@
  *
  * Currently supported HTML5 media events.
  *
- * @version 0.4.5
+ * @version 0.4.6
  * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
  * @author Nathan Bishop <nbish11@hotmail.com>
  * @copyright 2010 Colin Aarts

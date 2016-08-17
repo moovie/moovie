@@ -6,7 +6,7 @@
  * process both .srt and .vtt inside Moovie when vtt.js uses the same cue type.
  *
  * @link https://github.com/mozilla/vtt.js
- * @version 0.4.5
+ * @version 0.4.6
  * @author vtt.js Contributors (https://github.com/mozilla/vtt.js/blob/master/AUTHORS)
  * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
  * @author Nathan Bishop <nbish11@hotmail.com>
