@@ -10,7 +10,8 @@
     "vendor/mootools-more/Source/Element/Element.Measure.js",
     "vendor/mootools-more/Source/Interface/Tips.js",
     "dist",
-    "lib"
+    "lib",
+    "bower.json"
   ],
   "devDependencies": {
     "babel-cli": "^6.11.4",
