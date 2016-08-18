@@ -3,9 +3,8 @@
   "version": "0.4.6",
   "description": "An advanced HTML5 video player for MooTools.",
   "main": "lib/moovie.js",
-  "browser": "dist/moovie.js",
   "files": [
-    "vendor/mootools/dist/mootools-core.js",
+    "lib/mootools-core.js",
     "vendor/mootools/dist/mootools-core.min.js"
   ],
   "devDependencies": {
@@ -46,18 +45,29 @@
   },
   "scripts": {
     "postinstall": "bower install",
+    "push": "git push --follow-tags",
     "clean": "rimraf dist/**/*",
     "lint": "eslint **/*.js --color",
     "lint:fix": "eslint **/*.js --fix --color",
     "pretest": "npm run lint",
     "test": "karma start tests/karma.conf.js",
     "posttest": "echo generating test coverage...",
+    "minify": "npm-run-all -p minify:*",
+    "minify:js": "browserify src/js/Moovie.js -s Moovie | uglifyjs -c > dist/moovie.min.js",
+    "minify:css": "node-sass src/scss/main.scss dist/moovie.min.css --output-style=compressed --linefeed=lf",
     "compile": "npm-run-all -p compile:*",
+    "compile:js": "browserify src/js/Moovie.js -s Moovie > dist/moovie.js",
     "compile:scss": "node-sass src/scss/main.scss dist/moovie.css --output-style=expanded --linefeed=lf",
+    "preversion": "npm test",
+    "version": "node scripts/bump.js && git add .",
     "build": "npm-run-all -p build:*",
-    "build:bower": "browserify src/js/Moovie.js -s Moovie > dist/moovie.js && npm run compile:scss",
-    "build:npm": "mkdir lib && babel src/js -d lib",
+    "build:bower": "browserify src/js/Moovie.js -s Moovie -o dist/moovie.js",
+    "build:npm": "babel src/js -d lib",
     "prepublish": "npm run build",
+    "release:patch": "npm version patch && npm publish && npm run push",
+    "release:minor": "npm version minor && npm publish && npm run push",
+    "release:major": "npm version major && npm publish && npm run push",
+    "release": "npm run release:patch",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "repository": {

@@ -1,5 +1,7 @@
 assets/
+build/
 coverage/
+lib/
 node_modules/
 vendor/
 npm-debug.log
