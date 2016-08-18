@@ -1,7 +1,6 @@
 assets/
 build/
 coverage/
-dist/
 scripts/
 src/
 tests/
