@@ -30,6 +30,7 @@
     "karma-mocha-reporter": "^2.0.4",
     "karma-opera-launcher": "^1.0.0",
     "karma-safari-launcher": "^1.0.0",
+    "mkdirp": "^0.5.1",
     "mocha": "^2.5.3",
     "node-sass": "^3.8.0",
     "npm-run-all": "^2.3.0",
@@ -45,8 +46,8 @@
     "vtt.js": "^0.12.1"
   },
   "scripts": {
+    "clean": "rimraf dist lib && mkdirp dist lib",
     "postinstall": "bower install",
-    "clean": "rimraf dist/**/*",
     "lint": "eslint **/*.js --color",
     "lint:fix": "eslint **/*.js --fix --color",
     "pretest": "npm run lint",
@@ -54,9 +55,9 @@
     "posttest": "echo generating test coverage...",
     "compile": "npm-run-all -p compile:*",
     "compile:scss": "node-sass src/scss/main.scss dist/moovie.css --output-style=expanded --linefeed=lf",
-    "build": "npm-run-all -p build:*",
+    "build": "npm-run-all clean -p build:*",
     "build:bower": "browserify src/js/Moovie.js -s Moovie > dist/moovie.js && npm run compile:scss",
-    "build:npm": "mkdir lib && babel src/js -d lib",
+    "build:npm": "babel src/js -d lib",
     "prepublish": "npm run build",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
