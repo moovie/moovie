@@ -4,11 +4,9 @@ coverage/
 scripts/
 src/
 tests/
-.bowerrc
 .editorconfig
 .eslintignore
 .eslintrc
 .gitignore
 .travis.yml
-bower.json
 index.php
