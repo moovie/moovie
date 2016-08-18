@@ -6,7 +6,9 @@
   "browser": "dist/moovie.js",
   "files": [
     "vendor/mootools/dist/mootools-core.js",
-    "vendor/mootools/dist/mootools-core.min.js"
+    "vendor/mootools/dist/mootools-core.min.js",
+    "dist",
+    "lib"
   ],
   "devDependencies": {
     "babel-cli": "^6.11.4",
