@@ -46,11 +46,9 @@ var player = new Moovie('avatar', {
 And in your HTML:
 
 ```html
-<div id="video">
-    <div class="wrapper">
-        <video src="video.mp4" poster="video.png"></video>
-    </div>
-</div>
+<video src="video.mp4" poster="video.png">
+    <track kind="subtitles" src="subs.srt" srclang="en" label="English" default="">
+</video>
 ```
 
 ## Contributing
