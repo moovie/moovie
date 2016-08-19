@@ -1,19 +1,13 @@
 /**
  * Moovie: an advanced HTML5 video player for MooTools.
- *
- * Currently supported HTML5 media events.
- *
- * @version 0.4.6
- * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
- * @author Nathan Bishop <nbish11@hotmail.com>
  * @copyright 2010 Colin Aarts
  * @license MIT
  */
+import MediaEvents from './core/media-events.js';   // eslint-disable-line
 import screenfull from 'screenfull';
 import HTMLTrackElement from './track/html-track-element.js';
 import Debugger from './Debugger.js';
 import Title from './Title.js';
-import MediaEvents from './core/MediaEvents.js';
 import Playlist from './Playlist.js';
 import formatSeconds from './utils/formatSeconds.js';
 import basename from './utils/basename.js';
@@ -137,21 +131,17 @@ const Moovie = new Class({
                 this.playlist.next();
             },
 
-            progress: (e) => {
+            progress: () => {
                 let percent = 0;
-                let mb = 0;
 
-                if (e.event.lengthComputable) {
-                    mb = (e.event.total / 1024 / 1024).round(2);
-                    percent = e.event.loaded / e.event.total * 100;
-                } else if (this.video.buffered.length) {
+                if (this.video.buffered.length) {
                     const buffered = this.video.buffered.end(this.video.buffered.length - 1);
 
                     percent = buffered / this.video.duration * 100;
                 }
 
                 this.controls.seekbar.buffered.setStyle('width', `${percent}%`);
-                this.panels.info.getElement('dt.size + dd').set('html', `${mb} MB`);
+                this.panels.info.getElement('dt.size + dd').set('html', '0 MB');
             },
 
             seeking: () => {
@@ -647,10 +637,5 @@ Element.implement({
         this.store('moovie', new Moovie(this, options));
     }
 });
-
-// Add HTML 5 media events to Element.NativeEvents, if needed.
-if (!Element.NativeEvents.timeupdate) {
-    Element.NativeEvents = Object.merge(Element.NativeEvents, MediaEvents);
-}
 
 export { Moovie as default };
