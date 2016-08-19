@@ -134,7 +134,7 @@ const Debugger = new Class({
 
             error: () => {
                 this.flashProperty('networkState')
-                    .flashProperty('error', this.video.error.code)
+                    .flashProperty('error', this.video.error ? this.video.error.code : null)
                     .flashMessage('an error occurred while fetching data...');
             },
 
