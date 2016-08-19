@@ -1,76 +1,32 @@
 /**
  * Moovie: an advanced HTML5 video player for MooTools.
- *
- * Provides a basic implementation of the W3C HTMLTrackElement IDL.
- *
- * @version 0.4.6
- * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
- * @author Nathan Bishop <nbish11@hotmail.com>
  * @copyright 2010 Colin Aarts
  * @license MIT
  */
-import TextTrack from './TextTrack.js';
-import WebSRT from './WebSRT.js';
-import TextTrackKind from './TextTrackKind';
-import { WebVTT } from 'vtt.js';
+import TextTrack from './text-track.js';
+import Loader from './loader.js';
 
-const getParser = function (extension) {
-    switch (extension) {
-        case 'srt':
-            return new WebSRT.Parser();
-
-        case 'vtt':
-            return new WebVTT.Parser(window, WebVTT.StringDecoder());
-
-        default:
-            throw new Error(`Unsupported file type: ${extension}`);
-    }
-};
-
-// @todo sort out crossorigin attribute/property as well...
+/**
+ * Provides a basic implementation of the W3C HTMLTrackElement IDL.
+ * @see https://w3c.github.io/html/semantics-embedded-content.html#htmltrackelement-htmltrackelement
+ * @param {[type]} trackElement [description]
+ */
 const HTMLTrackElement = function HTMLTrackElement(trackElement) {
-    let readyState = 0;
-    const textTrack = new TextTrack(trackElement);    // sets up defaults from attributes and gets media element
-    const request = new Request({
-        url: trackElement.get('src'),
-
-        // onLoading: function () {readyState = 1;},
-
-        onSuccess: function (data) {
-            const parser = getParser(trackElement.get('src').split('.').pop());
-
-            parser.oncue = function (cue) {
-                textTrack.addCue(cue);
-            };
-
-            parser.onparsingerror = function () {
-                readyState = 3;
-            };
-
-            parser.onflush = function () {
-                readyState = 2;
-            };
-
-            parser.parse(data);
-            parser.flush();
-            readyState = 1;
-        },
-
-        onError: function () {
-            readyState = 3;
+    const textTrack = new TextTrack(trackElement);
+    const loader = new Loader(
+        trackElement.get('src'),
+        function (cue) {
+            textTrack.addCue(cue);
         }
-    });
-
-    // @todo change to Promises
-    request.send();
+    );
 
     Object.defineProperties(trackElement, {
         kind: {
             get: function () {
-                return this.get('kind') || textTrack.kind;  // missing value default (retrieved from TextTrack obj)
+                return this.get('kind') || textTrack.kind;
             },
             set: function (kind) {
-                this.set('kind', TextTrackKind.contains(kind) ? kind : 'metadata');
+                this.set('kind', kind);
             }
         },
 
@@ -136,7 +92,7 @@ const HTMLTrackElement = function HTMLTrackElement(trackElement) {
 
         readyState: {
             get: function () {
-                return readyState;
+                return loader.readyState;
             }
         },
 
@@ -146,7 +102,7 @@ const HTMLTrackElement = function HTMLTrackElement(trackElement) {
             }
         },
 
-        // You can check to see if a <track> element has been
+        // You can check to see if a <track> element was
         // polyfilled by Moovie, by checking for this property.
         $track: {
             value: true,
@@ -157,4 +113,4 @@ const HTMLTrackElement = function HTMLTrackElement(trackElement) {
     return trackElement;
 };
 
-export { HTMLTrackElement as default };
+export default HTMLTrackElement;

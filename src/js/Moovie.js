@@ -10,7 +10,7 @@
  * @license MIT
  */
 import screenfull from 'screenfull';
-import HTMLTrackElement from './texttracks/HTMLTrackElement.js';
+import HTMLTrackElement from './track/html-track-element.js';
 import Debugger from './Debugger.js';
 import Title from './Title.js';
 import MediaEvents from './core/MediaEvents.js';

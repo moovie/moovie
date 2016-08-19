@@ -1,18 +1,23 @@
 /**
  * Moovie: an advanced HTML5 video player for MooTools.
- *
- * Gives Moovie the ability to support .srt files using <track> elements.
- *
- * @version 0.4.6
- * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
- * @author Nathan Bishop <nbish11@hotmail.com>
  * @copyright 2010 Colin Aarts
  * @license MIT
  */
-import SRTCue from './SRTCue';
+import { VTTCue } from 'vtt.js';
 
+/**
+ * Provides an SRTCue object for the WebSRT parser. While the SRT standard
+ * doesn't really support any of the VTT properties, it does make it easier to
+ * process both .srt and .vtt inside Moovie when vtt.js uses the same cue type.
+ * @type {SRTCue}
+ */
+const SRTCue = VTTCue;
 const WebSRT = {};
 
+/**
+ * Parses SRT (.srt) files.
+ * @type {Class}
+ */
 WebSRT.Parser = new Class({
     initialize: function () {
         this.oncue = Function.from();
@@ -67,4 +72,4 @@ WebSRT.Parser = new Class({
     }
 });
 
-export { WebSRT as default };
+export { WebSRT, SRTCue };

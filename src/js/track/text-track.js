@@ -9,8 +9,8 @@
  * @copyright 2010 Colin Aarts
  * @license MIT
  */
-import TextTrackKind from './TextTrackKind';
-import TextTrackMode from './TextTrackMode';
+import TextTrackKind from './text-track-kind.js';
+import TextTrackMode from './text-track-mode.js';
 
 const TextTrack = function TextTrack(trackElement) {
     let kind = '';
@@ -25,7 +25,8 @@ const TextTrack = function TextTrack(trackElement) {
 
     if (!trackElement.get('kind')) {
         kind = 'subtitles'; // missing value default
-    } else if (!TextTrackKind.contains(trackElement.get('kind'))) {
+    //} else if (!TextTrackKind.key(trackElement.get('kind'))) {
+    } else if (!(trackElement.get('kind') in TextTrackKind)) {
         kind = 'metadata';  // invalid value default
     }
 
