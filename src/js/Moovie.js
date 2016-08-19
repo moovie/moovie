@@ -252,7 +252,7 @@ const Moovie = new Class({
         const items = [];
 
         if (typeOf(this.options.playlist) === 'array') {
-            items.combine(this.options.playlist);
+            items.combine(Array.from(this.options.playlist));
 
             // Add the current video to the playlist stack
             items.unshift({
