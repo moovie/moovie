@@ -1,6 +1,7 @@
 assets/
 build/
 coverage/
+dist/
 lib/
 node_modules/
 vendor/
