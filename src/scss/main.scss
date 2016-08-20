@@ -10,7 +10,6 @@
  */
 @import 'base/_reset';
 @import 'components/checkbox-widget';
-@import 'components/tooltip';
 
 .moovie {
     left: 50%;
@@ -25,6 +24,23 @@
     box-shadow: 0 0 15px #000000;
     color: #ffffff;
     font-size: 12px;
+}
+
+.moovie-tooltip {
+    background-color: rgba(196, 82, 5, 0.8);
+    border-radius: 4px;
+    color: #ffffff;
+    font-size: 1em;
+    max-width: 200px;
+    opacity: 0;
+    padding: 2px 5px;
+    position: absolute;
+    visibility: hidden;
+}
+
+.moovie-tooltip[aria-hidden="false"] {
+    opacity: 1;
+    visibility: visible;
 }
 
 .moovie > .wrapper {

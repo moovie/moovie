@@ -23,7 +23,8 @@ const Moovie = new Class({
         title: {},
         playlist: [],
         controls: {
-            autohide: true
+            autohide: true,
+            tooltips: true
         }
     },
 
@@ -37,7 +38,6 @@ const Moovie = new Class({
         this.wrapper = new Element('div.wrapper');
         this.wrapper.wraps(this.video);
         this.container.wraps(this.wrapper);
-
 
         const current = this.playlist.current();
 
@@ -114,15 +114,6 @@ const Moovie = new Class({
         }
 
         this.textTrackContainer.setStyle('display', this.showCaptions ? 'block' : 'none');
-
-        // eslint-disable-next-line
-        const tips = new Tips(this.wrapper.getElements('[title]'), {
-            className: 'video-tip',
-            title: '',
-            text: function (el) {
-                return el.get('title');
-            }
-        });
     },
 
     attach: function () {
@@ -406,7 +397,9 @@ const Moovie = new Class({
 
     buildControls: function () {
         this.controls = new Element('div.controls');
-        this.controls.play = new Element('div.play[title=Play]');
+        this.controls.tooltip = new Element('div.moovie-tooltip');
+
+        this.controls.play = new Element('div.play[data-title=Play]');
         this.controls.play.addEvent('click', () => {
             if (this.video.paused && this.video.readyState >= 3) {
                 this.video.play();
@@ -417,18 +410,18 @@ const Moovie = new Class({
             }
         });
 
-        this.controls.stop = new Element('div.stop[title=Stop]');
+        this.controls.stop = new Element('div.stop[data-title=Stop]');
         this.controls.stop.addEvent('click', () => {
             this.video.currentTime = 0;
             this.video.pause();
         });
 
-        this.controls.previous = new Element('div.previous[title=Previous]');
+        this.controls.previous = new Element('div.previous[data-title=Previous]');
         this.controls.previous.addEvent('click', () => {
             this.playlist.previous();
         });
 
-        this.controls.next = new Element('div.next[title=Next]');
+        this.controls.next = new Element('div.next[data-title=Next]');
         this.controls.next.addEvent('click', () => {
             this.playlist.next();
         });
@@ -437,17 +430,18 @@ const Moovie = new Class({
         this.controls.seekbar = this.createSeekbar();
         this.controls.duration = new Element('div.duration[text=0:00]');
         this.controls.volume = this.createVolumeControl();
-        this.controls.settings = new Element('div.settings[title=Settings]');
+        this.controls.settings = new Element('div.settings[data-title=Settings]');
         this.controls.settings.addEvent('click', () => {
             this.panels.update('settings');
         });
 
         this.controls.more = this.createMoreControl();
-        this.controls.fullscreen = new Element('div.fullscreen[title=Fullscreen]');
+        this.controls.fullscreen = new Element('div.fullscreen[data-title=Fullscreen]');
         this.controls.fullscreen.addEvent('click', () => {
             screenfull.toggle(this.wrapper);
         });
 
+        this.controls.tooltip.inject(document.body);
         this.controls.adopt(
             this.controls.play,
             this.controls.stop,
@@ -474,6 +468,27 @@ const Moovie = new Class({
 
         this.controls.elapsed.set('text', formatSeconds(this.video.currentTime || 0));
         this.controls.duration.set('text', formatSeconds(this.video.duration || 0));
+
+        this.controls.addEvents({
+            mousemove: function (e) {
+                const title = e.target.get('data-title');
+
+                if (e.target !== this && title) {
+                    this.tooltip.set('text', title)
+                        .set('aria-hidden', false)
+                        .setStyles({
+                            left: e.page.x + 16,
+                            top: e.page.y + 16
+                        });
+                } else {
+                    this.tooltip.set('aria-hidden', true);
+                }
+            },
+
+            mouseleave: function () {
+                this.tooltip.set('aria-hidden', true);
+            }
+        });
     },
 
     createSeekbar: function () {
@@ -557,7 +572,7 @@ const Moovie = new Class({
 
     createVolumeControl: function () {
         const video = this.video;
-        const volume = new Element('div.volume[title=Mute]');
+        const volume = new Element('div.volume[data-title=Mute]');
 
         volume.addEvent('click', function () {
             video.muted = !video.muted;
@@ -607,20 +622,20 @@ const Moovie = new Class({
     createMoreControl: function () {
         const playlist = this.playlist;
         const panels = this.panels;
-        const more = new Element('div.more');
+        const more = new Element('div.more[data-title="More"]');
 
         more.popup = new Element('div.popup');
-        more.about = new Element('div.about[title=About]');
+        more.about = new Element('div.about[data-title=About]');
         more.about.addEvent('click', function () {
             panels.update('about');
         });
 
-        more.info = new Element('div.info[title=Video info]');
+        more.info = new Element('div.info[data-title=Video info]');
         more.info.addEvent('click', function () {
             panels.update('info');
         });
 
-        more.playlist = new Element('div.playlist[title=Playlist]');
+        more.playlist = new Element('div.playlist[data-title=Playlist]');
         more.playlist.addEvent('click', function () {
             if (playlist.hidden) {
                 playlist.show();

@@ -12,7 +12,6 @@ module.exports = function (config) {
         files: [
             'vendor/mootools/dist/mootools-core.min.js',
             'vendor/mootools-more/Source/Element/Element.Measure.js',
-            'vendor/mootools-more/Source/Interface/Tips.js',
             'tests/**/*.js'
         ],
 
