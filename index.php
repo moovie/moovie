@@ -27,7 +27,9 @@
             (function () {
                 $$('video').toMoovie({
                     debugger: true,
-                    autohideControls: false,
+                    controls: {
+                        autohide: false
+                    },
                     playlist: [
                         {
                             'id': 'alice',

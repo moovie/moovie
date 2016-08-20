@@ -21,10 +21,10 @@ const Moovie = new Class({
     options: {
         debugger: {},
         title: {},
-        autohideControls: true,
         playlist: [],
-        useNativeTextTracks: false,
-        polyfill: false             // disables everything but controls (minimum-style) and overlay
+        controls: {
+            autohide: true
+        }
     },
 
     initialize: function (video, options) {
@@ -38,15 +38,7 @@ const Moovie = new Class({
         this.wrapper.wraps(this.video);
         this.container.wraps(this.wrapper);
 
-        // Unfortunately, the media API only defines one volume-related
-        // event: `volumechange`. This event is fired whenever the media's
-        // `volume` attribute changes, or the media's `muted` attribute
-        // changes. The API defines no way to discern the two, so we'll
-        // have to "manually" keep track. We need to do this in order to
-        // be able to provide the advanced volume control (a la YouTube's
-        // player): changing the volume can have an effect on the muted
-        // state and vice versa.
-        let muted = this.video.muted;
+
         const current = this.playlist.current();
 
         this.buildTextTrackContainer();
@@ -101,7 +93,7 @@ const Moovie = new Class({
         });
 
         this.wrapper.addEvent('mouseleave', () => {
-            if (this.options.autohideControls) {
+            if (this.options.controls.autohide) {
                 this.controls.hide();
             }
         });
@@ -111,8 +103,40 @@ const Moovie = new Class({
             this.title.show();
         });
 
-        // Video element -----------------------------------------------------------
-        video.addEvents({
+        this.attach();
+
+        if (!this.video.autoplay) {
+            this.container.set('data-playbackstate', 'stopped');
+        }
+
+        if (this.video.readyState >= 1) {
+            this.textTrackContainer.update();
+        }
+
+        this.textTrackContainer.setStyle('display', this.showCaptions ? 'block' : 'none');
+
+        // eslint-disable-next-line
+        const tips = new Tips(this.wrapper.getElements('[title]'), {
+            className: 'video-tip',
+            title: '',
+            text: function (el) {
+                return el.get('title');
+            }
+        });
+    },
+
+    attach: function () {
+        // Unfortunately, the media API only defines one volume-related
+        // event: `volumechange`. This event is fired whenever the media's
+        // `volume` attribute changes, or the media's `muted` attribute
+        // changes. The API defines no way to discern the two, so we'll
+        // have to "manually" keep track. We need to do this in order to
+        // be able to provide the advanced volume control (a la YouTube's
+        // player): changing the volume can have an effect on the muted
+        // state and vice versa.
+        let muted = this.video.muted;
+
+        this.video.addEvents({
             click: () => {
                 this.video.pause();
             },
@@ -216,25 +240,6 @@ const Moovie = new Class({
                 this.textTrackContainer.update();
             }
         });
-
-        if (!this.video.autoplay) {
-            this.container.set('data-playbackstate', 'stopped');
-        }
-
-        if (this.video.readyState >= 1) {
-            this.textTrackContainer.update();
-        }
-
-        this.textTrackContainer.setStyle('display', this.showCaptions ? 'block' : 'none');
-
-        // eslint-disable-next-line
-        const tips = new Tips(this.wrapper.getElements('[title]'), {
-            className: 'video-tip',
-            title: '',
-            text: function (el) {
-                return el.get('title');
-            }
-        });
     },
 
     buildPlaylist: function () {
@@ -283,7 +288,7 @@ const Moovie = new Class({
 
     buildPanels: function () {
         const self = this;
-        const autohideControls = this.options.autohideControls;
+        const autohideControls = this.options.controls.autohide;
 
         this.panels = new Element('div.panels');
         this.panels.info = new Element('div.info', {
@@ -300,11 +305,11 @@ const Moovie = new Class({
 
         this.panels.settings = new Element('div.settings', {
             html: `<div class="heading">Settings</div>
-            <div class="checkbox-widget" data-control="autohideControls" data-checked="${autohideControls}">
+            <div class="checkbox-widget" data-control="autohide" data-checked="${autohideControls}">
                 <div class="checkbox"></div>
                 <div class="label">Auto-hide controls</div>
             </div>
-            <div class="checkbox-widget" data-control="loop" data-checked="${this.video.loop || false}">
+            <div class="checkbox-widget" data-control="loop" data-checked="${this.video.loop}">
                 <div class="checkbox"></div>
                 <div class="label">Loop video</div>
             </div>
@@ -329,8 +334,8 @@ const Moovie = new Class({
             const checked = this.get('data-checked');
 
             switch (control) {
-                case 'autohideControls':
-                    self.options.autohideControls = checked === 'true';
+                case 'autohide':
+                    self.options.controls.autohide = checked === 'true';
                     break;
 
                 case 'loop':
