@@ -15,14 +15,10 @@
     height: 3em;
 }
 
-.moovie .controls[aria-hidden="true"] {
+.moovie .controls[aria-hidden="true"],
+.moovie[data-playbackstate="stopped"] .controls {
     opacity: 0;
     visibility: hidden;
-}
-
-/* hide controls while "Big Play Button" is showing */
-.moovie[data-playbackstate="stopped"] .controls {
-    display: none;
 }
 
 .moovie .controls .play {

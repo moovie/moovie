@@ -7,7 +7,6 @@
   "files": [
     "vendor/mootools/dist/mootools-core.js",
     "vendor/mootools/dist/mootools-core.min.js",
-    "vendor/mootools-more/Source/Element/Element.Measure.js",
     "dist",
     "lib",
     "bower.json"

@@ -20,7 +20,6 @@
         </video>
 
         <script src="vendor/mootools/dist/mootools-core.js"></script>
-        <script src="vendor/mootools-more/Source/Element/Element.Measure.js"></script>
         <script src="dist/moovie.js"></script>
         <script>
             (function () {

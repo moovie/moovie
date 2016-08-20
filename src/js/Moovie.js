@@ -263,7 +263,7 @@ const Moovie = new Class({
                 'top': 0,
                 'left': 0,
                 'right': 0,
-                'bottom': self.controls.getDimensions().y,
+                'bottom': self.controls.getSize().y,
                 'pointer-events': 'none'
             });
 

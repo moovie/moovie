@@ -11,7 +11,6 @@ module.exports = function (config) {
         // list of files / patterns to load in the browser
         files: [
             'vendor/mootools/dist/mootools-core.min.js',
-            'vendor/mootools-more/Source/Element/Element.Measure.js',
             'tests/**/*.js'
         ],
 
