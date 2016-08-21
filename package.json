@@ -2,7 +2,7 @@
   "name": "moovie",
   "version": "0.4.6",
   "description": "An advanced HTML5 video player for MooTools.",
-  "main": "lib/Moovie.js",
+  "main": "lib/index.js",
   "browser": "dist/moovie.js",
   "files": [
     "vendor/mootools/dist/mootools-core.js",
@@ -60,7 +60,7 @@
     "compile": "npm-run-all -p compile:*",
     "compile:scss": "node-sass src/scss/main.scss dist/moovie.css --output-style=expanded --linefeed=lf",
     "build": "npm-run-all clean -p build:*",
-    "build:bower": "browserify src/js/Moovie.js -s Moovie > dist/moovie.js && npm run compile:scss",
+    "build:bower": "browserify src/js/index.js -s Moovie -o dist/moovie.js && npm run compile:scss",
     "build:npm": "babel src/js -d lib",
     "prepublish": "npm run build",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"

@@ -22,25 +22,21 @@
         <script src="vendor/mootools/dist/mootools-core.js"></script>
         <script src="dist/moovie.js"></script>
         <script>
-            (function () {
-                $$('video').toMoovie({
-                    debugger: true,
-                    controls: {
-                        autohide: false
+            var instance = new Moovie('avatar', {
+                debugger: true,
+                controls: { autohide: false },
+                playlist: [
+                    {
+                        'id': 'alice',
+                        'src': 'http://colinaarts.com/assets/alice.ogv'
                     },
-                    playlist: [
-                        {
-                            'id': 'alice',
-                            'src': 'http://colinaarts.com/assets/alice.ogv'
-                        },
-                        {
-                            'id': 'shrek',
-                            'src': 'http://colinaarts.com/assets/shrek.ogv',
-                            'title': '<cite>Shrek Forever After</cite> theatrical trailer'
-                        }
-                    ]
-                });
-            })();
+                    {
+                        'id': 'shrek',
+                        'src': 'http://colinaarts.com/assets/shrek.ogv',
+                        'title': '<cite>Shrek Forever After</cite> theatrical trailer'
+                    }
+                ]
+            });
         </script>
     </body>
 </html>
