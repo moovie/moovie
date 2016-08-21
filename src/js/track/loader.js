@@ -11,8 +11,9 @@ import { WebVTT } from 'vtt.js';
  * @type {Class}
  */
 const Loader = new Class({
-    initialize: function (url, onCue) {
+    initialize: function (url, srclang, onCue) {
         this.url = url;
+        this.srclang = srclang;
         this.onCue = onCue;
         this.readyState = 0;
         this.sendRequest();

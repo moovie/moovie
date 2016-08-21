@@ -12,24 +12,26 @@
 import TextTrackKind from './text-track-kind.js';
 import TextTrackMode from './text-track-mode.js';
 
-const TextTrack = function TextTrack(trackElement) {
-    let kind = '';
-    let label = '';
-    let mode = 'disabled';
-    let language = '';
-    let id = '';
-    let inBandMetadataTrackDispatchType = '';
+const TextTrack = function TextTrack(kind, label, language, media) {
     const cues = [];
     const activeCues = [];
-    const media = trackElement.getParent('video');
+    let mode = TextTrackMode.disabled;
 
-    if (!trackElement.get('kind')) {
+    if (!kind) {
         kind = 'subtitles'; // missing value default
-    //} else if (!TextTrackKind.key(trackElement.get('kind'))) {
-    } else if (!(trackElement.get('kind') in TextTrackKind)) {
+    } else if (!(kind in TextTrackKind)) {
         kind = 'metadata';  // invalid value default
     }
 
+    if (!language) {
+        language = 'english';
+    }
+
+    if (!label) {
+        label = `${kind}-${language}`;
+    }
+
+    // @todo disable events when "mode" is equal to "disabled"
     media.addEvent('timeupdate', () => {
         const processingTime = 0.39;
         const time = media.currentTime + processingTime;
@@ -77,13 +79,13 @@ const TextTrack = function TextTrack(trackElement) {
 
         id: {
             get: function () {
-                return id;
+                return '';
             }
         },
 
         inBandMetadataTrackDispatchType: {
             get: function () {
-                return inBandMetadataTrackDispatchType;
+                return '';
             }
         },
 
@@ -93,7 +95,7 @@ const TextTrack = function TextTrack(trackElement) {
             },
 
             set: function (value) {
-                if (TextTrackMode.contains(value)) {
+                if (value in TextTrackMode) {
                     mode = value;
                 }
             }

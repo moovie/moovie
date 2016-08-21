@@ -5,13 +5,15 @@
  */
 import MediaEvents from './core/media-events.js';   // eslint-disable-line
 import screenfull from 'screenfull';
-import HTMLTrackElement from './track/html-track-element.js';
+import Loader from './track/loader.js';
+import TextTrack from './track/text-track.js';
+import Renderer from './track/renderer.js';
 import Debugger from './Debugger.js';
 import Title from './Title.js';
 import Playlist from './Playlist.js';
 import formatSeconds from './utils/formatSeconds.js';
 import basename from './utils/basename.js';
-import { WebVTT } from 'vtt.js';
+import getAttributes from './utils/get-attributes.js';
 
 const HAS_TRACK_SUPPORT = 'track' in document.createElement('track');
 
@@ -28,36 +30,83 @@ const Moovie = new Class({
         }
     },
 
+    textTracks: [],
+
     initialize: function (video, options) {
-        this.video = document.id(video);
+        this.setVideo(video);
         this.setOptions(options);
 
-        this.buildPlaylist();
+        this.build();
+        this.attach();
 
+        if (!this.video.autoplay) {
+            this.container.set('data-playbackstate', 'stopped');
+        }
+    },
+
+    setVideo: function (video) {
+        this.video = document.id(video);
+
+        if (HAS_TRACK_SUPPORT) {
+            for (let i = 0, l = this.video.textTracks; i < l; i++) {
+                this.video.textTracks[i].mode = 'disabled';
+            }
+        }
+    },
+
+    loadTextTrack: function (options) {
+        const track = this.addTextTrack(options.kind, options.label, options.language || options.srclang);
+        const loader = new Loader(options.src, options.srclang, track.addCue);  // eslint-disable-line
+
+        track.mode = options.default ? 'showing' : 'hidden';
+    },
+
+    addTextTrack: function (kind, label, language) {
+        const track = new TextTrack(kind, label, language, this.video);
+
+        this.textTracks.push(track);
+
+        return track;
+    },
+
+    build: function () {
         this.container = new Element('div.moovie');
         this.wrapper = new Element('div.wrapper');
         this.wrapper.wraps(this.video);
         this.container.wraps(this.wrapper);
 
+        this.buildPlaylist();
+
         const current = this.playlist.current();
 
-        this.buildTextTrackContainer();
-
+        this.renderer = new Renderer(window, this);
         this.overlay = new Element('div.overlay');
         this.title = new Title(this.options.title);
         this.title.update(current.title || basename(current.src));
         this.debugger = new Debugger(this.video, this.options.debugger);
-        this.showCaptions = Boolean(this.video.getChildren('track').length);
 
         this.buildPanels();
         this.buildControls();
 
         // Inject and do some post-processing --------------------------------------
-        this.wrapper.adopt(this.overlay, this.title, this.panels, this.controls, this.debugger);
+        this.wrapper.adopt(this.renderer, this.overlay, this.title, this.panels, this.controls, this.debugger);
 
-        // Get the knob offsets for later
+        // Get knob offsets for later and adjust renderer height to account for controls
         this.controls.seekbar.knob.left = this.controls.seekbar.knob.getStyle('left').toInt();
         this.controls.volume.knob.top = this.controls.volume.knob.getStyle('top').toInt();
+        $(this.renderer).setStyle('bottom', this.controls.getSize().y);
+    },
+
+    attach: function () {
+        // Unfortunately, the media API only defines one volume-related
+        // event: `volumechange`. This event is fired whenever the media's
+        // `volume` attribute changes, or the media's `muted` attribute
+        // changes. The API defines no way to discern the two, so we'll
+        // have to "manually" keep track. We need to do this in order to
+        // be able to provide the advanced volume control (a la YouTube's
+        // player): changing the volume can have an effect on the muted
+        // state and vice versa.
+        let muted = this.video.muted;
 
         this.playlist.addEvent('show', () => {
             this.panels.update('none');
@@ -70,24 +119,25 @@ const Moovie = new Class({
         });
 
         this.playlist.addEvent('select', (current) => {
-            const trackElements = Array.convert(current.tracks).map((trackObj) => {
-                return new Element('track', trackObj);
-            });
+            this.textTracks.each(function (track) {
+                track.mode = 'disabled';    // disables any event listeners
+            }).empty();
 
             this.panels.info.getElement('dt.title + dd').set('html', current.title || basename(current.src));
             this.panels.info.getElement('dt.url + dd').set('html', current.src);
             this.title.update(current.title || basename(current.src));
             this.title.show();
 
-            this.video.getChildren('track').destroy();
-            this.video.adopt(trackElements);
+            Array.convert(current.tracks).forEach((trackObj) => {
+                this.loadTextTrack(trackObj);
+            });
+
             this.video.poster = current.poster;
             this.video.src = current.src;
             this.video.load();
             this.video.play();
         });
 
-        // Masthead ----------------------------------------------------------------
         this.wrapper.addEvent('mouseenter', () => {
             this.controls.show();
         });
@@ -102,30 +152,6 @@ const Moovie = new Class({
             this.video.play();
             this.title.show();
         });
-
-        this.attach();
-
-        if (!this.video.autoplay) {
-            this.container.set('data-playbackstate', 'stopped');
-        }
-
-        if (this.video.readyState >= 1) {
-            this.textTrackContainer.update();
-        }
-
-        this.textTrackContainer.setStyle('display', this.showCaptions ? 'block' : 'none');
-    },
-
-    attach: function () {
-        // Unfortunately, the media API only defines one volume-related
-        // event: `volumechange`. This event is fired whenever the media's
-        // `volume` attribute changes, or the media's `muted` attribute
-        // changes. The API defines no way to discern the two, so we'll
-        // have to "manually" keep track. We need to do this in order to
-        // be able to provide the advanced volume control (a la YouTube's
-        // player): changing the volume can have an effect on the muted
-        // state and vice versa.
-        let muted = this.video.muted;
 
         this.video.addEvents({
             click: () => {
@@ -174,18 +200,10 @@ const Moovie = new Class({
                 const percent = this.video.currentTime / this.video.duration * 100;
                 const offset = this.controls.seekbar.track.getSize().x / 100 * percent;
                 const position = offset + this.controls.seekbar.knob.left;
-                const trackElements = this.video.getChildren('track');
-                const activeCues = [];
 
                 this.controls.elapsed.set('text', formatSeconds(this.video.currentTime));
                 this.controls.seekbar.played.setStyle('width', `${percent}%`);
                 this.controls.seekbar.knob.setStyle('left', `${position}px`);
-
-                Array.each(trackElements, (trackElement) => {
-                    return activeCues.combine(trackElement.track.activeCues);
-                });
-
-                WebVTT.processCues(window, activeCues, this.wrapper.getElement('.text-track-container'));
             },
 
             durationchange: () => {
@@ -227,54 +245,39 @@ const Moovie = new Class({
                 this.controls.volume.knob.setStyle('top', offset + this.controls.volume.knob.top);
             },
 
-            loadstart: () => {
-                this.textTrackContainer.update();
+            loadedmetadata: () => {
+                this.container.set('data-playbackstate', 'stopped'); // or 'ready', or 'idle'
             }
         });
     },
 
     buildPlaylist: function () {
         const video = this.video;
+        const tracks = video.getChildren('track');
         const items = [];
+        const serializedTracks = tracks.map(function (track) {
+            return getAttributes(track);
+        });
 
         if (typeOf(this.options.playlist) === 'array') {
-            items.combine(Array.from(this.options.playlist));
+            items.combine(Array.convert(this.options.playlist));
 
             // Add the current video to the playlist stack
             items.unshift({
                 id: video.get('id'),
                 title: video.get('title') || basename(video.currentSrc || video.src),
                 src: video.currentSrc || video.src,
-                tracks: this.serializeTracks(video)
+                tracks: serializedTracks
             });
         }
 
+        serializedTracks.forEach((serializedTrack) => {
+            this.loadTextTrack(serializedTrack);
+        });
+
+        tracks.destroy();
+
         this.playlist = new Playlist(items);
-    },
-
-    buildTextTrackContainer: function () {
-        const self = this;
-
-        this.textTrackContainer = new Element('div.text-track-container');
-
-        this.textTrackContainer.update = function () {
-            this.setStyles({
-                'position': 'absolute',
-                'top': 0,
-                'left': 0,
-                'right': 0,
-                'bottom': self.controls.getSize().y,
-                'pointer-events': 'none'
-            });
-
-            if (HAS_TRACK_SUPPORT) {
-                self.disableNativeTextTracks();
-            }
-
-            self.implementTextTracks();
-        };
-
-        this.textTrackContainer.inject(this.video, 'after');
     },
 
     buildPanels: function () {
@@ -304,9 +307,9 @@ const Moovie = new Class({
                 <div class="checkbox"></div>
                 <div class="label">Loop video</div>
             </div>
-            <div class="checkbox-widget" data-control="captions" data-checked="${this.showCaptions}">
+            <div class="checkbox-widget" data-control="renderer" data-checked="${!this.renderer.disabled}">
                 <div class="checkbox"></div>
-                <div class="label">Show captions</div>
+                <div class="label">Render text-tracks</div>
             </div>
             <div class="checkbox-widget" data-control="debugger" data-checked="${!this.debugger.disabled}">
                 <div class="checkbox"></div>
@@ -333,8 +336,8 @@ const Moovie = new Class({
                     self.video.loop = checked === 'true';
                     break;
 
-                case 'captions':
-                    self.textTrackContainer.setStyle('display', checked === 'true' ? 'block' : 'none');
+                case 'renderer':
+                    self.renderer[checked === 'false' ? 'disable' : 'enable']();
                     break;
 
                 case 'debugger':
@@ -367,32 +370,6 @@ const Moovie = new Class({
 
         this.panels.adopt(this.panels.info, this.panels.settings, this.panels.about, this.playlist);
         this.panels.set('aria-hidden', true);
-    },
-
-    serializeTracks: function (video) {
-        return video.getChildren('track')
-            .map(function (trackElement) {
-                const serialized = {};
-                const attributes = trackElement.attributes;
-
-                for (let i = 0, l = attributes.length; i < l; i++) {
-                    serialized[attributes[i].name] = attributes[i].value;
-                }
-
-                return serialized;
-            });
-    },
-
-    disableNativeTextTracks: function () {
-        for (let i = 0, l = this.video.textTracks; i < l; i++) {
-            this.video.textTracks[i].mode = 'disabled';
-        }
-    },
-
-    implementTextTracks: function () {
-        this.video.getChildren('track').each((track) => {
-            return new HTMLTrackElement(track);
-        });
     },
 
     buildControls: function () {
