@@ -15,7 +15,6 @@ const Loader = new Class({
         this.url = url;
         this.srclang = srclang;
         this.onCue = onCue;
-        this.readyState = 0;
         this.sendRequest();
     },
 
@@ -24,10 +23,6 @@ const Loader = new Class({
         const request = new Request({
             url: this.url,
 
-            onProgress: () => {
-                this.readyState = 1;
-            },
-
             onSuccess: (data) => {
                 const parser = this.getParser(this.url.split('.').pop());
 
@@ -35,21 +30,8 @@ const Loader = new Class({
                     this.onCue(cue);
                 };
 
-                parser.onparsingerror = () => {
-                    this.readyState = 3;
-                };
-
-                parser.onflush = () => {
-                    this.readyState = 2;
-                };
-
                 parser.parse(data);
                 parser.flush();
-                this.readyState = 1;
-            },
-
-            onError: () => {
-                this.readyState = 3;
             }
         });
 
