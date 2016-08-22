@@ -1,7 +1,6 @@
 assets/
 build/
 coverage/
-scripts/
 src/
 tests/
 .editorconfig

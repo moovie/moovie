@@ -40,12 +40,10 @@
     "npm-run-all": "^2.3.0",
     "rimraf": "^2.5.4",
     "semantic-release": "^4.3.5",
-    "shelljs": "^0.7.0",
     "sinon": "^1.17.4",
     "uglify-js": "^2.7.0"
   },
   "dependencies": {
-    "global": "^4.3.0",
     "screenfull": "^3.0.2",
     "vtt.js": "^0.12.1"
   },
