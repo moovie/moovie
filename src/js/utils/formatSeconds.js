@@ -1,15 +1,14 @@
 /**
  * Moovie: an advanced HTML5 video player for MooTools.
- *
- * Takes a floating point value and converts into a time string. E.g. from currentTime, duration
- *
- * @version 0.4.2
- * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
- * @author Nathan Bishop <nbish11@hotmail.com>
  * @copyright 2010 Colin Aarts
  * @license MIT
  */
 
+/**
+ * Separates a floating point value into different time values.
+ * @param  {Number} input A floating point value.
+ * @return {Object} An object containg: hh for hours, mm for minutes and ss for seconds.
+ */
 const parse = function (input) {
     return {
         hh: Math.floor(input / 3600),
@@ -18,6 +17,11 @@ const parse = function (input) {
     };
 };
 
+/**
+ * Converts a floating point value into a time string.
+ * @param  {Number} input A floating point value.
+ * @return {string} A string formatted to either: hh:mm:ss or mm:ss or m:ss
+ */
 const format = function (input) {
     let { hh, mm, ss } = parse(input);
 

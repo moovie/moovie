@@ -17,6 +17,10 @@ import getAttributes from './utils/get-attributes.js';
 
 const HAS_TRACK_SUPPORT = 'track' in document.createElement('track');
 
+/**
+ * Creates new instances of the Moovie player.
+ * @type {Class}
+ */
 const Moovie = new Class({
     Implements: [Options],
 

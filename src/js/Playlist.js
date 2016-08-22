@@ -1,16 +1,14 @@
 /**
  * Moovie: an advanced HTML5 video player for MooTools.
- *
- * Currently supported HTML5 media events.
- *
- * @version 0.4.6
- * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
- * @author Nathan Bishop <nbish11@hotmail.com>
  * @copyright 2010 Colin Aarts
  * @license MIT
  */
 import basename from './utils/basename.js';
 
+/**
+ * Manages lists of videos inside of Moovie.
+ * @type {Class}
+ */
 const Playlist = new Class({
     Implements: [Events, Options],
 

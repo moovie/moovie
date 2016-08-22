@@ -1,5 +1,14 @@
+/**
+ * Moovie: an advanced HTML5 video player for MooTools.
+ * @copyright 2010 Colin Aarts
+ * @license MIT
+ */
 import { WebVTT } from 'vtt.js';
 
+/**
+ * Render active text track cues inside of a DOM element.
+ * @type {Class}
+ */
 const Renderer = new Class({
     Implements: [Events, Options],
 

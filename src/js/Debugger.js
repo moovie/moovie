@@ -1,13 +1,12 @@
 /**
  * Moovie: an advanced HTML5 video player for MooTools.
- *
- * Currently supported HTML5 media events.
- *
- * @version 0.4.6
- * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
- * @author Nathan Bishop <nbish11@hotmail.com>
  * @copyright 2010 Colin Aarts
  * @license MIT
+ */
+
+/**
+ * Shows current state of video properties.
+ * @type {Class}
  */
 const Debugger = new Class({
     Implements: [Options],

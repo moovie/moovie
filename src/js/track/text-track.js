@@ -1,17 +1,14 @@
 /**
  * Moovie: an advanced HTML5 video player for MooTools.
- *
- * Provides a basic implementation of the W3C TextTrack IDL.
- *
- * @version 0.4.6
- * @author Colin Aarts <colin@colinaarts.com> (http://colinaarts.com)
- * @author Nathan Bishop <nbish11@hotmail.com>
  * @copyright 2010 Colin Aarts
  * @license MIT
  */
 import TextTrackKind from './text-track-kind.js';
 import TextTrackMode from './text-track-mode.js';
 
+/**
+ * Provides a basic implementation of the W3C TextTrack IDL.
+ */
 const TextTrack = function TextTrack(kind, label, language, media) {
     const cues = [];
     const activeCues = [];

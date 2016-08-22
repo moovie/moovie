@@ -1,6 +1,5 @@
 /**
  * Strip directory and suffix from filenames.
- *
  * @link http://locutus.io/php/basename/
  * @author Kevin van Zonneveld (http://kvz.io)
  * @author Ash Searle (http://hexmen.com/blog/)
