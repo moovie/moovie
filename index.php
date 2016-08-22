@@ -19,7 +19,7 @@
             <p>Your browser does not support the HTML 5 <code>video</code> element.</p>
         </video>
 
-        <script src="vendor/mootools/dist/mootools-core.js"></script>
+        <script src="bower_components/mootools/dist/mootools-core.js"></script>
         <script src="dist/moovie.js"></script>
         <script>
             var instance = new Moovie('avatar', {

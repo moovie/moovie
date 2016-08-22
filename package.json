@@ -5,8 +5,8 @@
   "main": "lib/index.js",
   "browser": "dist/moovie.js",
   "files": [
-    "vendor/mootools/dist/mootools-core.js",
-    "vendor/mootools/dist/mootools-core.min.js",
+    "bower_components/mootools/dist/mootools-core.js",
+    "bower_components/mootools/dist/mootools-core.min.js",
     "dist",
     "lib",
     "bower.json"

@@ -4,5 +4,5 @@ coverage/
 dist/
 lib/
 node_modules/
-vendor/
+bower_components/
 npm-debug.log

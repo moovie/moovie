@@ -10,7 +10,7 @@ module.exports = function (config) {
 
         // list of files / patterns to load in the browser
         files: [
-            'vendor/mootools/dist/mootools-core.min.js',
+            'bower_components/mootools/dist/mootools-core.min.js',
             'tests/**/*.js'
         ],
 
