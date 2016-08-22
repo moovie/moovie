@@ -1,4 +1,4 @@
-import TextTrackMode from '../../../src/js/track/text-track-mode.js';
+import TextTrackMode from '../../../src/js/track/TextTrackMode.js';
 
 describe('TextTrackMode', function () {
     it('gets exported as a default module', function () {

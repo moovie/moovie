@@ -1,5 +1,4 @@
 import sinon from 'sinon';
-import document from 'global/document';
 import Title from '../../src/js/Title.js';
 
 describe('Title', function () {

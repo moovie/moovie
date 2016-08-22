@@ -1,4 +1,4 @@
-import TextTrackKind from '../../../src/js/track/text-track-kind.js';
+import TextTrackKind from '../../../src/js/track/TextTrackKind.js';
 
 describe('TextTrackKind', function () {
     it('gets exported as a default module', function () {

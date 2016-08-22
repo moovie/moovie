@@ -3,7 +3,7 @@
  * @copyright 2010 Colin Aarts
  * @license MIT
  */
-import { WebSRT } from './websrt.js';
+import { WebSRT } from './WebSRT.js';
 import { WebVTT } from 'vtt.js';
 
 /**

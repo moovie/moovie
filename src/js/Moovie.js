@@ -3,17 +3,15 @@
  * @copyright 2010 Colin Aarts
  * @license MIT
  */
-import MediaEvents from './core/media-events.js';   // eslint-disable-line
+import MediaEvents from './core/MediaEvents.js';   // eslint-disable-line
 import screenfull from 'screenfull';
-import Loader from './track/loader.js';
-import TextTrack from './track/text-track.js';
-import Renderer from './track/renderer.js';
+import Loader from './track/Loader.js';
+import TextTrack from './track/TextTrack.js';
+import Renderer from './track/Renderer.js';
 import Debugger from './Debugger.js';
 import Title from './Title.js';
 import Playlist from './Playlist.js';
-import formatSeconds from './utils/format-seconds.js';
-import basename from './utils/basename.js';
-import getAttributes from './utils/get-attributes.js';
+import { basename, formatSeconds, getAttributes } from './Utility.js';
 
 const HAS_TRACK_SUPPORT = 'track' in document.createElement('track');
 

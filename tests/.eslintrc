@@ -1,6 +1,7 @@
 {
     "plugins": ["mootools"],
     "env": {
+        "browser": true,
         "mocha": true,
         "mootools/core": true
     },

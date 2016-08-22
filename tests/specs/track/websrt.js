@@ -1,4 +1,4 @@
-import { WebSRT, SRTCue } from '../../../src/js/track/websrt.js';
+import { WebSRT, SRTCue } from '../../../src/js/track/WebSRT.js';
 
 describe('WebSRT', function () {
     it('gets exported as a named module', function () {
