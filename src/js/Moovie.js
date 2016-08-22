@@ -11,7 +11,7 @@ import Renderer from './track/renderer.js';
 import Debugger from './Debugger.js';
 import Title from './Title.js';
 import Playlist from './Playlist.js';
-import formatSeconds from './utils/formatSeconds.js';
+import formatSeconds from './utils/format-seconds.js';
 import basename from './utils/basename.js';
 import getAttributes from './utils/get-attributes.js';
 

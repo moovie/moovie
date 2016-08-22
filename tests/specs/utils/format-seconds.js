@@ -1,4 +1,4 @@
-import formatSeconds from '../../../src/js/utils/formatSeconds.js';
+import formatSeconds from '../../../src/js/utils/format-seconds.js';
 
 // @todo write more desciptive tests
 describe('.formatSeconds(seconds)', function () {
