@@ -1,0 +1,30 @@
+.moovie-checkbox {
+    display: inline-block;
+    margin: 3px 0;
+    width: 100%;
+
+    &::before {
+        background-position: center;
+        background-repeat: no-repeat;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 4px;
+        content: '';
+        display: inline-block;
+        height: 17px;
+        margin: 0 5px 0 0;
+        vertical-align: bottom;
+        width: 17px;
+    }
+
+    &::after {
+        content: attr(data-label);
+        display: inline-block;
+        vertical-align: middle;
+    }
+}
+
+.moovie-checkbox[aria-checked="true"] {
+    &::before {
+        background-image: url("http://colinaarts.com/assets/player-checked.png");
+    }
+}
