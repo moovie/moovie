@@ -94,4 +94,37 @@ const getAttributes = function getAttributes(element) {
     return attributes;
 };
 
-export { basename, format as formatSeconds, getAttributes };
+/**
+ * Polls the DOM periodically to check for the existance of an element.
+ * @see https://davidwalsh.name/javascript-polling
+ * @param  {Element}  element   The Element instance to check for.
+ * @param  {Function} onsuccess Called if the element was found before the timeout expired.
+ * @param  {Function} onerror   Called if the element was not found and the timeout has expired.
+ * @param  {Number}   timeout   How long to poll the DOM for. (Default is 2 seconds)
+ * @return {undefined}
+ */
+const isInDOM = function isInDOM(element, onsuccess, onerror, timeout) {
+    const expiry = Date.now() + (timeout || 2000);
+    const condition = function () {
+        return document.body.contains(element);
+    };
+
+    (function poller() {
+        // If the condition was met, we're done!
+        if (condition()) {
+            onsuccess();
+
+        // If the condition wasn't met and the timeout hasn't elapsed, try again.
+        } else if (Date.now() < expiry) {
+            setTimeout(poller, 100);
+
+        // Condition wasn't matched and too much time elapsed, reject!
+        } else {
+            onerror(new Error('Element could not be found in DOM before timeout occurred.'));
+        }
+    })();
+
+    // @todo return Promise
+};
+
+export { basename, format as formatSeconds, getAttributes, isInDOM };

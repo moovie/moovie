@@ -11,6 +11,7 @@ import Renderer from './track/Renderer.js';
 import Debugger from './Debugger.js';
 import Title from './Title.js';
 import Playlist from './Playlist.js';
+import Slider from './component/Slider.js';
 import { basename, formatSeconds, getAttributes } from './Utility.js';
 
 const HAS_TRACK_SUPPORT = 'track' in document.createElement('track');
@@ -41,8 +42,17 @@ const Moovie = new Class({
         this.build();
         this.attach();
 
-        if (!this.video.autoplay) {
-            this.container.set('data-playbackstate', 'stopped');
+        if (this.video.readyState >= this.video.HAVE_CURRENT_DATA) {
+            if (this.video.buffered.length) {
+                const buffered = this.video.buffered.end(this.video.buffered.length - 1);
+                const percent = buffered / this.video.duration * 100;
+
+                this.controls.seekbar.buffered.setStyle('width', `${percent}%`);
+            }
+
+            if (!this.video.autoplay) {
+                this.container.set('data-playbackstate', 'stopped');
+            }
         }
     },
 
@@ -93,9 +103,7 @@ const Moovie = new Class({
         // Inject and do some post-processing --------------------------------------
         this.wrapper.adopt(this.renderer, this.overlay, this.title, this.panels, this.controls, this.debugger);
 
-        // Get knob offsets for later and adjust renderer height to account for controls
-        this.controls.seekbar.knob.left = this.controls.seekbar.knob.getStyle('left').toInt();
-        this.controls.volume.knob.top = this.controls.volume.knob.getStyle('top').toInt();
+        // Adjust text-track renderer height to account for controls
         $(this.renderer).setStyle('bottom', this.controls.getSize().y);
     },
 
@@ -162,7 +170,6 @@ const Moovie = new Class({
 
             playing: () => {
                 this.container.set('data-playbackstate', 'playing');
-                this.controls.show();
             },
 
             pause: () => {
@@ -199,13 +206,8 @@ const Moovie = new Class({
             },
 
             timeupdate: () => {
-                const percent = this.video.currentTime / this.video.duration * 100;
-                const offset = this.controls.seekbar.track.getSize().x / 100 * percent;
-                const position = offset + this.controls.seekbar.knob.left;
-
+                this.controls.seekbar.slider.update(this.video.currentTime);
                 this.controls.elapsed.set('text', formatSeconds(this.video.currentTime));
-                this.controls.seekbar.played.setStyle('width', `${percent}%`);
-                this.controls.seekbar.knob.setStyle('left', `${position}px`);
             },
 
             durationchange: () => {
@@ -236,15 +238,10 @@ const Moovie = new Class({
                 this.controls.volume.set('data-muted', video.muted);
                 this.controls.volume.set('data-level', video.volume.round(2));
 
-                // If muted, assume 0 for volume to visualize the
-                // muted state in the slider as well. Don't actually
-                // change the volume, though, so when un-muted, the
-                // slider simply goes back to its former value.
-                const volume = video.muted && mutedChanged ? 0 : video.volume;
-                const barSize = this.controls.volume.track.getSize().y;
-                const offset = barSize - volume * barSize;
-
-                this.controls.volume.knob.setStyle('top', offset + this.controls.volume.knob.top);
+                // If muted, assume 0 for volume to visualize the muted state in
+                // the slider as well. Don't actually change the volume, though,
+                // so when un-muted, the slider simply goes back to its former value.
+                this.controls.volume.slider.update(video.muted && mutedChanged ? 0 : video.volume);
             },
 
             loadedmetadata: () => {
@@ -473,78 +470,69 @@ const Moovie = new Class({
     createSeekbar: function () {
         const video = this.video;
         const seekbar = new Element('div.seekbar');
+        let wasPlaying = !(video.paused || video.ended);
 
         const locToTime = function (value) {
-            const position = seekbar.track.getPosition().x;
-            const width = seekbar.track.getSize().x;
+            const position = seekbar.slider.track.getPosition().x;
+            const width = seekbar.slider.track.getSize().x;
             const offsetPx = value - position;
             const offsetPc = offsetPx / width * 100;
 
             return video.duration / 100 * offsetPc;
         };
 
-        seekbar.addEvent('mousedown', function (e) {
-            const update = function (e) {
-                const offset = e.page.x - seekbar.track.getPosition().x;
-                const pct = offset / seekbar.track.getSize().x;
-
+        seekbar.slider = new Slider({
+            min: 0,
+            max: video.duration,
+            value: video.currentTime,
+            onStart: function (val) {
+                wasPlaying = !(video.paused || video.ended);
                 video.pause();
-                video.currentTime = (pct * video.duration).limit(0, video.duration);
-            };
-
-            const move = function (e) {
-                update(e);
-            };
-
-            const stop = function () {
-                document.removeEvent('mousemove', move);
-                document.removeEvent('mouseup', stop);
-                video.play();
-            };
-
-            document.addEvent('mousemove', move);
-            document.addEvent('mouseup', stop);
-
-            update(e);
+                video.currentTime = val === video.duration ? val - 1 : val;
+            },
+            onMove: function (val) {
+                video.currentTime = val === video.duration ? val - 1 : val;
+            },
+            onStop: function () {
+                // resume playing only if video was playing before we started seeking
+                if (wasPlaying) {
+                    video.play();
+                }
+            }
         });
 
-        seekbar.slider = new Element('div.slider');
-        seekbar.slider.addEvents({
+        $(seekbar.slider).addEvents({
             mousemove: function (e) {
-                const barX = seekbar.track.getPosition().x;
-                const sliderX = seekbar.knob.getPosition().x;
+                const barX = seekbar.slider.track.getPosition().x;
+                const sliderX = seekbar.slider.thumb.getPosition().x;
                 let position = 0;
                 let time = 0;
 
                 // provides the "snap" like effect when the mouse is over the slider's knob
-                if (e.target === seekbar.knob) {
-                    position = sliderX - barX - seekbar.knob.left;
-                    time = formatSeconds(locToTime(sliderX - seekbar.knob.left));
+                if (e.target === seekbar.slider.thumb) {
+                    position = sliderX - barX;
+                    time = formatSeconds(locToTime(sliderX));
                 } else {
                     position = e.page.x - barX;
                     time = formatSeconds(locToTime(e.page.x));
                 }
 
-                seekbar.time.set('data-displaystate', 'showing');
-                seekbar.time.setStyle('left', `${position}px`);
-                seekbar.time.getFirst().set('text', time);
+                seekbar.tooltip.set('aria-hidden', false);
+                seekbar.tooltip.setStyle('left', `${position}px`);
+                seekbar.tooltip.getFirst().set('text', time);
             },
 
             mouseleave: function () {
-                seekbar.time.set('data-displaystate', 'hidden');
+                seekbar.tooltip.set('aria-hidden', true);
             }
         });
 
-        seekbar.track = new Element('div.track');
-        seekbar.time = new Element('div.tooltip').grab(new Element('div[text=0:00]'));
-        seekbar.buffered = new Element('div.buffered');
-        seekbar.played = new Element('div.played');
-        seekbar.knob = new Element('div.knob');
+        seekbar.tooltip = new Element('div.tooltip').grab(new Element('div[text=0:00]'));
+        seekbar.buffered = new Element('div.seekbar-buffered');
 
-        seekbar.track.adopt(seekbar.buffered, seekbar.played, seekbar.knob);
-        seekbar.slider.adopt(seekbar.track);
-        seekbar.adopt(seekbar.time, seekbar.slider);
-        seekbar.time.set('data-displaystate', 'hidden');
+        seekbar.buffered.inject(seekbar.slider.track, 'after');
+        seekbar.adopt(seekbar.tooltip, seekbar.slider);
+        seekbar.tooltip.set('aria-hidden', true);
 
         return seekbar;
     },
@@ -563,35 +551,16 @@ const Moovie = new Class({
             return false;
         });
 
-        volume.slider = new Element('div.slider');
-        volume.slider.addEvent('mousedown', function (e) {
-            const update = function (e) {
-                const offset = e.page.y - volume.track.getPosition().y;
-                const pct = offset / volume.track.getSize().y;
-
-                video.volume = (1 - pct * 1).limit(0, 1);
-            };
-
-            const move = function (e) {
-                update(e);
-            };
-
-            const stop = function () {
-                document.removeEvent('mousemove', move);
-                document.removeEvent('mouseup', stop);
-            };
-
-            document.addEvent('mousemove', move);
-            document.addEvent('mouseup', stop);
-
-            update(e);
+        volume.slider = new Slider({
+            min: 0,
+            max: 1,
+            value: video.volume,
+            orientation: 'vertical',
+            onMove: function (val) {
+                video.volume = val;
+            }
         });
 
-        volume.track = new Element('div.track');
-        volume.knob = new Element('div.knob');
-
-        volume.track.grab(volume.knob);
-        volume.slider.grab(volume.track);
         volume.popup.grab(volume.slider);
         volume.grab(volume.popup);
 
