@@ -57,30 +57,25 @@
     position: relative;
 }
 
-.moovie .controls .seekbar .tooltip {
-    position: absolute;
-    padding: 0px 0px 5px 1.5px;
-    background: transparent url("http://colinaarts.com/assets/player-progress-time-arrow.png") no-repeat scroll left bottom;
-    left: 0px;
+.moovie .controls .seekbar .moovie-tooltip {
     bottom: 100%;
-    opacity: 0;
-    visibility: hidden;
+    width: 4em;
+    text-align: center;
+    margin-left: -2em;
+    margin-top: 0;
+    position: absolute;
 }
 
-.moovie .controls .seekbar .tooltip[aria-hidden="false"] {
-    opacity: 1;
-    visibility: visible;
-}
-
-.moovie .controls .seekbar .tooltip > div {
-    background: rgba(0, 0, 0, 0.7) none repeat scroll 0% 0%;
-    padding: 5px;
-    border: 1px solid rgba(255, 255, 255, 0.7);
-    position: relative;
-    left: -50%;
-    font-size: 0.9em;
-    line-height: 1;
-    border-radius: 4px;
+.moovie .controls .seekbar .moovie-tooltip::after {
+    content: "";
+    position: absolute;
+    width: 0px;
+    height: 0px;
+    border-style: solid;
+    border-color: rgba(196, 82, 5, 0.8) transparent transparent;
+    top: 100%;
+    border-width: 5px;
+    margin-left: -1.5em;
 }
 
 .seekbar-buffered {

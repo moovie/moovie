@@ -12,6 +12,7 @@ import Debugger from './Debugger.js';
 import Title from './Title.js';
 import Playlist from './Playlist.js';
 import Slider from './component/Slider.js';
+import Tooltip from './component/Tooltip.js';
 import { basename, formatSeconds, getAttributes } from './Utility.js';
 
 const HAS_TRACK_SUPPORT = 'track' in document.createElement('track');
@@ -373,9 +374,9 @@ const Moovie = new Class({
 
     buildControls: function () {
         this.controls = new Element('div.controls');
-        this.controls.tooltip = new Element('div.moovie-tooltip');
+        this.controls.tooltip = new Tooltip(this.controls);
 
-        this.controls.play = new Element('div.play[data-title=Play]');
+        this.controls.play = new Element('div.play[aria-label=Play Video]');
         this.controls.play.addEvent('click', () => {
             if (this.video.paused && this.video.readyState >= 3) {
                 this.video.play();
@@ -386,18 +387,18 @@ const Moovie = new Class({
             }
         });
 
-        this.controls.stop = new Element('div.stop[data-title=Stop]');
+        this.controls.stop = new Element('div.stop[aria-label=Stop Video]');
         this.controls.stop.addEvent('click', () => {
             this.video.currentTime = 0;
             this.video.pause();
         });
 
-        this.controls.previous = new Element('div.previous[data-title=Previous]');
+        this.controls.previous = new Element('div.previous[aria-label=Previous Video]');
         this.controls.previous.addEvent('click', () => {
             this.playlist.previous();
         });
 
-        this.controls.next = new Element('div.next[data-title=Next]');
+        this.controls.next = new Element('div.next[aria-label=Next Video]');
         this.controls.next.addEvent('click', () => {
             this.playlist.next();
         });
@@ -406,18 +407,17 @@ const Moovie = new Class({
         this.controls.seekbar = this.createSeekbar();
         this.controls.duration = new Element('div.duration[text=0:00]');
         this.controls.volume = this.createVolumeControl();
-        this.controls.settings = new Element('div.settings[data-title=Settings]');
+        this.controls.settings = new Element('div.settings[aria-label=View Settings]');
         this.controls.settings.addEvent('click', () => {
             this.panels.update('settings');
         });
 
         this.controls.more = this.createMoreControl();
-        this.controls.fullscreen = new Element('div.fullscreen[data-title=Fullscreen]');
+        this.controls.fullscreen = new Element('div.fullscreen[aria-label=Enter Fullscreen]');
         this.controls.fullscreen.addEvent('click', () => {
             screenfull.toggle(this.wrapper);
         });
 
-        this.controls.tooltip.inject(document.body);
         this.controls.adopt(
             this.controls.play,
             this.controls.stop,
@@ -429,7 +429,8 @@ const Moovie = new Class({
             this.controls.volume,
             this.controls.settings,
             this.controls.more,
-            this.controls.fullscreen
+            this.controls.fullscreen,
+            this.controls.tooltip
         );
 
         this.video.controls = false; // disable native controls
@@ -444,42 +445,12 @@ const Moovie = new Class({
 
         this.controls.elapsed.set('text', formatSeconds(this.video.currentTime || 0));
         this.controls.duration.set('text', formatSeconds(this.video.duration || 0));
-
-        this.controls.addEvents({
-            mousemove: function (e) {
-                const title = e.target.get('data-title');
-
-                if (e.target !== this && title) {
-                    this.tooltip.set('text', title)
-                        .set('aria-hidden', false)
-                        .setStyles({
-                            left: e.page.x + 16,
-                            top: e.page.y + 16
-                        });
-                } else {
-                    this.tooltip.set('aria-hidden', true);
-                }
-            },
-
-            mouseleave: function () {
-                this.tooltip.set('aria-hidden', true);
-            }
-        });
     },
 
     createSeekbar: function () {
         const video = this.video;
         const seekbar = new Element('div.seekbar');
         let wasPlaying = !(video.paused || video.ended);
-
-        const locToTime = function (value) {
-            const position = seekbar.slider.track.getPosition().x;
-            const width = seekbar.slider.track.getSize().x;
-            const offsetPx = value - position;
-            const offsetPc = offsetPx / width * 100;
-
-            return video.duration / 100 * offsetPc;
-        };
 
         seekbar.slider = new Slider({
             min: 0,
@@ -501,45 +472,53 @@ const Moovie = new Class({
             }
         });
 
+        seekbar.tooltip = new Tooltip(seekbar.slider);
+        seekbar.tooltip.detach();   // we don't want to use the disable() method here
+
         $(seekbar.slider).addEvents({
-            mousemove: function (e) {
-                const barX = seekbar.slider.track.getPosition().x;
-                const sliderX = seekbar.slider.thumb.getPosition().x;
-                let position = 0;
-                let time = 0;
+            mousemove: function (event) {
+                const position = event.page.x - seekbar.slider.track.getLeft();
+                const limit = seekbar.slider.track.getSize().x;
+                const time = formatSeconds(position / limit * video.duration);
 
-                // provides the "snap" like effect when the mouse is over the slider's knob
-                if (e.target === seekbar.slider.thumb) {
-                    position = sliderX - barX;
-                    time = formatSeconds(locToTime(sliderX));
-                } else {
-                    position = e.page.x - barX;
-                    time = formatSeconds(locToTime(e.page.x));
+                if (event.target !== seekbar.slider.thumb) {
+                    $(seekbar.tooltip).set('text', time);
+                    $(seekbar.tooltip).setStyle('left', position);
+                    seekbar.tooltip.show();
                 }
-
-                seekbar.tooltip.set('aria-hidden', false);
-                seekbar.tooltip.setStyle('left', `${position}px`);
-                seekbar.tooltip.getFirst().set('text', time);
             },
 
             mouseleave: function () {
-                seekbar.tooltip.set('aria-hidden', true);
+                seekbar.tooltip.hide();
             }
         });
 
-        seekbar.tooltip = new Element('div.tooltip').grab(new Element('div[text=0:00]'));
-        seekbar.buffered = new Element('div.seekbar-buffered');
+        $(seekbar.slider.thumb).addEvents({
+            mouseenter: function () {
+                const position = seekbar.slider.fill.getSize().x;
+                const limit = seekbar.slider.track.getSize().x;
+                const time = position / limit * video.duration;
 
+                $(seekbar.tooltip).set('text', formatSeconds(time));
+                $(seekbar.tooltip).setStyle('left', position);
+                seekbar.tooltip.show();
+            },
+
+            mouseleave: function () {
+                seekbar.tooltip.hide();
+            }
+        });
+
+        seekbar.buffered = new Element('div.seekbar-buffered');
         seekbar.buffered.inject(seekbar.slider.track, 'after');
-        seekbar.adopt(seekbar.tooltip, seekbar.slider);
-        seekbar.tooltip.set('aria-hidden', true);
+        seekbar.adopt(seekbar.slider, seekbar.tooltip);
 
         return seekbar;
     },
 
     createVolumeControl: function () {
         const video = this.video;
-        const volume = new Element('div.volume[data-title=Mute]');
+        const volume = new Element('div.volume[aria-label=Mute Audio]');
 
         volume.addEvent('click', function () {
             video.muted = !video.muted;
@@ -570,20 +549,20 @@ const Moovie = new Class({
     createMoreControl: function () {
         const playlist = this.playlist;
         const panels = this.panels;
-        const more = new Element('div.more[data-title="More"]');
+        const more = new Element('div.more[aria-label="Show More Popup"]');
 
         more.popup = new Element('div.popup');
-        more.about = new Element('div.about[data-title=About]');
+        more.about = new Element('div.about[aria-label=About Moovie]');
         more.about.addEvent('click', function () {
             panels.update('about');
         });
 
-        more.info = new Element('div.info[data-title=Video info]');
+        more.info = new Element('div.info[aria-label=View Video Info]');
         more.info.addEvent('click', function () {
             panels.update('info');
         });
 
-        more.playlist = new Element('div.playlist[data-title=Playlist]');
+        more.playlist = new Element('div.playlist[aria-label=Open Playlist]');
         more.playlist.addEvent('click', function () {
             if (playlist.hidden) {
                 playlist.show();
