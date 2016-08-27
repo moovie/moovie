@@ -33,50 +33,39 @@ const basename = function (path, suffix) {
     return b;
 };
 
-/**
- * Separates a floating point value into different time values.
- * @param  {Number} input A floating point value.
- * @return {Object} An object containg: hh for hours, mm for minutes and ss for seconds.
- */
-const parse = function (input) {
-    return {
-        hh: Math.floor(input / 3600),
-        mm: Math.floor(input % 3600 / 60),
-        ss: Math.ceil(input % 3600 % 60)
-    };
+// as usual, add polyfills for IE
+Number.isNaN = Number.isNaN || function (value) {
+    return typeof value === 'number' && isNaN(value);
+};
+
+Number.isFinite = Number.isFinite || function (value) {
+    return typeof value === 'number' && isFinite(value);
 };
 
 /**
  * Converts a floating point value into a time string.
- * @param  {Number} input A floating point value.
+ * @param  {Number} value A floating point value represented as seconds.milliseconds.
  * @return {string} A string formatted to either: hh:mm:ss or mm:ss or m:ss
  */
-const format = function (input) {
-    let { hh, mm, ss } = parse(input);
+const formatSeconds = function (value) {
+    const input = Math.round(value);
+    let hours = Math.floor(input / 3600);
+    let minutes = Math.floor(input % 3600 / 60);
+    let seconds = input % 3600 % 60;
 
-    if (ss === 60) {
-        ss = 0;
-        mm = mm + 1;
+    if (Number.isNaN(value) || !Number.isFinite(value)) {
+        return '-:--';
     }
 
-    if (ss < 10) {
-        ss = '0' + ss;
+    if (value < 0) {
+        return '0:00';
     }
 
-    if (mm === 60) {
-        mm = 0;
-        hh = hh + 1;
-    }
+    hours = hours > 0 ? hours + ':' : '';
+    minutes = (hours && minutes < 10 ? '0' + minutes : minutes) + ':';
+    seconds = seconds < 10 ? '0' + seconds : seconds;
 
-    if (hh > 0 && mm < 10) {
-        mm = '0' + mm;
-    }
-
-    if (hh === 0) {
-        return `${mm}:${ss}`;
-    }
-
-    return `${hh}:${mm}:${ss}`;
+    return hours + minutes + seconds;
 };
 
 /**
@@ -127,4 +116,4 @@ const isInDOM = function isInDOM(element, onsuccess, onerror, timeout) {
     // @todo return Promise
 };
 
-export { basename, format as formatSeconds, getAttributes, isInDOM };
+export { basename, formatSeconds, getAttributes, isInDOM };
