@@ -21,18 +21,18 @@ const Playlist = new Class({
     initialize: function (items) {
         this.items = typeOf(items) === 'array' ? items : [];
         this.index = this.items.length ? 0 : -1;
+        this.handle = this.handle.bind(this);
         this.build().attach().hide();
     },
 
     attach: function () {
-        this.element.addEvent('click:relay(.label)', (e) => {
-            const item = this.getParents('li')[0];
-            const index = item.get('data-index').toInt();
+        this.element.addEvent('click:relay(.label)', this.handle);
 
-            e.stop();   // @todo check if "return false;" will work
-            this.select(index);
-            this.hide();
-        });
+        return this;
+    },
+
+    detach: function () {
+        this.element.removeEvent('click:relay(.label)', this.handle);
 
         return this;
     },
@@ -120,6 +120,15 @@ const Playlist = new Class({
 
     toElement: function () {
         return this.element;
+    },
+
+    handle: function (event) {
+        const item = event.target.getParent('li');
+        const index = item.get('data-index').toInt();
+
+        event.stop();
+        this.select(index);
+        this.hide();
     }
 });
 
