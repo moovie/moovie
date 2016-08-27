@@ -13,6 +13,7 @@ import Title from './Title.js';
 import Playlist from './Playlist.js';
 import Slider from './component/Slider.js';
 import Tooltip from './component/Tooltip.js';
+import Checkbox from './component/Checkbox.js';
 import { basename, formatSeconds, getAttributes } from './Utility.js';
 
 const HAS_TRACK_SUPPORT = 'track' in document.createElement('track');
@@ -282,7 +283,6 @@ const Moovie = new Class({
 
     buildPanels: function () {
         const self = this;
-        const autohideControls = this.options.controls.autohide;
 
         this.panels = new Element('div.panels');
         this.panels.info = new Element('div.info', {
@@ -297,58 +297,42 @@ const Moovie = new Class({
             </dl>`
         });
 
-        this.panels.settings = new Element('div.settings', {
-            html: `<div class="heading">Settings</div>
-            <div class="checkbox-widget" data-control="autohide" data-checked="${autohideControls}">
-                <div class="checkbox"></div>
-                <div class="label">Auto-hide controls</div>
-            </div>
-            <div class="checkbox-widget" data-control="loop" data-checked="${this.video.loop}">
-                <div class="checkbox"></div>
-                <div class="label">Loop video</div>
-            </div>
-            <div class="checkbox-widget" data-control="renderer" data-checked="${!this.renderer.disabled}">
-                <div class="checkbox"></div>
-                <div class="label">Render text-tracks</div>
-            </div>
-            <div class="checkbox-widget" data-control="debugger" data-checked="${!this.debugger.disabled}">
-                <div class="checkbox"></div>
-                <div class="label">Enable Debugger</div>
-            </div>`
-        });
-
-        this.panels.settings.addEvent('click:relay(.checkbox-widget)', function () {
-            if (this.get('data-checked') === 'false') {
-                this.set('data-checked', 'true');
-            } else {
-                this.set('data-checked', 'false');
-            }
-
-            const control = this.get('data-control');
-            const checked = this.get('data-checked');
-
-            switch (control) {
-                case 'autohide':
-                    self.options.controls.autohide = checked === 'true';
-                    break;
-
-                case 'loop':
-                    self.video.loop = checked === 'true';
-                    break;
-
-                case 'renderer':
-                    self.renderer[checked === 'false' ? 'disable' : 'enable']();
-                    break;
-
-                case 'debugger':
-                    self.debugger[checked === 'false' ? 'disable' : 'enable']();
-                    break;
-
-                // no default
-            }
-
-            self.panels.update('none');
-        });
+        this.panels.settings = new Element('div.settings');
+        this.panels.settings.adopt(
+            new Element('div.heading[text=Settings]'),
+            new Checkbox('autohide', {
+                label: 'Autohide Controls',
+                checked: this.options.controls.autohide,
+                onChange: function () {
+                    self.options.controls.autohide = this.checked;
+                    self.panels.update('none');
+                }
+            }),
+            new Checkbox('loop', {
+                label: 'Loop video',
+                checked: this.video.loop,
+                onChange: function () {
+                    self.video.loop = this.checked;
+                    self.panels.update('none');
+                }
+            }),
+            new Checkbox('renderer', {
+                label: 'Render text-tracks',
+                checked: !this.renderer.disabled,
+                onChange: function () {
+                    self.renderer[this.checked ? 'enable' : 'disable']();
+                    self.panels.update('none');
+                }
+            }),
+            new Checkbox('debugger', {
+                label: 'Enable Debugger',
+                checked: !this.debugger.disabled,
+                onChange: function () {
+                    self.debugger[this.checked ? 'enable' : 'disable']();
+                    self.panels.update('none');
+                }
+            })
+        );
 
         this.panels.about = new Element('div.about', {
             html: `<div class="heading">About this player</div>
