@@ -257,6 +257,7 @@ const Moovie = new Class({
         const tracks = video.getChildren('track');
         const items = [];
         const serializedTracks = tracks.map(function (track) {
+            track.removeAttribute('default'); // just to be safe
             return getAttributes(track);
         });
 
