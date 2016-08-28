@@ -297,43 +297,6 @@ const Moovie = new Class({
             </dl>`
         });
 
-        this.panels.settings = new Element('div.settings');
-        this.panels.settings.adopt(
-            new Element('div.heading[text=Settings]'),
-            new Checkbox('autohide', {
-                label: 'Autohide Controls',
-                checked: this.options.controls.autohide,
-                onChange: function () {
-                    self.options.controls.autohide = this.checked;
-                    self.panels.update('none');
-                }
-            }),
-            new Checkbox('loop', {
-                label: 'Loop video',
-                checked: this.video.loop,
-                onChange: function () {
-                    self.video.loop = this.checked;
-                    self.panels.update('none');
-                }
-            }),
-            new Checkbox('renderer', {
-                label: 'Render text-tracks',
-                checked: !this.renderer.disabled,
-                onChange: function () {
-                    self.renderer[this.checked ? 'enable' : 'disable']();
-                    self.panels.update('none');
-                }
-            }),
-            new Checkbox('debugger', {
-                label: 'Enable Debugger',
-                checked: !this.debugger.disabled,
-                onChange: function () {
-                    self.debugger[this.checked ? 'enable' : 'disable']();
-                    self.panels.update('none');
-                }
-            })
-        );
-
         this.panels.about = new Element('div.about', {
             html: `<div class="heading">About this player</div>
             <p><strong>Moovie</strong> v0.4.3-<em>alpha</em></p>
@@ -352,7 +315,7 @@ const Moovie = new Class({
             }
         };
 
-        this.panels.adopt(this.panels.info, this.panels.settings, this.panels.about, this.playlist);
+        this.panels.adopt(this.panels.info, this.panels.about, this.playlist);
         this.panels.set('aria-hidden', true);
     },
 
@@ -391,11 +354,7 @@ const Moovie = new Class({
         this.controls.seekbar = this.createSeekbar();
         this.controls.duration = new Element('div.duration[text=0:00]');
         this.controls.volume = this.createVolumeControl();
-        this.controls.settings = new Element('div.settings[aria-label=View Settings]');
-        this.controls.settings.addEvent('click', () => {
-            this.panels.update('settings');
-        });
-
+        this.controls.settings = this.createSettingsControl();
         this.controls.more = this.createMoreControl();
         this.controls.fullscreen = new Element('div.fullscreen[aria-label=Enter Fullscreen]');
         this.controls.fullscreen.addEvent('click', () => {
@@ -528,6 +487,58 @@ const Moovie = new Class({
         volume.grab(volume.popup);
 
         return volume;
+    },
+
+    createSettingsControl: function () {
+        const self = this;
+        const settings = new Element('div.settings[aria-label="View Settings"]');
+
+        settings.popup = new Element('div.popup');
+        settings.toggleControls = new Checkbox('autohide', {
+            label: 'Autohide Controls',
+            checked: this.options.controls.autohide,
+            onChange: function () {
+                self.options.controls.autohide = this.checked;
+            }
+        });
+
+        settings.loopVideo = new Checkbox('loop', {
+            label: 'Loop video',
+            checked: this.video.loop,
+            onChange: function () {
+                self.video.loop = this.checked;
+                self.panels.update('none');
+            }
+        });
+
+        settings.renderTextTracks = new Checkbox('renderer', {
+            label: 'Render text-tracks',
+            checked: !this.renderer.disabled,
+            onChange: function () {
+                self.renderer[this.checked ? 'enable' : 'disable']();
+                self.panels.update('none');
+            }
+        });
+
+        settings.enableDebugger = new Checkbox('debugger', {
+            label: 'Enable Debugger',
+            checked: !this.debugger.disabled,
+            onChange: function () {
+                self.debugger[this.checked ? 'enable' : 'disable']();
+                self.panels.update('none');
+            }
+        });
+
+        settings.popup.adopt(
+            settings.toggleControls,
+            settings.loopVideo,
+            settings.renderTextTracks,
+            settings.enableDebugger
+        );
+
+        settings.grab(settings.popup);
+
+        return settings;
     },
 
     createMoreControl: function () {
