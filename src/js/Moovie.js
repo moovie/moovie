@@ -283,8 +283,6 @@ const Moovie = new Class({
     },
 
     buildPanels: function () {
-        const self = this;
-
         this.panels = new Element('div.panels');
         this.panels.info = new Element('div.info', {
             html: `<div class="heading">Video information</div>
