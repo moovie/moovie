@@ -43,7 +43,8 @@
     "rimraf": "^2.5.4",
     "semantic-release": "^4.3.5",
     "sinon": "^1.17.4",
-    "uglify-js": "^2.7.0"
+    "uglify-js": "^2.7.0",
+    "watchify": "^3.7.0"
   },
   "dependencies": {
     "screenfull": "^3.0.2",
@@ -65,7 +66,10 @@
     "build:npm": "babel src/js -d lib",
     "prepublish": "npm run build",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
-    "css:prefix": "postcss --use autoprefixer -r dist/moovie.css"
+    "css:prefix": "postcss --use autoprefixer -r dist/moovie.css",
+    "watch": "npm-run-all -p watch:*",
+    "watch:scss": "node-sass src/scss/main.scss dist/moovie.css --output-style=expanded --linefeed=lf -wr",
+    "watch:js": "watchify src/js/Moovie.js -s Moovie -o dist/moovie.js --verbose"
   },
   "repository": {
     "type": "git",
