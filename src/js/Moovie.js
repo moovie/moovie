@@ -218,6 +218,7 @@ const Moovie = new Class({
             },
 
             durationchange: () => {
+                this.controls.seekbar.slider.options.max = this.video.duration;
                 this.controls.duration.set('text', formatSeconds(this.video.duration));
             },
 
