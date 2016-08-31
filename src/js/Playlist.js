@@ -21,51 +21,92 @@ const Playlist = new Class({
     initialize: function (items) {
         this.items = typeOf(items) === 'array' ? items : [];
         this.index = this.items.length ? 0 : -1;
+        this.displayIndex = this.index;
+        this.build().hide();
+        this.bindListeners().attach();
+    },
+
+    bindListeners: function () {
         this.handle = this.handle.bind(this);
-        this.build().attach().hide();
+        this.displayPreviousItem = this.displayPreviousItem.bind(this);
+        this.displayNextItem = this.displayNextItem.bind(this);
+
+        return this;
     },
 
     attach: function () {
-        this.element.addEvent('click:relay(.label)', this.handle);
+        this.previousButton.addEvent('click', this.displayPreviousItem);
+        this.nextButton.addEvent('click', this.displayNextItem);
+        this.itemList.addEvent('click:relay(.checkbox-widget)', this.handle);
+
+        return this;
+    },
+
+    displayNextItem: function () {
+        if (this.displayIndex < this.listItems.length - 1) {
+            this.displayItem(++this.displayIndex);
+        }
+    },
+
+    displayPreviousItem: function () {
+        if (this.displayIndex > 0) {
+            this.displayItem(--this.displayIndex);
+        }
+    },
+
+    displayItem: function (index) {
+        //if (this.displayIndex !== index) {
+            index = index === 0 ? '0' : -Math.abs(index) + '00';
+            this.listItems.setStyle('transform', `translateX(${index}%)`);
+        //}
 
         return this;
     },
 
     detach: function () {
-        this.element.removeEvent('click:relay(.label)', this.handle);
+        this.previousButton.removeEvent('click', this.displayPreviousItem);
+        this.nextButton.removeEvent('click', this.displayNextItem);
+        this.itemList.removeEvent('click:relay(.checkbox-widget)', this.handle);
 
         return this;
     },
 
     build: function () {
-        this.element = new Element('div.playlist', {
-            html: '<div><div class="heading">Playlist</div></div><div><ol class="playlist"></ol></div>'
+        this.element = new Element('div.moovie-playlist');
+        this.itemList = new Element('ol');
+        this.items.each((item, index) => {
+            this.itemList.grab(new Element('li', {
+                'data-index': index,
+                'class': this.current() === item ? 'active' : '',
+                'html': `<div class="checkbox-widget" data-checked="true">
+                    <div class="checkbox"></div>
+                    <div class="label">${item.title || basename(item.src)}</div>
+                </div>`
+            }));
         });
 
-        this.items.each((item, index) => {
-            this.element.getElement('ol.playlist')
-                .grab(new Element('li', {
-                    'data-index': index,
-                    'class': this.current() === item ? 'active' : '',
-                    'html': `<div class="checkbox-widget" data-checked="true">
-                        <div class="checkbox"></div>
-                        <div class="label">${item.title || basename(item.src)}</div>
-                    </div>`
-                }));
-        });
+        this.previousButton = new Element('div.previous[text=<]');
+        this.nextButton = new Element('div.next[text=>]');
+        this.element.adopt(
+            new Element('h1[text=Playlist]'),
+            this.itemList,
+            this.previousButton,
+            this.nextButton
+        );
+
+        this.listItems = this.itemList.getElements('li');
 
         return this;
     },
 
     active: function () {
-        return this.element.getElement('ol.playlist li.active');
+        return this.itemList.getElement('li.active');
     },
 
     show: function () {
         this.hidden = false;
         this.element.set('aria-hidden', false);
         this.fireEvent('show');
-        this.element.addClass('active');
 
         return this;
     },
@@ -74,7 +115,6 @@ const Playlist = new Class({
         this.hidden = true;
         this.element.set('aria-hidden', true);
         this.fireEvent('hide');
-        this.element.removeClass('active');
 
         return this;
     },
@@ -107,7 +147,7 @@ const Playlist = new Class({
         if (index >= 0 && index < this.items.length) {
             this.index = index;
             this.active().removeClass('active');
-            this.element.getElement(`ol.playlist li[data-index="${index}"]`).addClass('active');
+            this.itemList.getElement(`li[data-index="${index}"]`).addClass('active');
             this.fireEvent('select', this.current());
         }
 

@@ -108,7 +108,9 @@ const Moovie = new Class({
         this.buildPanels();
         this.buildControls();
 
-        this.element.adopt(this.renderer, this.overlay, this.title, this.panels, this.controls, this.debugger);
+        this.element.adopt(
+            this.renderer, this.overlay, this.title, this.panels, this.playlist, this.controls, this.debugger
+        );
 
         // Adjust text-track renderer height to account for controls
         $(this.renderer).setStyle('bottom', this.controls.getSize().y);
@@ -127,16 +129,16 @@ const Moovie = new Class({
         let muted = this.video.muted;
 
         this.playlist.addEvent('show', () => {
+            this.playlist.displayItem(this.playlist.index);
             this.panels.update('none');
-            this.panels.set('aria-hidden', false);
         });
 
         this.playlist.addEvent('hide', () => {
             this.panels.update('none');
-            this.panels.set('aria-hidden', true);
         });
 
         this.playlist.addEvent('select', (current) => {
+            this.playlist.displayItem(this.playlist.index);
             this.textTracks.each(function (track) {
                 // disables event listeners
                 track.mode = 'disabled';
@@ -304,18 +306,20 @@ const Moovie = new Class({
             <p><a href="http://colinaarts.com/code/moovie/" rel="external">http://colinaarts.com/code/moovie/</a></p>`
         });
 
+        const playlist = this.playlist;
         this.panels.update = function (which) {
             if (which === 'none' || this[which].hasClass('active')) {
                 this.getChildren('.active').removeClass('active');
                 this.set('aria-hidden', true);
             } else {
+                playlist.hide();
                 this.getChildren().removeClass('active');
                 this[which].addClass('active');
                 this.set('aria-hidden', false);
             }
         };
 
-        this.panels.adopt(this.panels.info, this.panels.about, this.playlist);
+        this.panels.adopt(this.panels.info, this.panels.about);
         this.panels.set('aria-hidden', true);
     },
 

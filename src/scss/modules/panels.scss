@@ -36,49 +36,10 @@
     padding: 0 0 0.3em 0;
 }
 
-.moovie .panels .heading + dl,
-.moovie .panels .heading + ol,
-.moovie .panels .heading + ul {
+.moovie .panels .heading + dl {
     margin-top: 0;
-}
-
-.moovie .panels li {
-    margin: 0;
 }
 
 .moovie .panels .about {
     background: url('http://colinaarts.com/assets/code/moovie/moovie.png') no-repeat bottom right;
-}
-
-.moovie .panels .playlist > div {
-    display: table-row;
-}
-
-.moovie .panels .playlist > div + div {
-    height: 100%;
-}
-
-.moovie .panels .playlist ol {
-    list-style: none;
-    overflow-x: hidden;
-    overflow-y: auto;
-}
-
-.moovie .panels .playlist ol li {
-    border-radius: 4px;
-    padding: 0 5px;
-    white-space: nowrap;
-}
-
-.moovie .panels .playlist ol li:hover {
-    background-color: #994004;
-}
-
-.moovie .panels .playlist ol .active {
-    background-color: rgba(255, 255, 255, 0.2);
-}
-
-.moovie .panels .playlist ol .label:hover {
-    cursor: pointer;
-    text-decoration: underline;
 }

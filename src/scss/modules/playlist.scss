@@ -1,0 +1,92 @@
+.moovie-playlist {
+    background-color: rgba(0, 0, 0, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    bottom: 52px;
+    box-sizing: border-box;
+    color: rgb(255, 255, 255);
+    display: flex;
+    flex-flow: column;
+    left: 20px;
+    margin: 0;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    white-space: nowrap;
+}
+
+.moovie-playlist > ol li.active .checkbox-widget {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.moovie-playlist .checkbox-widget:hover {
+    background-color: #994004;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.moovie-playlist[aria-hidden="true"] {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.moovie-playlist > h1 {
+    border-bottom: 1px dotted rgb(136, 136, 136);
+    flex: 0 1 auto;
+    margin: 0 26px;
+}
+
+.moovie-playlist > ol {
+    flex: 1 1 auto;
+	margin: 0 26px;
+    overflow: hidden;
+	padding: 0;
+}
+
+.moovie-playlist > ol li {
+    box-sizing: border-box;
+    display: inline-block;
+    height: 100%;
+    left: 0;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    top: 0;
+    transform: translateX(0);
+    transition: transform 1000ms;
+    width: 100%;
+}
+
+.moovie-playlist > .previous,
+.moovie-playlist > .next {
+    box-sizing: border-box;
+    color: rgb(255, 255, 255);
+    cursor: pointer;
+    display: block;
+    font-size: 32px;
+    height: 100%;
+    line-height: 47px;
+    padding-top: 125px;
+    position: absolute;
+    text-align: center;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+    top: 0;
+}
+
+.moovie-playlist > .previous:hover,
+.moovie-playlist > .next:hover {
+
+}
+
+.moovie-playlist > .previous {
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0.5) 0, rgba(0, 0, 0, 0.0001) 100%);
+    background-repeat: repeat-x;
+    left: 0;
+}
+
+.moovie-playlist > .next {
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0.0001) 0, rgba(0, 0, 0, 0.5) 100%);
+    background-repeat: repeat-x;
+    right: 0;
+}
