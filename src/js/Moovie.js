@@ -257,31 +257,25 @@ const Moovie = new Class({
     },
 
     buildPlaylist: function () {
-        const video = this.video;
-        const tracks = video.getChildren('track');
-        const items = [];
-        const serializedTracks = tracks.map(function (track) {
-            track.removeAttribute('default'); // just to be safe
-            return getAttributes(track);
+        const tracks = this.video.getChildren('track');
+
+        // destroy old track elements and load our new text tracks
+        const serializedTracks = tracks.map((trackElement) => {
+            const trackObject = getAttributes(trackElement);
+
+            this.loadTextTrack(trackObject);
+            trackElement.removeAttribute('default'); // just to be safe
+            trackElement.destroy();
+
+            return trackObject;
         });
 
-        if (typeOf(this.options.playlist) === 'array') {
-            items.combine(Array.convert(this.options.playlist));
-
-            // Add the current video to the playlist stack
-            items.unshift({
-                id: video.get('id'),
-                title: video.get('title') || basename(video.currentSrc || video.src),
-                src: video.currentSrc || video.src,
-                tracks: serializedTracks
-            });
-        }
-
-        serializedTracks.forEach((serializedTrack) => {
-            this.loadTextTrack(serializedTrack);
+        // Create a playlist item from the <video> element
+        const item = Object.merge(getAttributes(this.video), {
+            tracks: serializedTracks
         });
 
-        tracks.destroy();
+        const items = [].concat(item, Array.convert(this.options.playlist));
 
         this.playlist = new Playlist(items);
     },
