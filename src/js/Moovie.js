@@ -62,6 +62,7 @@ const Moovie = new Class({
         this.video = document.id(video);
 
         if (HAS_TRACK_SUPPORT) {
+            // disable native text tracks
             for (let i = 0, l = this.video.textTracks; i < l; i++) {
                 this.video.textTracks[i].mode = 'disabled';
             }
@@ -102,7 +103,6 @@ const Moovie = new Class({
         this.buildPanels();
         this.buildControls();
 
-        // Inject and do some post-processing --------------------------------------
         this.wrapper.adopt(this.renderer, this.overlay, this.title, this.panels, this.controls, this.debugger);
 
         // Adjust text-track renderer height to account for controls
@@ -110,14 +110,11 @@ const Moovie = new Class({
     },
 
     attach: function () {
-        // Unfortunately, the media API only defines one volume-related
-        // event: `volumechange`. This event is fired whenever the media's
-        // `volume` attribute changes, or the media's `muted` attribute
-        // changes. The API defines no way to discern the two, so we'll
-        // have to "manually" keep track. We need to do this in order to
-        // be able to provide the advanced volume control (a la YouTube's
-        // player): changing the volume can have an effect on the muted
-        // state and vice versa.
+        // The media API only defines one volume-related event, "volumechange". This
+        // is fired whenever the .volume or .muted property changes. Currently, the
+        // API offers no way of discerning between the two, so we manually keep track
+        // instead. This gives a smarter way of controlling the volume, where changing
+        // the volume can effect the muted state, and vice versa.
         let muted = this.video.muted;
 
         this.playlist.addEvent('show', () => {
@@ -132,7 +129,8 @@ const Moovie = new Class({
 
         this.playlist.addEvent('select', (current) => {
             this.textTracks.each(function (track) {
-                track.mode = 'disabled';    // disables any event listeners
+                // disables event listeners
+                track.mode = 'disabled';
             }).empty();
 
             this.panels.info.getElement('dt.title + dd').set('html', current.title || basename(current.src));
@@ -222,17 +220,16 @@ const Moovie = new Class({
 
                 muted = video.muted;
 
-                // Un-muted with volume at 0 -- pick a sane default. This
-                // is probably the only deviation from the way the YouTube
-                // flash player handles volume control.
+                // If the volume is at 0 and we try to unmute we need to provide a
+                // default volume. 50% seems like a good number...
                 if (mutedChanged && !video.muted && video.volume === 0) {
                     video.volume = 0.5;
 
-                // Volume changed while muted -> un-mute
+                // Volume was changed while in the "muted" state, so un-mute as well.
                 } else if (video.muted && video.volume !== 0 && !mutedChanged) {
                     video.muted = false;
 
-                // Slider dragged to 0 -> mute
+                // Volume was set to 0 (E.g. dragging slider all the way down), so lets mute.
                 } else if (!mutedChanged && !video.muted && video.volume === 0) {
                     video.muted = true;
                 }
@@ -247,7 +244,7 @@ const Moovie = new Class({
             },
 
             loadedmetadata: () => {
-                this.container.set('data-playbackstate', 'stopped'); // or 'ready', or 'idle'
+                this.container.set('data-playbackstate', 'stopped');
             }
         });
     },
