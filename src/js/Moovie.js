@@ -3,8 +3,8 @@
  * @copyright 2010 Colin Aarts
  * @license MIT
  */
+import 'fullscreen-api-polyfill';
 import MediaEvents from './core/MediaEvents.js';   // eslint-disable-line
-import screenfull from 'screenfull';
 import Loader from './track/Loader.js';
 import TextTrack from './track/TextTrack.js';
 import Renderer from './track/Renderer.js';
@@ -354,7 +354,11 @@ const Moovie = new Class({
         this.controls.more = this.createMoreControl();
         this.controls.fullscreen = new Element('div.fullscreen[aria-label=Enter Fullscreen]');
         this.controls.fullscreen.addEvent('click', () => {
-            screenfull.toggle(this.wrapper);
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+            } else {
+                this.wrapper.requestFullscreen();
+            }
         });
 
         this.controls.adopt(

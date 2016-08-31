@@ -48,7 +48,7 @@
     "watchify": "^3.7.0"
   },
   "dependencies": {
-    "screenfull": "^3.0.2",
+    "fullscreen-api-polyfill": "^1.1.2",
     "vtt.js": "^0.12.1"
   },
   "scripts": {
