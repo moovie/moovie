@@ -62,7 +62,7 @@
     "compile": "npm-run-all -p compile:*",
     "compile:scss": "node-sass src/scss/main.scss dist/moovie.css --output-style=expanded --linefeed=lf",
     "postcompile": "npm run css:prefix",
-    "build": "npm-run-all clean -p build:*",
+    "build": "npm-run-all clean build:* minify",
     "build:bower": "browserify src/js/index.js -s Moovie -o dist/moovie.js && npm run compile:scss",
     "build:npm": "babel src/js -d lib",
     "prepublish": "npm run build",
