@@ -32,7 +32,8 @@ const Moovie = new Class({
         controls: {
             autohide: true,
             tooltips: true
-        }
+        },
+        plugins: []
     },
 
     textTracks: [],
@@ -56,6 +57,12 @@ const Moovie = new Class({
                 this.container.set('data-playbackstate', 'stopped');
             }
         }
+
+        this.options.plugins.forEach((pluginName) => {
+            if (typeOf(Moovie.plugins[pluginName]) === 'function') {
+                Moovie.plugins[pluginName].call(this, this.options[pluginName] || {});
+            }
+        });
     },
 
     setVideo: function (video) {
@@ -572,6 +579,14 @@ const Moovie = new Class({
         return more;
     }
 });
+
+Moovie.plugins = {};
+
+Moovie.registerPlugin = function (name, plugin) {
+    if (!Moovie.plugins[name]) {
+        Moovie.plugins[name] = plugin;
+    }
+};
 
 Element.implement({
     // method to polyfill <video> tags
