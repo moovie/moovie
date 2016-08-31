@@ -10,22 +10,14 @@
 @import 'component/tooltip';
 
 .moovie {
-    left: 50%;
-    position: absolute;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: 852px;
-    max-width: 852px;
-    background: transparent;
+    background-color: transparent;
     border: none;
-    padding: 0;
     box-shadow: 0 0 15px #000000;
-    color: #ffffff;
+    color: #fff;
     font-size: 12px;
-}
-
-.moovie > .wrapper {
-    position:relative;
+    max-width: 852px;
+    padding: 0;
+    position: relative;
 }
 
 .moovie p {

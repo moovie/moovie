@@ -54,7 +54,7 @@ const Moovie = new Class({
             }
 
             if (!this.video.autoplay) {
-                this.container.set('data-playbackstate', 'stopped');
+                this.element.set('data-playbackstate', 'stopped');
             }
         }
 
@@ -92,10 +92,8 @@ const Moovie = new Class({
     },
 
     build: function () {
-        this.container = new Element('div.moovie');
-        this.wrapper = new Element('div.wrapper');
-        this.wrapper.wraps(this.video);
-        this.container.wraps(this.wrapper);
+        this.element = new Element('figure.moovie');
+        this.element.wraps(this.video);
 
         this.buildPlaylist();
 
@@ -110,10 +108,14 @@ const Moovie = new Class({
         this.buildPanels();
         this.buildControls();
 
-        this.wrapper.adopt(this.renderer, this.overlay, this.title, this.panels, this.controls, this.debugger);
+        this.element.adopt(this.renderer, this.overlay, this.title, this.panels, this.controls, this.debugger);
 
         // Adjust text-track renderer height to account for controls
         $(this.renderer).setStyle('bottom', this.controls.getSize().y);
+    },
+
+    toElement: function () {
+        return this.element;
     },
 
     attach: function () {
@@ -155,11 +157,11 @@ const Moovie = new Class({
             this.video.play();
         });
 
-        this.wrapper.addEvent('mouseenter', () => {
+        this.element.addEvent('mouseenter', () => {
             this.controls.show();
         });
 
-        this.wrapper.addEvent('mouseleave', () => {
+        this.element.addEvent('mouseleave', () => {
             if (this.options.controls.autohide) {
                 this.controls.hide();
             }
@@ -176,15 +178,15 @@ const Moovie = new Class({
             },
 
             playing: () => {
-                this.container.set('data-playbackstate', 'playing');
+                this.element.set('data-playbackstate', 'playing');
             },
 
             pause: () => {
-                this.container.set('data-playbackstate', 'paused');
+                this.element.set('data-playbackstate', 'paused');
             },
 
             ended: () => {
-                this.container.set('data-playbackstate', 'ended');
+                this.element.set('data-playbackstate', 'ended');
                 this.playlist.next();
             },
 
@@ -202,13 +204,13 @@ const Moovie = new Class({
             },
 
             seeking: () => {
-                this.container.set('data-playbackstate', 'seeking');
+                this.element.set('data-playbackstate', 'seeking');
             },
 
             seeked: () => {
                 // @bug pressing stop button still shows "seeking" state. This get around that.
                 if (this.video.paused) {
-                    this.container.set('data-playbackstate', 'paused');
+                    this.element.set('data-playbackstate', 'paused');
                 }
             },
 
@@ -252,7 +254,7 @@ const Moovie = new Class({
             },
 
             loadedmetadata: () => {
-                this.container.set('data-playbackstate', 'stopped');
+                this.element.set('data-playbackstate', 'stopped');
             }
         });
     },
@@ -359,7 +361,7 @@ const Moovie = new Class({
             if (document.fullscreenElement) {
                 document.exitFullscreen();
             } else {
-                this.wrapper.requestFullscreen();
+                this.element.requestFullscreen();
             }
         });
 
