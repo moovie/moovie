@@ -44,6 +44,7 @@
     "semantic-release": "^4.3.5",
     "sinon": "^1.17.4",
     "uglify-js": "^2.7.0",
+    "uglifycss": "0.0.21",
     "watchify": "^3.7.0"
   },
   "dependencies": {
@@ -70,7 +71,10 @@
     "watch": "npm-run-all -p watch:*",
     "watch:scss": "node-sass src/scss/main.scss dist/moovie.css --output-style=expanded --linefeed=lf -wr",
     "watch:js": "watchify src/js/Moovie.js -s Moovie -o dist/moovie.js --verbose",
-    "watch:tests": "karma start tests/karma.conf.js --auto-watch --no-single-run"
+    "watch:tests": "karma start tests/karma.conf.js --auto-watch --no-single-run",
+    "minify": "npm-run-all -p minify:*",
+    "minify:css": "uglifycss dist/moovie.css > dist/moovie.min.css",
+    "minify:js": "uglifyjs dist/moovie.js > dist/moovie.min.js"
   },
   "repository": {
     "type": "git",
