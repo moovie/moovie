@@ -99,7 +99,7 @@ const Checkbox = new Class({
      * @return {undefined}
      */
     toggle: function () {
-        this[this.checked ? 'uncheck' : 'check']().fireEvent('change');
+        this[this.checked ? 'uncheck' : 'check']().fireEvent('change', this.checked);
     },
 
     /**
