@@ -126,12 +126,12 @@
     color: #FFFFFF;
     margin: 0 0 -5px 2px;
     opacity: 0;
+    padding-top: 4px;
     position: absolute;
     transition: all 0.2s ease;
     visibility: hidden;
     z-index: 98;
     box-sizing: border-box;
-    width: 140px;
 }
 
 .moovie .controls .settings:hover .popup {
@@ -139,13 +139,14 @@
     visibility: visible;
 }
 
-.moovie .controls .settings .moovie-checkbox {
-    white-space: nowrap;
-    padding: 3px 8px;
+.moovie .controls .settings .moovie-checkbox + .moovie-label {
     box-sizing: border-box;
+    padding: 3px 8px;
+    white-space: nowrap;
+    width: 100%;
 }
 
-.moovie .controls .settings .moovie-checkbox:hover {
+.moovie .controls .settings .moovie-checkbox + .moovie-label:hover {
     background-color: #994004;
 }
 

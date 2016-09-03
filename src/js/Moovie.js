@@ -13,7 +13,6 @@ import Title from './Title.js';
 import Playlist from './Playlist.js';
 import Slider from './component/Slider.js';
 import Tooltip from './component/Tooltip.js';
-import Checkbox from './component/Checkbox.js';
 import { basename, formatSeconds, getAttributes } from './Utility.js';
 
 const HAS_TRACK_SUPPORT = 'track' in document.createElement('track');
@@ -498,51 +497,45 @@ const Moovie = new Class({
     },
 
     createSettingsControl: function () {
-        const self = this;
         const settings = new Element('div.settings[aria-label="View Settings"]');
+        const autohideControls = this.options.controls.autohide ? '[checked]' : '';
+        //const loopVideo = this.video.loop ? '[checked]' : '';
+        const renderTracks = this.renderer.disabled ? '' : '[checked]';
+        const showDebugger = this.debugger.disabled ? '' : '[checked]';
 
         settings.popup = new Element('div.popup');
-        settings.toggleControls = new Checkbox('autohide', {
-            label: 'Autohide Controls',
-            checked: this.options.controls.autohide,
-            onChange: function () {
-                self.options.controls.autohide = this.checked;
-            }
-        });
-
-        settings.loopVideo = new Checkbox('loop', {
-            label: 'Loop video',
-            checked: this.video.loop,
-            onChange: function () {
-                self.video.loop = this.checked;
-                self.panels.update('none');
-            }
-        });
-
-        settings.renderTextTracks = new Checkbox('renderer', {
-            label: 'Render text-tracks',
-            checked: !this.renderer.disabled,
-            onChange: function () {
-                self.renderer[this.checked ? 'enable' : 'disable']();
-                self.panels.update('none');
-            }
-        });
-
-        settings.enableDebugger = new Checkbox('debugger', {
-            label: 'Enable Debugger',
-            checked: !this.debugger.disabled,
-            onChange: function () {
-                self.debugger[this.checked ? 'enable' : 'disable']();
-                self.panels.update('none');
-            }
-        });
-
         settings.popup.adopt(
-            settings.toggleControls,
-            settings.loopVideo,
-            settings.renderTextTracks,
-            settings.enableDebugger
+            new Element(`input[type=checkbox].moovie-checkbox#autohide-controls${autohideControls}`),
+            new Element('label.moovie-label[for="autohide-controls"][text=Autohide Controls]'),
+            //new Element(`input[type=checkbox].moovie-checkbox#loop-video${loopVideo}`),
+            //new Element('label.moovie-label[for="loop-video"][text=Loop Video]'),
+            new Element(`input[type=checkbox].moovie-checkbox#render-tracks${renderTracks}`),
+            new Element('label.moovie-label[for="render-tracks"][text=Render Text Tracks]'),
+            new Element(`input[type=checkbox].moovie-checkbox#show-debugger${showDebugger}`),
+            new Element('label.moovie-label[for="show-debugger"][text=Show Debugger]')
         );
+
+        settings.addEvent('click:relay(.moovie-checkbox)', (event) => {
+            switch (event.target.id) {
+                case 'autohide-controls':
+                    this.options.controls.autohide = event.target.checked;
+                    return;
+
+                //case 'loop-video':
+                    //this.video.loop = event.target.checked;
+                    //return;
+
+                case 'render-tracks':
+                    this.renderer[event.target.checked ? 'enable' : 'disable']();
+                    return;
+
+                case 'show-debugger':
+                    this.debugger[event.target.checked ? 'enable' : 'disable']();
+                    return;
+
+                // No Default
+            }
+        });
 
         settings.grab(settings.popup);
 

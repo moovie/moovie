@@ -1,30 +1,31 @@
 .moovie-checkbox {
-    display: inline-block;
-    margin: 3px 0;
-    width: 100%;
-
-    &::before {
-        background-position: center;
-        background-repeat: no-repeat;
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        border-radius: 4px;
-        content: '';
-        display: inline-block;
-        height: 17px;
-        margin: 0 5px 0 0;
-        vertical-align: bottom;
-        width: 17px;
-    }
-
-    &::after {
-        content: attr(data-label);
-        display: inline-block;
-        vertical-align: middle;
-    }
+	font: inherit;
+    height: 0;
+    margin: 0;
+    opacity: 0;
+	overflow: visible;
+    position: absolute;
+    width: 0;
 }
 
-.moovie-checkbox[aria-checked="true"] {
-    &::before {
-        background-image: url("http://colinaarts.com/assets/player-checked.png");
-    }
+.moovie-checkbox + .moovie-label {
+    cursor: pointer;
+    display: inline-flex;
+    font-size: 11px;
+    line-height: 17px;
+    position: relative;
+}
+
+.moovie-checkbox + .moovie-label::before {
+	background: none no-repeat center;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+    content: ' ';
+    height: 17px;
+    margin-right: 5px;
+    width: 17px;
+}
+
+.moovie-checkbox:checked + .moovie-label::before {
+	background-image: url("http://colinaarts.com/assets/player-checked.png");
 }
