@@ -13,7 +13,7 @@ import Title from './Title.js';
 import Playlist from './Playlist.js';
 import Slider from './component/Slider.js';
 import Tooltip from './component/Tooltip.js';
-import { basename, formatSeconds, getAttributes } from './Utility.js';
+import { formatSeconds, getAttributes } from './Utility.js';
 
 const HAS_TRACK_SUPPORT = 'track' in document.createElement('track');
 
@@ -101,7 +101,7 @@ const Moovie = new Class({
         this.renderer = new Renderer(window, this);
         this.overlay = new Element('div.overlay');
         this.title = new Title(this.options.title);
-        this.title.update(current.title || basename(current.src));
+        this.title.update(current.title);
         this.debugger = new Debugger(this.video, this.options.debugger);
 
         this.buildPanels();
@@ -144,9 +144,9 @@ const Moovie = new Class({
             }).empty();
 
             this.playlist.fireEvent('queuechange');
-            this.panels.info.getElement('dt.title + dd').set('html', current.title || basename(current.src));
+            this.panels.info.getElement('dt.title + dd').set('html', current.title);
             this.panels.info.getElement('dt.url + dd').set('html', current.src);
-            this.title.update(current.title || basename(current.src));
+            this.title.update(current.title);
             this.title.show();
 
             Array.convert(current.tracks).forEach((trackObj) => {
