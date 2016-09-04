@@ -23,7 +23,21 @@ describe('Playlist', function () {
         it('should be hidden', function () {
             const playlist = new Playlist();
 
-            expect(playlist.isHidden()).toBe(true);
+            expect(playlist.hidden).toBe(true);
+        });
+
+        it('should be empty', function () {
+            const playlist = new Playlist();
+
+            expect(playlist.size).toBe(0);
+        });
+
+        context('#initialize(items)', function () {
+            it('has the correct size', function () {
+                const playlist = new Playlist(this.items);
+
+                expect(playlist.size).toBe(3);
+            });
         });
     });
 
@@ -33,7 +47,7 @@ describe('Playlist', function () {
 
             playlist.show();
 
-            expect(playlist.isHidden()).toBe(false);
+            expect(playlist.hidden).toBe(false);
         });
 
         it('should fire an event', function () {
@@ -59,7 +73,7 @@ describe('Playlist', function () {
 
             playlist.hide();
 
-            expect(playlist.isHidden()).toBe(true);
+            expect(playlist.hidden).toBe(true);
         });
 
         it('should fire an event', function () {
@@ -76,26 +90,6 @@ describe('Playlist', function () {
             const playlist = new Playlist();
 
             expect(playlist.previous()).toBe(playlist);
-        });
-    });
-
-    describe('#size()', function () {
-        it('should return zero if the playlist is empty', function () {
-            const playlist = new Playlist();
-
-            expect(playlist.size()).toBe(0);
-        });
-
-        it('should return one if the playlist has only one item', function () {
-            const playlist = new Playlist([this.items[0]]);
-
-            expect(playlist.size()).toBe(1);
-        });
-
-        it('should return the correct size if the playlist contains multiple items', function () {
-            const playlist = new Playlist(this.items);
-
-            expect(playlist.size()).toBe(3);
         });
     });
 
@@ -337,7 +331,7 @@ describe('Playlist', function () {
                 const playlist = new Playlist(this.items);
                 const current = playlist.current();
 
-                playlist.select(playlist.size());
+                playlist.select(playlist.size);
 
                 expect(playlist.current()).toBe(current);
             });
@@ -346,7 +340,7 @@ describe('Playlist', function () {
                 const playlist = new Playlist(this.items);
                 const current = playlist.current();
 
-                playlist.select(playlist.size() + 1);
+                playlist.select(playlist.size + 1);
 
                 expect(playlist.current()).toBe(current);
             });
@@ -366,7 +360,7 @@ describe('Playlist', function () {
                 const spy = sinon.spy();
 
                 playlist.addEvent('select', spy);
-                playlist.select(playlist.size());
+                playlist.select(playlist.size);
 
                 expect(spy.called).toBe(false);
             });
@@ -376,7 +370,7 @@ describe('Playlist', function () {
                 const spy = sinon.spy();
 
                 playlist.addEvent('select', spy);
-                playlist.select(playlist.size() + 1);
+                playlist.select(playlist.size + 1);
 
                 expect(spy.called).toBe(false);
             });

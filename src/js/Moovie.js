@@ -143,6 +143,7 @@ const Moovie = new Class({
                 track.mode = 'disabled';
             }).empty();
 
+            this.playlist.fireEvent('queuechange');
             this.panels.info.getElement('dt.title + dd').set('html', current.title || basename(current.src));
             this.panels.info.getElement('dt.url + dd').set('html', current.src);
             this.title.update(current.title || basename(current.src));
@@ -156,6 +157,12 @@ const Moovie = new Class({
             this.video.src = current.src;
             this.video.load();
             this.video.play();
+        });
+
+        this.playlist.addEvent('queuechange', () => {
+            // hide appropriate playlist buttons
+            this.controls.previous.set('aria-disabled', !this.playlist.hasPrevious());
+            this.controls.next.set('aria-disabled', !this.playlist.hasNext());
         });
 
         this.element.addEvent('mouseenter', () => {
@@ -187,8 +194,11 @@ const Moovie = new Class({
             },
 
             ended: () => {
-                this.element.set('data-playbackstate', 'ended');
-                this.playlist.next();
+                if (this.playlist.hasNext()) {
+                    this.playlist.next();
+                } else {
+                    this.element.set('data-playbackstate', 'ended');
+                }
             },
 
             progress: () => {
@@ -276,7 +286,9 @@ const Moovie = new Class({
 
         // Create a playlist item from the <video> element
         const item = Object.merge(getAttributes(this.video), {
-            tracks: serializedTracks
+            tracks: serializedTracks,
+            summary: this.options.summary,
+            poster: this.options.poster
         });
 
         const items = [].concat(item, Array.convert(this.options.playlist));
@@ -395,6 +407,10 @@ const Moovie = new Class({
 
         this.controls.elapsed.set('text', formatSeconds(this.video.currentTime || 0));
         this.controls.duration.set('text', formatSeconds(this.video.duration || 0));
+
+        // hide appropriate playlist buttons
+        this.controls.previous.set('aria-disabled', !this.playlist.hasPrevious());
+        this.controls.next.set('aria-disabled', !this.playlist.hasNext());
     },
 
     createSeekbar: function () {
