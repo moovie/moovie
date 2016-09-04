@@ -1,59 +1,9 @@
-.moovie-playlist {
-    background-color: rgba(0, 0, 0, 0.8);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    bottom: 4.5em;
-    box-sizing: border-box;
-    color: rgb(255, 255, 255);
-    display: flex;
-    flex-flow: column;
-    left: 2em;
-    overflow: hidden;
-    padding: 2em;
-    position: absolute;
-    right: 2em;
-    top: 2em;
-    white-space: nowrap;
-
-    &[hidden] {
-        display: none;
-    }
-}
-
-// panel close button
-.moovie-playlist > .close {
-    appearance: none;
-    background: none;
-    border: none;
-    color: rgb(255, 255, 255);
-    cursor: pointer;
-    display: block;
-    font-size: 1.4em;
-    height: 2em;
-    line-height: 2;
-    padding: 0;
-    position: absolute;
-    right: 1.4em;
-    text-align: center;
-    text-shadow: 0 1px 0 #fff;
-    top: 1.4em;
-    width: 2em;
-    z-index: 98;
-
-    &:hover {
-        text-shadow: 0 1px 15px #fff;
-    }
-}
-
-// panel name
-.moovie-playlist > h1 {
-    border-bottom: 1px dotted rgb(136, 136, 136);
+.playlist-panel > .header {
     display: none;
-    flex: 0 1 auto;
-    margin: 0;
 }
 
-// playlist carousel
-.moovie-playlist > ol {
+// carousel
+.playlist-panel > ol {
     display: flex;
     flex: 1 1 auto;
 	margin: 0;
@@ -61,8 +11,8 @@
 	padding: 0;
 }
 
-// playlist carousel item
-.moovie-playlist > ol li {
+// carousel item
+.playlist-panel > ol li {
     align-items: center;
     box-sizing: border-box;
     display: flex;
@@ -79,32 +29,38 @@
 }
 
 // video poster
-.moovie-playlist > ol li img {
+.playlist-panel > ol li img {
     height: 100%;
     margin-right: 1em;
 }
 
-.moovie-playlist > ol li .content {
+.playlist-panel > ol li .content {
     flex: 1;
 }
 
 // video title
-.moovie-playlist > ol li h2 {
+.playlist-panel > ol li h3 {
     margin: 0;
+    font-family: GaramondItalic, 'Palatino Linotype', 'Lucida Sans Unicode', Arial, Helvetica, sans-serif;
+    font-weight: normal;
+    line-height: 1.4;
+    text-shadow: 1px 1px 3px #cbcbcb;
+    color: #83b834;
+    font-size: 2.5em;
 }
 
 // video summary
-.moovie-playlist > ol li p {
+.playlist-panel > ol li p {
     white-space: pre-wrap;
 }
 
-.moovie-playlist > ol li p::before {
+.playlist-panel > ol li p::before {
     content: 'Summary: ';
     font-weight: 600;
 }
 
 // "Play Video" button
-.moovie-playlist > ol li button {
+.playlist-panel > ol li button {
     appearance: none;
     background-color: rgb(196, 82, 5);
     border: medium none;
@@ -125,7 +81,7 @@
 }
 
 // "Add to Queue" checkbox
-.moovie-playlist .moovie-checkbox + .moovie-label {
+.playlist-panel .moovie-checkbox + .moovie-label {
     color: #c45205;
     font-size: 1.1em;
     top: 5px;
@@ -137,8 +93,8 @@
 }
 
 // show previous/next pane buttons
-.moovie-playlist > .previous,
-.moovie-playlist > .next {
+.playlist-panel > .previous,
+.playlist-panel > .next {
     appearance: none;
     background: none;
     border: none;
@@ -164,10 +120,10 @@
     }
 }
 
-.moovie-playlist > .previous {
+.playlist-panel > .previous {
     left: 0;
 }
 
-.moovie-playlist > .next {
+.playlist-panel > .next {
     right: 0;
 }

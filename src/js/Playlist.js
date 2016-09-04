@@ -93,8 +93,8 @@ const Playlist = new Class({
      * @return {Playlist} The current instance for method chaining.
      */
     build: function () {
-        this.panelTitle = new Element('h1[text=Playlist]');
-        this.element = new Element('div.moovie-playlist');
+        this.header = new Element('header[html=<h2>Playlist</h2>]');
+        this.element = new Element('div.moovie-panel.playlist-panel');
         this.closeButton = new Element('button.close[text=✖]');
         this.domItems = new Element('ol');
         this.previousButton = new Element('button.previous[text=«]');
@@ -108,7 +108,7 @@ const Playlist = new Class({
             }));
         });
 
-        this.element.adopt(this.panelTitle, this.closeButton, this.domItems, this.previousButton, this.nextButton);
+        this.element.adopt(this.header, this.closeButton, this.domItems, this.previousButton, this.nextButton);
 
         return this;
     },
@@ -121,7 +121,7 @@ const Playlist = new Class({
     getTemplate: function (item) {
         return `<img class="poster" src="${item.poster}" alt="${item.title}">
             <div class="content">
-                <h2 class="title">${item.title}</h2>
+                <h3 class="title">${item.title}</h3>
                 <p class="summary">${item.summary}</p>
                 <button type="button">Play Video</button>
                 <input class="moovie-checkbox" type="checkbox" id="mpi${item.index}" checked>
