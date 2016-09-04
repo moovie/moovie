@@ -108,7 +108,14 @@ const Moovie = new Class({
         this.buildControls();
 
         this.element.adopt(
-            this.renderer, this.overlay, this.title, this.panels, this.playlist, this.controls, this.debugger
+            this.renderer,
+            this.overlay,
+            this.title,
+            this.playlist,
+            this.videoInfoPanel,
+            this.aboutPanel,
+            this.controls,
+            this.debugger
         );
 
         // Adjust text-track renderer height to account for controls
@@ -128,12 +135,9 @@ const Moovie = new Class({
         let muted = this.video.muted;
 
         this.playlist.addEvent('show', () => {
+            this.videoInfoPanel.set('hidden', '');
+            this.aboutPanel.set('hidden', '');
             this.playlist.displayItem(this.playlist.index);
-            this.panels.update('none');
-        });
-
-        this.playlist.addEvent('hide', () => {
-            this.panels.update('none');
         });
 
         this.playlist.addEvent('select', (current) => {
@@ -144,8 +148,8 @@ const Moovie = new Class({
             }).empty();
 
             this.playlist.fireEvent('queuechange');
-            this.panels.info.getElement('dt.title + dd').set('html', current.title);
-            this.panels.info.getElement('dt.url + dd').set('html', current.src);
+            this.videoInfoPanel.getElement('dt.title + dd').set('html', current.title);
+            this.videoInfoPanel.getElement('dt.url + dd').set('html', current.src);
             this.title.update(current.title);
             this.title.show();
 
@@ -211,7 +215,7 @@ const Moovie = new Class({
                 }
 
                 this.controls.seekbar.buffered.setStyle('width', `${percent}%`);
-                this.panels.info.getElement('dt.size + dd').set('html', '0 MB');
+                this.videoInfoPanel.getElement('dt.size + dd').set('html', '0 MB');
             },
 
             seeking: () => {
@@ -297,41 +301,37 @@ const Moovie = new Class({
     },
 
     buildPanels: function () {
-        this.panels = new Element('div.panels');
-        this.panels.info = new Element('div.info', {
-            html: `<div class="heading">Video information</div>
-            <dl>
-                <dt class="title">Title</dt>
-                <dd>${this.playlist.current().title}</dd>
-                <dt class="url">URL</dt>
-                <dd>${this.video.src}</dd>
-                <dt class="size">Size</dt>
-                <dd></dd>
-            </dl>`
+        this.videoInfoPanel = new Element('div', {
+            class: 'moovie-panel info-panel',
+            html: `<header><h2>Video Information</h2></header>
+                <button class="close">✖</button>
+                <dl>
+                    <dt class="title">Title</dt>
+                    <dd>${this.playlist.current().title}</dd>
+                    <dt class="url">URL</dt>
+                    <dd>${this.video.src}</dd>
+                    <dt class="size">Size</dt>
+                    <dd></dd>
+                </dl>`,
+            hidden: ''
         });
 
-        this.panels.about = new Element('div.about', {
-            html: `<div class="heading">About this player</div>
+        this.aboutPanel = new Element('div', {
+            class: 'moovie-panel about-panel',
+            html: `<header><h2>About This Player</h2></header>
+            <button class="close">✖</button>
             <p><strong>Moovie</strong> v0.4.3-<em>alpha</em></p>
             <p>Copyright &copy; 2010, Colin Aarts</p>
-            <p><a href="http://colinaarts.com/code/moovie/" rel="external">http://colinaarts.com/code/moovie/</a></p>`
+            <p><a href="http://colinaarts.com/code/moovie/" rel="external">http://colinaarts.com/code/moovie/</a></p>`,
+            hidden: ''
         });
 
-        const playlist = this.playlist;
-        this.panels.update = function (which) {
-            if (which === 'none' || this[which].hasClass('active')) {
-                this.getChildren('.active').removeClass('active');
-                this.set('aria-hidden', true);
-            } else {
-                playlist.hide();
-                this.getChildren().removeClass('active');
-                this[which].addClass('active');
-                this.set('aria-hidden', false);
-            }
-        };
+        this.element.adopt(this.videoInfoPanel, this.aboutPanel);
 
-        this.panels.adopt(this.panels.info, this.panels.about);
-        this.panels.set('aria-hidden', true);
+        $$(this.videoInfoPanel, this.aboutPanel).getElement('button.close')
+            .addEvent('click', function () {
+                this.getParent('.moovie-panel').set('hidden', '');
+            });
     },
 
     buildControls: function () {
@@ -559,28 +559,26 @@ const Moovie = new Class({
     },
 
     createMoreControl: function () {
-        const playlist = this.playlist;
-        const panels = this.panels;
         const more = new Element('div.more[aria-label="Show More Popup"]');
 
         more.popup = new Element('div.popup');
         more.about = new Element('div.about[aria-label=About Moovie]');
-        more.about.addEvent('click', function () {
-            panels.update('about');
+        more.about.addEvent('click', () => {
+            this.videoInfoPanel.set('hidden', '');
+            this.playlist.hide();
+            this.aboutPanel.removeAttribute('hidden');
         });
 
         more.info = new Element('div.info[aria-label=View Video Info]');
-        more.info.addEvent('click', function () {
-            panels.update('info');
+        more.info.addEvent('click', () => {
+            this.aboutPanel.set('hidden', '');
+            this.playlist.hide();
+            this.videoInfoPanel.removeAttribute('hidden');
         });
 
-        more.playlist = new Element('div.playlist[aria-label=Open Playlist]');
-        more.playlist.addEvent('click', function () {
-            if (playlist.hidden) {
-                playlist.show();
-            } else {
-                playlist.hide();
-            }
+        more.playlist = new Element('div.playlist[aria-label=Show Playlist]');
+        more.playlist.addEvent('click', () => {
+            this.playlist.show();
         });
 
         more.popup.adopt(more.about, more.info, more.playlist);

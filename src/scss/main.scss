@@ -8,6 +8,7 @@
 @import 'component/checkbox';
 @import 'component/slider';
 @import 'component/tooltip';
+@import 'component/panel';
 
 .moovie {
     background-color: transparent;
@@ -34,9 +35,14 @@
     height: auto;
 }
 
+.moovie .about-panel {
+    background-image: url('http://colinaarts.com/assets/code/moovie/moovie.png');
+    background-position: bottom 2em right 2em;
+    background-repeat: no-repeat;
+}
+
 @import 'modules/debugger';
 @import 'modules/playlist';
 @import 'modules/overlay';
 @import 'modules/title';
-@import 'modules/panels';
 @import 'modules/controls';
