@@ -28,6 +28,10 @@
     text-indent:0;
 }
 
+.moovie button:focus {
+    outline: none;
+}
+
 .moovie video {
     background: black;
     display: block;
