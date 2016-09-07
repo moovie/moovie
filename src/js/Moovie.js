@@ -275,7 +275,7 @@ const Moovie = new Class({
     onDurationChange: function () {
         this.controls.seekbar.slider.options.max = this.video.duration;
         this.controls.duration.set('text', formatSeconds(this.video.duration));
-        this.onProgress();
+        this.startProgressTracking();
         this.fireEvent('durationchange');
     },
 
@@ -342,23 +342,29 @@ const Moovie = new Class({
         return this;
     },
 
+    startProgressTracking: function () {
+        this.stopProgressTracking();    // Remove any previous progress handlers
+        this.onProgress.id = setInterval(this.onProgress, 500);
+    },
+
+    stopProgressTracking: function () {
+        clearInterval(this.onProgress.id);
+    },
+
     onProgress: function () {
         const buffered = this.video.buffered;
         let length = buffered.length;
-        let percent = 0;
 
         while (length--) {
-            const buffer = buffered.end(length) - buffered.start(length);
+            const start = buffered.start(length) / this.video.duration * 100;
+            const end = buffered.end(length) / this.video.duration * 100;
 
-            percent = buffer / this.video.duration * 100;
-            this.controls.seekbar.buffered.setStyle('width', `${percent}%`);
+            this.controls.seekbar.buffered.setStyle('width', `${end - start}%`);
             this.fireEvent('progress');
-        }
 
-        if (percent < 100) {
-            // requestAnimationFrame() offers better performance than
-            // either setInterval() or setTimeout().
-            window.requestAnimationFrame(this.onProgress);
+            if (end - start == 100) {
+                this.stopProgressTracking();
+            }
         }
     },
 
