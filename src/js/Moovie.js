@@ -345,19 +345,20 @@ const Moovie = new Class({
     onProgress: function () {
         const buffered = this.video.buffered;
         let length = buffered.length;
+        let percent = 0;
 
         while (length--) {
             const buffer = buffered.end(length) - buffered.start(length);
-            const percent = buffer / this.video.duration * 100;
 
+            percent = buffer / this.video.duration * 100;
             this.controls.seekbar.buffered.setStyle('width', `${percent}%`);
             this.fireEvent('progress');
+        }
 
-            if (percent < 100) {
-                // requestAnimationFrame() offers better performance than
-                // either setInterval() or setTimeout().
-                window.requestAnimationFrame(this.onProgress);
-            }
+        if (percent < 100) {
+            // requestAnimationFrame() offers better performance than
+            // either setInterval() or setTimeout().
+            window.requestAnimationFrame(this.onProgress);
         }
     },
 
