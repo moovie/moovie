@@ -22,7 +22,7 @@ const HAS_TRACK_SUPPORT = 'track' in document.createElement('track');
  * @type {Class}
  */
 const Moovie = new Class({
-    Implements: [Options],
+    Implements: [Events, Options],
 
     options: {
         debugger: {},
@@ -36,32 +36,43 @@ const Moovie = new Class({
     },
 
     textTracks: [],
+    muted: false,
 
     initialize: function (video, options) {
         this.setVideo(video);
         this.setOptions(options);
 
+        this.muted = this.video.muted;
+
         this.build();
-        this.attach();
-
-        if (this.video.readyState >= this.video.HAVE_CURRENT_DATA) {
-            if (this.video.buffered.length) {
-                const buffered = this.video.buffered.end(this.video.buffered.length - 1);
-                const percent = buffered / this.video.duration * 100;
-
-                this.controls.seekbar.buffered.setStyle('width', `${percent}%`);
-            }
-
-            if (!this.video.autoplay) {
-                this.element.set('data-playbackstate', 'stopped');
-            }
-        }
+        this.bindListeners().attach();
 
         this.options.plugins.forEach((pluginName) => {
             if (typeOf(Moovie.plugins[pluginName]) === 'function') {
                 Moovie.plugins[pluginName].call(this, this.options[pluginName] || {});
             }
         });
+
+        if (this.video.readyState >= this.video.HAVE_NOTHING) {
+            this.onLoadStart();
+        }
+
+        if (this.video.readyState >= this.video.HAVE_METADATA) {
+            this.onDurationChange();
+            this.onLoadedMetaData();
+        }
+
+        if (this.video.readyState >= this.video.HAVE_CURRENT_DATA) {
+            this.onLoadedData();
+        }
+
+        if (this.video.readyState >= this.video.HAVE_FUTURE_DATA) {
+            this.onCanPlay();
+        }
+
+        if (this.video.readyState == this.video.HAVE_ENOUGH_DATA) {
+            this.onCanPlayThrough();
+        }
     },
 
     setVideo: function (video) {
@@ -126,14 +137,27 @@ const Moovie = new Class({
         return this.element;
     },
 
-    attach: function () {
-        // The media API only defines one volume-related event, "volumechange". This
-        // is fired whenever the .volume or .muted property changes. Currently, the
-        // API offers no way of discerning between the two, so we manually keep track
-        // instead. This gives a smarter way of controlling the volume, where changing
-        // the volume can effect the muted state, and vice versa.
-        let muted = this.video.muted;
+    bindListeners: function () {
+        this.onLoadStart = this.onLoadStart.bind(this);
+        this.onProgress = this.onProgress.bind(this);
+        this.onDurationChange = this.onDurationChange.bind(this);
+        this.onLoadedMetaData = this.onLoadedMetaData.bind(this);
+        this.onLoadedData = this.onLoadedData.bind(this);
+        this.onCanPlay = this.onCanPlay.bind(this);
+        this.onCanPlayThrough = this.onCanPlayThrough.bind(this);
+        this.onVolumeChange = this.onVolumeChange.bind(this);
+        this.onSeeking = this.onSeeking.bind(this);
+        this.onSeeked = this.onSeeked.bind(this);
+        this.onEnded = this.onEnded.bind(this);
+        this.pause = this.pause.bind(this);
+        this.onPlaying = this.onPlaying.bind(this);
+        this.onPause = this.onPause.bind(this);
+        this.onTimeUpdate = this.onTimeUpdate.bind(this);
 
+        return this;
+    },
+
+    attach: function () {
         this.playlist.addEvent('show', () => {
             this.videoInfoPanel.set('hidden', '');
             this.aboutPanel.set('hidden', '');
@@ -185,93 +209,156 @@ const Moovie = new Class({
         });
 
         this.video.addEvents({
-            click: () => {
-                this.video.pause();
-            },
-
-            playing: () => {
-                this.element.set('data-playbackstate', 'playing');
-            },
-
-            pause: () => {
-                this.element.set('data-playbackstate', 'paused');
-            },
-
-            ended: () => {
-                if (this.playlist.hasNext()) {
-                    this.playlist.next();
-                } else {
-                    this.element.set('data-playbackstate', 'ended');
-                }
-            },
-
-            progress: () => {
-                let percent = 0;
-
-                if (this.video.buffered.length) {
-                    const buffered = this.video.buffered.end(this.video.buffered.length - 1);
-
-                    percent = buffered / this.video.duration * 100;
-                }
-
-                this.controls.seekbar.buffered.setStyle('width', `${percent}%`);
-                this.videoInfoPanel.getElement('dt.size + dd').set('html', '0 MB');
-            },
-
-            seeking: () => {
-                this.element.set('data-playbackstate', 'seeking');
-            },
-
-            seeked: () => {
-                // @bug pressing stop button still shows "seeking" state. This get around that.
-                if (this.video.paused) {
-                    this.element.set('data-playbackstate', 'paused');
-                }
-            },
-
-            timeupdate: () => {
-                this.controls.seekbar.slider.update(this.video.currentTime);
-                this.controls.elapsed.set('text', formatSeconds(this.video.currentTime));
-            },
-
-            durationchange: () => {
-                this.controls.seekbar.slider.options.max = this.video.duration;
-                this.controls.duration.set('text', formatSeconds(this.video.duration));
-            },
-
-            volumechange: () => {
-                const video = this.video;
-                const mutedChanged = muted !== video.muted;
-
-                muted = video.muted;
-
-                // If the volume is at 0 and we try to unmute we need to provide a
-                // default volume. 50% seems like a good number...
-                if (mutedChanged && !video.muted && video.volume === 0) {
-                    video.volume = 0.5;
-
-                // Volume was changed while in the "muted" state, so un-mute as well.
-                } else if (video.muted && video.volume !== 0 && !mutedChanged) {
-                    video.muted = false;
-
-                // Volume was set to 0 (E.g. dragging slider all the way down), so lets mute.
-                } else if (!mutedChanged && !video.muted && video.volume === 0) {
-                    video.muted = true;
-                }
-
-                this.controls.volume.set('data-muted', video.muted);
-                this.controls.volume.set('data-level', video.volume.round(2));
-
-                // If muted, assume 0 for volume to visualize the muted state in
-                // the slider as well. Don't actually change the volume, though,
-                // so when un-muted, the slider simply goes back to its former value.
-                this.controls.volume.slider.update(video.muted && mutedChanged ? 0 : video.volume);
-            },
-
-            loadedmetadata: () => {
-                this.element.set('data-playbackstate', 'stopped');
-            }
+            volumechange: this.onVolumeChange,
+            seeking: this.onSeeking,
+            seeked: this.onSeeked,
+            click: this.pause,
+            playing: this.onPlaying,
+            progress: this.onProgress,
+            pause: this.onPause,
+            ended: this.onEnded,
+            loadstart: this.onLoadStart,
+            durationchange: this.onDurationChange,
+            loadedmetadata: this.onLoadedMetaData,
+            loadeddata: this.onLoadedData,
+            canplay: this.onCanPlay,
+            canplaythrough: this.onCanPlayThrough,
+            timeupdate: this.onTimeUpdate
         });
+    },
+
+    onVolumeChange: function () {
+        // The media API only defines one volume-related event, "volumechange". This
+        // is fired whenever the .volume or .muted property changes. Currently, the
+        // API offers no way of discerning between the two, so we manually keep track
+        // instead. This gives us a smarter way of controlling the volume, where
+        // changing the volume can effect the muted state, and vice versa.
+        const muteChange = this.muted !== this.video.muted;
+
+        // make sure our mute reference stays in sync
+        this.muted = this.video.muted;
+
+        // If the volume is at 0 and we try to unmute we need to provide a
+        // default volume. 50% seems like a good number...
+        if (muteChange && !this.video.muted && this.video.volume === 0) {
+            this.video.volume = 0.5;
+
+        // Volume was changed while in the "muted" state, so un-mute as well.
+        } else if (this.video.muted && this.video.volume !== 0 && !muteChange) {
+            this.video.muted = false;
+
+        // Volume was set to 0 (E.g. dragging slider all the way down), so lets mute.
+        } else if (!muteChange && !this.video.muted && this.video.volume === 0) {
+            this.video.muted = true;
+        }
+
+        this.controls.volume.set('data-muted', this.video.muted);
+        this.controls.volume.set('data-level', this.video.volume.round(2));
+
+        // If muted, assume 0 for volume to visualize the muted state in
+        // the slider as well. Don't actually change the volume, though,
+        // so when un-muted, the slider simply goes back to its former value.
+        this.controls.volume.slider.update(this.video.muted && muteChange ? 0 : this.video.volume);
+    },
+
+    setPlaybackState: function (playbackState) {
+        this.playbackState = playbackState;
+        this.element.set('data-playbackstate', playbackState);
+
+        return this;
+    },
+
+    onLoadStart: function () {
+        this.setPlaybackState('loading').fireEvent('loadstart');
+    },
+
+    onDurationChange: function () {
+        this.controls.seekbar.slider.options.max = this.video.duration;
+        this.controls.duration.set('text', formatSeconds(this.video.duration));
+        this.onProgress();
+        this.fireEvent('durationchange');
+    },
+
+    onLoadedMetaData: function () {
+        this.fireEvent('loadedmetadata');
+    },
+
+    onLoadedData: function () {
+        this.setPlaybackState('stopped').fireEvent('loadeddata');
+    },
+
+    onCanPlay: function () {
+        this.fireEvent('canplay');
+    },
+
+    onCanPlayThrough: function () {
+        this.fireEvent('canplaythrough');
+    },
+
+    onTimeUpdate: function () {
+        this.controls.seekbar.slider.update(this.video.currentTime);
+        this.controls.elapsed.set('text', formatSeconds(this.video.currentTime));
+    },
+
+    onSeeking: function () {
+        this.setPlaybackState('seeking').fireEvent('seeking');
+    },
+
+    onSeeked: function () {
+        // The video will still be in the "seeked" state if the
+        // video was paused before seeking. This fixes that.
+        if (this.video.paused) {
+            this.onPause();
+        }
+    },
+
+    onPlaying: function () {
+        this.setPlaybackState('playing').fireEvent('play');
+    },
+
+    onPause: function () {
+        this.setPlaybackState('paused').fireEvent('pause');
+    },
+
+    onEnded: function () {
+        this.setPlaybackState('ended').fireEvent('ended');
+
+        if (this.playlist.hasNext()) {
+            this.playlist.next();
+        }
+    },
+
+    play: function () {
+        if (this.readyState === this.video.HAVE_FUTURE_DATA) {
+            this.video.play();
+        }
+
+        return this;
+    },
+
+    pause: function () {
+        this.video.pause();
+
+        return this;
+    },
+
+    onProgress: function () {
+        const buffered = this.video.buffered;
+        let length = buffered.length;
+
+        while (length--) {
+            const buffer = buffered.end(length) - buffered.start(length);
+            const percent = buffer / this.video.duration * 100;
+
+            this.controls.seekbar.buffered.setStyle('width', `${percent}%`);
+            this.fireEvent('progress');
+
+            if (percent < 100) {
+                // requestAnimationFrame() offers better performance than
+                // either setInterval() or setTimeout().
+                window.requestAnimationFrame(this.onProgress);
+            }
+        }
     },
 
     buildPlaylist: function () {
@@ -311,7 +398,7 @@ const Moovie = new Class({
                     <dt class="url">URL</dt>
                     <dd>${this.video.src}</dd>
                     <dt class="size">Size</dt>
-                    <dd></dd>
+                    <dd>0 MB</dd>
                 </dl>`,
             hidden: ''
         });
@@ -404,9 +491,6 @@ const Moovie = new Class({
         this.controls.hide = function () {
             return this.set('aria-hidden', true);
         };
-
-        this.controls.elapsed.set('text', formatSeconds(this.video.currentTime || 0));
-        this.controls.duration.set('text', formatSeconds(this.video.duration || 0));
 
         // hide appropriate playlist buttons
         this.controls.previous.set('aria-disabled', !this.playlist.hasPrevious());
