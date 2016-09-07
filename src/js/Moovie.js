@@ -342,6 +342,23 @@ const Moovie = new Class({
         return this;
     },
 
+    stop: function () {
+        const src = this.video.src;
+
+        this.video.pause();
+        this.video.src = '';
+        this.video.load();
+
+        // wait for previous tasks to finish then
+        // reload source...
+        setTimeout(() => {
+            this.video.src = src;
+            this.video.load();
+        }, 0);
+
+        return this;
+    },
+
     startProgressTracking: function () {
         this.stopProgressTracking();    // Remove any previous progress handlers
         this.onProgress.id = setInterval(this.onProgress, 500);
@@ -445,8 +462,7 @@ const Moovie = new Class({
 
         this.controls.stop = new Element('div.stop[aria-label=Stop Video]');
         this.controls.stop.addEvent('click', () => {
-            this.video.currentTime = 0;
-            this.video.pause();
+            this.stop();
         });
 
         this.controls.previous = new Element('div.previous[aria-label=Previous Video]');
