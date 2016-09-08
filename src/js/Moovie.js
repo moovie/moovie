@@ -37,12 +37,14 @@ const Moovie = new Class({
 
     textTracks: [],
     muted: false,
+    loop: false,
 
     initialize: function (video, options) {
         this.setVideo(video);
         this.setOptions(options);
 
         this.muted = this.video.muted;
+        this.loop = this.video.loop;
 
         this.build();
         this.bindListeners().attach();
@@ -323,7 +325,11 @@ const Moovie = new Class({
     onEnded: function () {
         this.setPlaybackState('ended').fireEvent('ended');
 
-        if (this.playlist.hasNext()) {
+        if (this.loop) {
+            this.loop = false;
+            this.controls.settings.getElement('#loop-video').checked = false;
+            this.video.play();
+        } else if (this.playlist.hasNext()) {
             this.playlist.next();
         }
     },
@@ -622,7 +628,7 @@ const Moovie = new Class({
     createSettingsControl: function () {
         const settings = new Element('div.settings[aria-label="View Settings"]');
         const autohideControls = this.options.controls.autohide ? '[checked]' : '';
-        //const loopVideo = this.video.loop ? '[checked]' : '';
+        const loopVideo = this.loop ? '[checked]' : '';
         const renderTracks = this.renderer.disabled ? '' : '[checked]';
         const showDebugger = this.debugger.disabled ? '' : '[checked]';
 
@@ -630,8 +636,8 @@ const Moovie = new Class({
         settings.popup.adopt(
             new Element(`input[type=checkbox].moovie-checkbox#autohide-controls${autohideControls}`),
             new Element('label.moovie-label[for="autohide-controls"][text=Autohide Controls]'),
-            //new Element(`input[type=checkbox].moovie-checkbox#loop-video${loopVideo}`),
-            //new Element('label.moovie-label[for="loop-video"][text=Loop Video]'),
+            new Element(`input[type=checkbox].moovie-checkbox#loop-video${loopVideo}`),
+            new Element('label.moovie-label[for="loop-video"][text=Loop Video]'),
             new Element(`input[type=checkbox].moovie-checkbox#render-tracks${renderTracks}`),
             new Element('label.moovie-label[for="render-tracks"][text=Render Text Tracks]'),
             new Element(`input[type=checkbox].moovie-checkbox#show-debugger${showDebugger}`),
@@ -644,9 +650,9 @@ const Moovie = new Class({
                     this.options.controls.autohide = event.target.checked;
                     return;
 
-                //case 'loop-video':
-                    //this.video.loop = event.target.checked;
-                    //return;
+                case 'loop-video':
+                    this.loop = event.target.checked;
+                    return;
 
                 case 'render-tracks':
                     this.renderer[event.target.checked ? 'enable' : 'disable']();
