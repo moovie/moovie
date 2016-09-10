@@ -11,14 +11,16 @@
 const Tooltip = new Class({
     Implements: [Events, Options],
 
-    options: {/*
-        onShow: function () {},
-        onHide: function () {},*/
+    /**
+     * options.onShow = function () {}
+     * options.onHide = function () {}
+     * options.axis = 'none' || 'x' || 'y' || 'both'
+     */
+    options: {
         hidden: true,
         disabled: false,
-        axis: 'both',   // 'none', x', 'y', 'both'
+        axis: 'both',
         content: function (element) {
-            // condition
             return element.get('aria-label');
         }
     },
