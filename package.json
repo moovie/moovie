@@ -20,7 +20,7 @@
     "browserify": "^13.1.0",
     "browserify-istanbul": "^2.0.0",
     "emune": "^1.0.0",
-    "eslint": "^3.3.1",
+    "eslint": "3.4.0",
     "eslint-plugin-mootools": "^1.1.0",
     "expectations": "^0.6.0",
     "isparta": "^4.0.0",
