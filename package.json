@@ -2,18 +2,16 @@
   "name": "moovie",
   "version": "0.4.6",
   "description": "An advanced HTML5 video player for MooTools.",
-  "main": "lib/index.js",
+  "main": "dist/moovie.js",
   "browser": "dist/moovie.js",
   "files": [
     "bower_components/mootools/dist/mootools-core.js",
     "bower_components/mootools/dist/mootools-core.min.js",
     "dist",
-    "lib",
     "bower.json"
   ],
   "devDependencies": {
     "autoprefixer": "^6.4.0",
-    "babel-cli": "^6.11.4",
     "babel-preset-es2015": "^6.13.2",
     "babelify": "^7.3.0",
     "bower": "^1.7.9",
@@ -53,7 +51,7 @@
     "vtt.js": "^0.12.1"
   },
   "scripts": {
-    "clean": "rimraf dist lib && mkdirp dist lib",
+    "clean": "rimraf dist && mkdirp dist",
     "postinstall": "bower install",
     "lint": "eslint **/*.js --color",
     "lint:fix": "eslint **/*.js --fix --color",
@@ -62,9 +60,9 @@
     "posttest": "echo generating test coverage...",
     "compile": "node-sass src/scss/main.scss dist/moovie.css --output-style=expanded --linefeed=lf",
     "postcompile": "postcss --use autoprefixer -r dist/moovie.css",
-    "build": "npm-run-all clean build:* minify",
-    "build:bower": "browserify src/js/index.js -s Moovie -o dist/moovie.js && npm run compile",
-    "build:npm": "babel src/js -d lib",
+    "prebuild": "npm run clean",
+    "build": "browserify src/js/index.js -s Moovie -o dist/moovie.js && npm run compile",
+    "postbuild": "npm run minify",
     "prepublish": "npm run build",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
     "watch": "npm-run-all -p watch:*",
