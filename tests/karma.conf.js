@@ -1,4 +1,7 @@
 /* eslint-env node */
+const browserifyIstanbul = require('browserify-istanbul');
+const isparta = require('isparta');
+
 module.exports = function (config) {
     config.set({
         // base path that will be used to resolve all patterns (eg. files, exclude)
@@ -19,9 +22,7 @@ module.exports = function (config) {
 
         // preprocess matching files before serving them to the browser
         // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
-        preprocessors: {
-            'tests/**/*.js': ['browserify']
-        },
+        preprocessors: { 'tests/**/*.js': ['browserify']},
 
         // test results reporter to use
         // possible values: 'dots', 'progress'
@@ -35,7 +36,11 @@ module.exports = function (config) {
         colors: true,
 
         // level of logging
-        // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
+        // possible values: config.LOG_DISABLE
+        //                  config.LOG_ERROR
+        //                  config.LOG_WARN
+        //                  config.LOG_INFO
+        //                  config.LOG_DEBUG
         logLevel: config.LOG_INFO,
 
         // enable / disable watching file and executing tests whenever any file changes
@@ -52,16 +57,6 @@ module.exports = function (config) {
         // Concurrency level
         // how many browser should be started simultaneous
         concurrency: Infinity,
-
-        client: {
-            mocha: {
-                // I'm using Jasmine-style matchers here.
-                // I don't mind chaining, but I think at a certain
-                // point it becomes a bit too much (looking at you Chai).
-                require: [require.resolve('expectations')],
-                ui: 'bdd'
-            }
-        },
 
         detectBrowsers: {
             // phantomjs does not support the <video> element
@@ -84,11 +79,9 @@ module.exports = function (config) {
         browserify: {
             debug: true,
             transform: [
-                require('browserify-istanbul')({
-                    instrumenter: require('isparta'),
-                    instrumenterConfig: {
-                        embedSource: true
-                    }
+                browserifyIstanbul({
+                    instrumenter: isparta,
+                    instrumenterConfig: { embedSource: true }
                 })
             ]
         },
