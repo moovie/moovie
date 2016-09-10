@@ -8,16 +8,23 @@ import TextTrackMode from './TextTrackMode.js';
 
 /**
  * Provides a basic implementation of the W3C TextTrack IDL.
+ * @param {TextTrackKind} kind The type of text track being created.
+ * @param {string} label A label to be displayed by the User-Agent for the track.
+ * @param {string} language A BCP-47 language string.
+ * @param {Element} media A HTML `<video>` element.
  */
 const TextTrack = function TextTrack(kind, label, language, media) {
     const cues = [];
     const activeCues = [];
     let mode = TextTrackMode.disabled;
 
+    // missing value default
     if (!kind) {
-        kind = 'subtitles'; // missing value default
+        kind = 'subtitles';
+
+    // invalid value default
     } else if (!(kind in TextTrackKind)) {
-        kind = 'metadata';  // invalid value default
+        kind = 'metadata';
     }
 
     if (!language) {
@@ -74,17 +81,9 @@ const TextTrack = function TextTrack(kind, label, language, media) {
             }
         },
 
-        id: {
-            get: function () {
-                return '';
-            }
-        },
+        id: { get: Function.from('') },
 
-        inBandMetadataTrackDispatchType: {
-            get: function () {
-                return '';
-            }
-        },
+        inBandMetadataTrackDispatchType: { get: Function.from('') },
 
         mode: {
             get: function () {
@@ -122,9 +121,7 @@ const TextTrack = function TextTrack(kind, label, language, media) {
             }
         },
 
-        oncuechange: {
-            value: Function.from()
-        }
+        oncuechange: { value: Function.from() }
     });
 };
 
