@@ -4,7 +4,8 @@
  * @license MIT
  */
 import 'fullscreen-api-polyfill';
-import MediaEvents from './core/MediaEvents.js';   // eslint-disable-line
+import './core/MediaEvents.js';
+import { formatSeconds, getAttributes } from './Utility.js';
 import Loader from './track/Loader.js';
 import TextTrack from './track/TextTrack.js';
 import Renderer from './track/Renderer.js';
@@ -13,7 +14,6 @@ import Title from './Title.js';
 import Playlist from './Playlist.js';
 import Slider from './component/Slider.js';
 import Tooltip from './component/Tooltip.js';
-import { formatSeconds, getAttributes } from './Utility.js';
 
 const HAS_TRACK_SUPPORT = 'track' in document.createElement('track');
 
@@ -72,7 +72,7 @@ const Moovie = new Class({
             this.onCanPlay();
         }
 
-        if (this.video.readyState == this.video.HAVE_ENOUGH_DATA) {
+        if (this.video.readyState === this.video.HAVE_ENOUGH_DATA) {
             this.onCanPlayThrough();
         }
     },
@@ -355,8 +355,7 @@ const Moovie = new Class({
         this.video.src = '';
         this.video.load();
 
-        // wait for previous tasks to finish then
-        // reload source...
+        // wait for previous tasks to finish then reload source...
         setTimeout(() => {
             this.video.src = src;
             this.video.load();
@@ -366,7 +365,7 @@ const Moovie = new Class({
     },
 
     startProgressTracking: function () {
-        this.stopProgressTracking();    // Remove any previous progress handlers
+        this.stopProgressTracking();
         this.onProgress.id = setInterval(this.onProgress, 500);
     },
 
@@ -385,7 +384,7 @@ const Moovie = new Class({
             this.controls.seekbar.buffered.setStyle('width', `${end - start}%`);
             this.fireEvent('progress');
 
-            if (end - start == 100) {
+            if (end - start === 100) {
                 this.stopProgressTracking();
             }
         }
@@ -399,7 +398,7 @@ const Moovie = new Class({
             const trackObject = getAttributes(trackElement);
 
             this.loadTextTrack(trackObject);
-            trackElement.removeAttribute('default'); // just to be safe
+            trackElement.removeAttribute('default');
             trackElement.destroy();
 
             return trackObject;
@@ -511,7 +510,8 @@ const Moovie = new Class({
             this.controls.tooltip
         );
 
-        this.video.controls = false; // disable native controls
+        // disable native controls
+        this.video.controls = false;
 
         this.controls.show = function () {
             return this.set('aria-hidden', false);
@@ -552,7 +552,7 @@ const Moovie = new Class({
         });
 
         seekbar.tooltip = new Tooltip(seekbar.slider);
-        seekbar.tooltip.detach();   // we don't want to use the disable() method here
+        seekbar.tooltip.detach();
 
         $(seekbar.slider).addEvents({
             mousemove: function (event) {
@@ -648,21 +648,21 @@ const Moovie = new Class({
             switch (event.target.id) {
                 case 'autohide-controls':
                     this.options.controls.autohide = event.target.checked;
-                    return;
+                    return; // eslint-disable-line newline-before-return
 
                 case 'loop-video':
                     this.loop = event.target.checked;
-                    return;
+                    return; // eslint-disable-line newline-before-return
 
                 case 'render-tracks':
                     this.renderer[event.target.checked ? 'enable' : 'disable']();
-                    return;
+                    return; // eslint-disable-line newline-before-return
 
                 case 'show-debugger':
                     this.debugger[event.target.checked ? 'enable' : 'disable']();
-                    return;
+                    return; // eslint-disable-line newline-before-return
 
-                // No Default
+                // no default
             }
         });
 
