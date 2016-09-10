@@ -19,7 +19,6 @@ const Loader = new Class({
     },
 
     sendRequest: function () {
-        // @todo sort out crossorigin attribute/property as well...
         const request = new Request({
             url: this.url,
 
