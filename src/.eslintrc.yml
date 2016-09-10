@@ -1,0 +1,6 @@
+plugins:
+  - mootools
+
+env:
+  browser: true
+  mootools/core: true

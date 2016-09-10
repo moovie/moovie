@@ -1,0 +1,12 @@
+plugins:
+  - mootools
+
+env:
+  browser: true
+  mocha: true
+  mootools/core: true
+
+rules:
+  max-nested-callbacks:
+    - error
+    - 4

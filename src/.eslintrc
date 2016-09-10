@@ -1,8 +1,0 @@
-{
-    "plugins": ["mootools"],
-    "env": {
-        "mootools/core": true,
-        "mootools/more": true,
-        "browser": true
-    }
-}
