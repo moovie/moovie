@@ -11,9 +11,11 @@
 const Title = new Class({
     Implements: [Events, Options],
 
-    options: {/*
-        onShow: function () {},
-        onHide: function () {},*/
+    /**
+     * options.onShow = function () {}
+     * options.onHide = function () {}
+     */
+    options: {
         autohide: true,
         delay: 6000,
         hidden: true,
