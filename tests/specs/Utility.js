@@ -1,3 +1,4 @@
+import expect from 'expectations';
 import { basename, formatSeconds, getAttributes } from '../../src/js/Utility.js';
 
 describe('Utility', function () {

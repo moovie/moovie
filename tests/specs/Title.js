@@ -1,3 +1,4 @@
+import expect from 'expectations';
 import sinon from 'sinon';
 import Title from '../../src/js/Title.js';
 

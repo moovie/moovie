@@ -1,3 +1,4 @@
+import expect from 'expectations';
 import Debugger from '../../src/js/Debugger.js';
 
 describe('Debugger', function () {

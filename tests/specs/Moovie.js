@@ -1,3 +1,4 @@
+import expect from 'expectations';
 import Moovie from '../../src/js/Moovie.js';
 
 describe('Moovie', function () {

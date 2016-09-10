@@ -1,3 +1,4 @@
+import expect from 'expectations';
 import { WebSRT, SRTCue } from '../../../src/js/track/WebSRT.js';
 
 describe('WebSRT', function () {

@@ -1,3 +1,4 @@
+import expect from 'expectations';
 import MediaEvents from '../../../src/js/core/MediaEvents.js';
 
 describe('MediaEvents', function () {

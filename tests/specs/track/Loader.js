@@ -1,3 +1,4 @@
+import expect from 'expectations';
 import Loader from '../../../src/js/track/Loader.js';
 
 describe('Loader', function () {

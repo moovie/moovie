@@ -1,3 +1,4 @@
+import expect from 'expectations';
 import TextTrackMode from '../../../src/js/track/TextTrackMode.js';
 
 describe('TextTrackMode', function () {

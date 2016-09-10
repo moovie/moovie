@@ -1,3 +1,4 @@
+import expect from 'expectations';
 import TextTrackKind from '../../../src/js/track/TextTrackKind.js';
 
 describe('TextTrackKind', function () {
