@@ -17,7 +17,6 @@
     "bower": "^1.7.9",
     "browserify": "^13.1.0",
     "browserify-istanbul": "^2.0.0",
-    "emune": "^1.0.0",
     "eslint": "3.4.0",
     "eslint-plugin-mootools": "^1.1.0",
     "expectations": "^0.6.0",
@@ -47,6 +46,7 @@
     "watchify": "^3.7.0"
   },
   "dependencies": {
+    "emune": "^1.0.0",
     "fullscreen-api-polyfill": "^1.1.2",
     "vtt.js": "^0.12.1"
   },
