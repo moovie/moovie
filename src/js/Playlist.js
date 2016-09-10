@@ -7,16 +7,21 @@ import { basename } from './Utility.js';
 
 /**
  * Manages lists of videos inside of Moovie.
+ *
+ * @todo This class seriously violates SRP and needs to be
+ *       refactored into a `Playlist` and a `PlaylistViewer`
+ *       class. Or something to that effect, anyway.
  * @type {Class}
  */
 const Playlist = new Class({
     Implements: [Events, Options],
 
-    options: {/*
-        onShow: function () {},
-        onHide: function () {},
-        onSelect: function () {},*/
-    },
+    /**
+     * options.onShow = function () {}
+     * options.onHide = function () {}
+     * options.onSelect = function (current) {}
+     */
+    options: {},
 
     /**
      * Creates a new `Playlist` instance.
@@ -329,11 +334,11 @@ const Playlist = new Class({
         this.previousButton.set('disabled', false);
         this.nextButton.set('disabled', false);
 
-        if (this.displayIndex == 0) {
+        if (this.displayIndex === 0) {
             this.previousButton.set('disabled', true);
         }
 
-        if (this.displayIndex == this.items.length - 1) {
+        if (this.displayIndex === this.items.length - 1) {
             this.nextButton.set('disabled', true);
         }
     }
