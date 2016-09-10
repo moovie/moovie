@@ -12,12 +12,14 @@ import { isInDOM } from '../Utility.js';
 const Slider = new Class({
     Implements: [Events, Options],
 
-    options: {/*
-        onStart: function (val, pos) {},
-        onMove: function (val, pos) {},
-        onStop: function (val, pos) {},
-        onChange: function (val) {},
-        onUpdate: function (pos) {},*/
+    /**
+     * options.onStart = function (val, pos) {}
+     * options.onMove = function (val, pos) {}
+     * options.onStop = function (val, pos) {}
+     * options.onChange: function (val) {}
+     * options.onUpdate: function (pos) {}
+     */
+    options: {
         value: 0,
         min: 0,
         max: 100,
@@ -169,7 +171,7 @@ const Slider = new Class({
         const newRange = newMax - newMin;
         const ratio = newRange / oldRange;
 
-        return value * ratio + newMin;
+        return (value * ratio) + newMin;
     },
 
     /**
