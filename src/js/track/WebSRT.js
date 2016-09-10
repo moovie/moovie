@@ -65,10 +65,10 @@ WebSRT.Parser = new Class({
             );
 
             cueobj.id = cueid;
-            this.oncue.call(this, cueobj);
+            this.oncue(cueobj);
         });
 
-        this.onflush.call(this);
+        this.onflush();
     }
 });
 
