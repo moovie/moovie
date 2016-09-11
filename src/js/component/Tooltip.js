@@ -57,7 +57,6 @@ const Tooltip = new Class({
     build: function () {
         this.element = new Element('div', {
             'class': 'moovie-tooltip',
-            'aria-hidden': this.options.hidden,
             'aria-disabled': this.options.disabled,
             'role': 'tooltip'
         });
@@ -117,7 +116,7 @@ const Tooltip = new Class({
      */
     show: function () {
         this.hidden = false;
-        this.element.set('aria-hidden', false);
+        this.element.removeAttribute('hidden');
         this.fireEvent('show');
 
         return this;
@@ -129,7 +128,7 @@ const Tooltip = new Class({
      */
     hide: function () {
         this.hidden = true;
-        this.element.set('aria-hidden', true);
+        this.element.set('hidden', '');
         this.fireEvent('hide');
 
         return this;

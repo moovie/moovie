@@ -7,19 +7,18 @@
     margin-left: 16px;
     margin-top: 16px;
     max-width: 200px;
-    opacity: 0;
     padding: 2px 5px;
     position: absolute;
     text-align: center;
-    visibility: hidden;
     white-space: nowrap;
-}
+    z-index: 99;
 
-.moovie-tooltip[aria-hidden="false"] {
-    opacity: 1;
-    visibility: visible;
-}
+    &[hidden] {
+        opacity: 0;
+        visibility: hidden;
+    }
 
-.moovie-tooltip[aria-disabled="true"] {
-    display: none;
+    &[aria-disabled="true"] {
+        display: none;
+    }
 }
