@@ -434,7 +434,7 @@ const Moovie = new Class({
         this.controls = new Element('div.controls');
         this.controls.tooltip = new Tooltip(this.controls);
 
-        this.controls.play = new Element('div.play[aria-label=Play Video]');
+        this.controls.play = new Element('button.play[aria-label=Play Video]');
         this.controls.play.addEvent('click', () => {
             if (this.video.paused && this.video.readyState >= 3) {
                 this.video.play();
@@ -445,17 +445,17 @@ const Moovie = new Class({
             }
         });
 
-        this.controls.stop = new Element('div.stop[aria-label=Stop Video]');
+        this.controls.stop = new Element('button.stop[aria-label=Stop Video]');
         this.controls.stop.addEvent('click', () => {
             this.stop();
         });
 
-        this.controls.previous = new Element('div.previous[aria-label=Previous Video]');
+        this.controls.previous = new Element('button.previous[aria-label=Previous Video]');
         this.controls.previous.addEvent('click', () => {
             this.playlist.previous();
         });
 
-        this.controls.next = new Element('div.next[aria-label=Next Video]');
+        this.controls.next = new Element('button.next[aria-label=Next Video]');
         this.controls.next.addEvent('click', () => {
             this.playlist.next();
         });
@@ -466,7 +466,7 @@ const Moovie = new Class({
         this.controls.volume = this.createVolumeControl();
         this.controls.settings = this.createSettingsControl();
         this.controls.more = this.createMoreControl();
-        this.controls.fullscreen = new Element('div.fullscreen[aria-label=Enter Fullscreen]');
+        this.controls.fullscreen = new Element('button.fullscreen[aria-label=Enter Fullscreen]');
         this.controls.fullscreen.addEvent('click', () => {
             if (document.fullscreenElement) {
                 document.exitFullscreen();
@@ -577,7 +577,7 @@ const Moovie = new Class({
 
     createVolumeControl: function () {
         const video = this.video;
-        const volume = new Element('div.volume[aria-label=Mute Audio]');
+        const volume = new Element('div.volume[role=button][aria-label=Mute Audio]');
 
         volume.addEvent('click', function () {
             video.muted = !video.muted;
@@ -606,7 +606,7 @@ const Moovie = new Class({
     },
 
     createSettingsControl: function () {
-        const settings = new Element('div.settings[aria-label="View Settings"]');
+        const settings = new Element('div.settings[role=button][aria-label="View Settings"]');
         const autohideControls = this.options.controls.autohide ? '[checked]' : '';
         const loopVideo = this.loop ? '[checked]' : '';
         const renderTracks = this.renderer.disabled ? '' : '[checked]';
@@ -652,7 +652,7 @@ const Moovie = new Class({
     },
 
     createMoreControl: function () {
-        const more = new Element('div.more[aria-label="Show More Popup"]');
+        const more = new Element('div.more[role=button][aria-label="Show More Popup"]');
 
         more.popup = new Element('div.popup');
         more.about = new Element('div.about[aria-label=About Moovie]');

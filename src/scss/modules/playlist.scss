@@ -62,17 +62,8 @@
 
 // "Play Video" button
 .playlist-panel > ol li button {
-    appearance: none;
     background-color: rgb(196, 82, 5);
-    border: medium none;
     border-radius: 4px;
-    color: rgb(255, 255, 255);
-    cursor: pointer;
-    font-family: "Helvetica Neue",Arial,Helvetica,sans-serif;
-    font-size: 1.1em;
-    font-style: normal;
-    font-weight: 600;
-    line-height: 1;
     margin-right: 1em;
     padding: 0.5em;
 
@@ -96,17 +87,10 @@
 // show previous/next pane buttons
 .playlist-panel > .previous,
 .playlist-panel > .next {
-    appearance: none;
     background: none;
-    border: none;
-    box-sizing: border-box;
-    color: white;
-    cursor: pointer;
     font-size: 4em;
     height: 1em;
-    line-height: 1;
     position: absolute;
-    text-align: center;
     text-shadow: 0 1px 0 #fff;
     top: 50%;
     transform: translateY(-50%);
@@ -114,10 +98,6 @@
 
     &:hover {
         text-shadow: 0 1px 15px #fff;
-    }
-
-    &[disabled] {
-        display: none;
     }
 }
 
