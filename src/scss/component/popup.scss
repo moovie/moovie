@@ -1,13 +1,26 @@
-%popup {
+.moovie-popup {
+    position: relative;
+}
+
+.moovie-popup .popup-target {
+    height: 100%;
+    width: 100%;
+}
+
+.moovie-popup .popup-content {
     background-color: rgba(0, 0, 0, 0.8);
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 4px;
     bottom: 100%;
-    color: #FFFFFF;
     margin: 0 0 -5px 2px;
     opacity: 0;
     position: absolute;
     transition: all 0.2s ease;
     visibility: hidden;
     z-index: 98;
+}
+
+.moovie-popup:hover .popup-content {
+    opacity: 1;
+    visibility: visible;
 }

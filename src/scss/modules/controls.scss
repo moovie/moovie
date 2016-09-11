@@ -1,4 +1,3 @@
-@import '../components/_popup';
 @import '../components/_time-display';
 
 .moovie .controls {
@@ -20,7 +19,7 @@
 }
 
 .moovie .controls > button,
-.moovie .controls > [role="button"] {
+.moovie .controls > .moovie-popup > button {
     background-position: 50% 50%;
     background-repeat: no-repeat;
     flex: 0 0 auto;
@@ -96,91 +95,62 @@
     padding: 0 0.5em 0 1em;
 }
 
-.moovie .controls .volume {
+.moovie .controls .volume-control button {
     background-image: url("http://colinaarts.com/assets/player-volume.png");
 }
 
-.moovie .controls .volume[data-muted="true"] {
+.moovie .controls .volume-control[data-muted="true"] button {
     background-image: url("http://colinaarts.com/assets/player-muted.png");
 }
 
-.moovie .controls .volume .popup {
-    @extend %popup;
+.moovie .controls .volume-control .popup-content {
     padding: 13px 0;
 }
 
-.moovie .controls .volume:hover .popup {
-    opacity: 1;
-    visibility: visible;
-}
-
-.moovie .controls .settings {
+.moovie .controls .settings-control > button {
     background-image: url("http://colinaarts.com/assets/player-settings.png");
 }
 
-.moovie .controls .settings .popup {
-    background-color: rgba(0, 0, 0, 0.8);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 4px;
-    bottom: 100%;
-    color: #FFFFFF;
-    margin: 0 0 -5px 2px;
-    opacity: 0;
+.moovie .controls .settings-control .popup-content {
     padding-top: 4px;
-    position: absolute;
-    transition: all 0.2s ease;
-    visibility: hidden;
-    z-index: 98;
 }
 
-.moovie .controls .settings:hover .popup {
-    opacity: 1;
-    visibility: visible;
-}
-
-.moovie .controls .settings .moovie-checkbox + .moovie-label {
+.moovie .controls .settings-control .moovie-checkbox + .moovie-label {
     padding: 3px 8px;
     white-space: nowrap;
     width: 100%;
 }
 
-.moovie .controls .settings .moovie-checkbox + .moovie-label:hover {
+.moovie .controls .settings-control .moovie-checkbox + .moovie-label:hover {
     background-color: #994004;
 }
 
-.moovie .controls .more {
+.moovie .controls .more-control > button {
     background-image: url("http://colinaarts.com/assets/player-more.png");
 }
 
-.moovie .controls .more .popup {
-    @extend %popup;
-    padding: 0 7px;
+.moovie .controls .more-control .popup-content {
+    padding: 10px 7px;
 }
 
-.moovie .controls .more:hover .popup {
-    opacity: 1;
-    visibility: visible;
+.moovie .controls .more-control .popup-content button {
+    display: block;
+    height: 13px;
+    width: 13px;
 }
 
-.moovie .controls .more .popup .about {
+.moovie .controls .more-control .about {
     background-image: url("http://colinaarts.com/assets/player-about.png");
-    width: 13px;
-    height: 13px;
-    margin: 10px 0;
+    margin-bottom: 10px;
 }
 
-.moovie .controls .more .popup .info {
+.moovie .controls .more-control .info {
     background-image: url("http://colinaarts.com/assets/player-info.png");
-    width: 13px;
-    height: 13px;
-    margin: 10px 0;
+    margin-bottom: 10px;
 }
 
-.moovie .controls .more .popup .playlist {
+.moovie .controls .more-control .playlist {
     background-image: url("http://colinaarts.com/assets/player-playlist.png");
-    width: 13px;
-    height: 13px;
-    margin: 10px 0;
 }
 
 .moovie .controls .fullscreen {

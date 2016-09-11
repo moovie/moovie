@@ -576,55 +576,40 @@ const Moovie = new Class({
     },
 
     createVolumeControl: function () {
-        const video = this.video;
-        const volume = new Element('div.volume[role=button][aria-label=Mute Audio]');
+        const popup = new Element('div.moovie-popup.volume-control');
+        const button = new Element('button.popup-target[aria-label=Mute Audio]');
+        const content = new Element('div.popup-content');
 
-        volume.addEvent('click', function () {
-            video.muted = !video.muted;
+        button.addEvent('click', () => {
+            this.video.muted = !this.video.muted;
         });
 
-        volume.popup = new Element('div.popup');
-        volume.popup.addEvent('click', function () {
-            // stop child elements from triggering the mute when clicked
-            return false;
-        });
-
-        volume.slider = new Slider({
+        popup.slider = new Slider({
             min: 0,
             max: 1,
-            value: video.volume,
+            value: this.video.volume,
             orientation: 'vertical',
-            onMove: function (val) {
-                video.volume = val;
+            onMove: (val) => {
+                this.video.volume = val;
             }
         });
 
-        volume.popup.grab(volume.slider);
-        volume.grab(volume.popup);
+        content.grab(popup.slider);
+        popup.adopt(button, content);
 
-        return volume;
+        return popup;
     },
 
     createSettingsControl: function () {
-        const settings = new Element('div.settings[role=button][aria-label="View Settings"]');
+        const popup = new Element('div.moovie-popup.settings-control');
+        const button = new Element('button.popup-target[aria-label=View Settings]');
+        const content = new Element('div.popup-content');
         const autohideControls = this.options.controls.autohide ? '[checked]' : '';
         const loopVideo = this.loop ? '[checked]' : '';
         const renderTracks = this.renderer.disabled ? '' : '[checked]';
         const showDebugger = this.debugger.disabled ? '' : '[checked]';
 
-        settings.popup = new Element('div.popup');
-        settings.popup.adopt(
-            new Element(`input[type=checkbox].moovie-checkbox#autohide-controls${autohideControls}`),
-            new Element('label.moovie-label[for="autohide-controls"][text=Autohide Controls]'),
-            new Element(`input[type=checkbox].moovie-checkbox#loop-video${loopVideo}`),
-            new Element('label.moovie-label[for="loop-video"][text=Loop Video]'),
-            new Element(`input[type=checkbox].moovie-checkbox#render-tracks${renderTracks}`),
-            new Element('label.moovie-label[for="render-tracks"][text=Render Text Tracks]'),
-            new Element(`input[type=checkbox].moovie-checkbox#show-debugger${showDebugger}`),
-            new Element('label.moovie-label[for="show-debugger"][text=Show Debugger]')
-        );
-
-        settings.addEvent('click:relay(.moovie-checkbox)', (event) => {
+        popup.addEvent('click:relay(.moovie-checkbox)', (event) => {
             switch (event.target.id) {
                 case 'autohide-controls':
                     this.options.controls.autohide = event.target.checked;
@@ -646,30 +631,43 @@ const Moovie = new Class({
             }
         });
 
-        settings.grab(settings.popup);
+        content.adopt(
+            new Element(`input[type=checkbox].moovie-checkbox#autohide-controls${autohideControls}`),
+            new Element('label.moovie-label[for="autohide-controls"][text=Autohide Controls]'),
+            new Element(`input[type=checkbox].moovie-checkbox#loop-video${loopVideo}`),
+            new Element('label.moovie-label[for="loop-video"][text=Loop Video]'),
+            new Element(`input[type=checkbox].moovie-checkbox#render-tracks${renderTracks}`),
+            new Element('label.moovie-label[for="render-tracks"][text=Render Text Tracks]'),
+            new Element(`input[type=checkbox].moovie-checkbox#show-debugger${showDebugger}`),
+            new Element('label.moovie-label[for="show-debugger"][text=Show Debugger]')
+        );
 
-        return settings;
+        popup.adopt(button, content);
+
+        return popup;
     },
 
     createMoreControl: function () {
-        const more = new Element('div.more[role=button][aria-label="Show More Popup"]');
+        const popup = new Element('div.moovie-popup.more-control');
+        const button = new Element('button.popup-target[aria-label=Show More Popup]');
+        const content = new Element('div.popup-content');
 
-        more.popup = new Element('div.popup');
-        more.about = new Element('div.about[aria-label=About Moovie]');
-        more.about.addEvent('click', () => {
+        popup.about = new Element('button.about[aria-label=About Moovie]');
+        popup.about.addEvent('click', () => {
             this.playlist.hide();
             this.aboutPanel.removeAttribute('hidden');
         });
 
-        more.playlist = new Element('div.playlist[aria-label=Show Playlist]');
-        more.playlist.addEvent('click', () => {
+        popup.playlist = new Element('button.playlist[aria-label=Show Playlist]');
+        popup.playlist.addEvent('click', () => {
             this.playlist.show();
         });
 
-        more.popup.adopt(more.about, more.playlist);
-        more.grab(more.popup);
+        content.adopt(popup.about, popup.playlist);
+        popup.adopt(button, content);
 
-        return more;
+        return popup;
+
     }
 });
 
