@@ -85,7 +85,6 @@
     background-color: rgba(0, 255, 0,0.3);
     border-radius: 3px;
     box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.3) inset;
-    box-sizing: border-box;
     height: 3px;
     position: absolute;
     top: 14.7px;
@@ -132,7 +131,6 @@
     transition: all 0.2s ease;
     visibility: hidden;
     z-index: 98;
-    box-sizing: border-box;
 }
 
 .moovie .controls .settings:hover .popup {
@@ -141,7 +139,6 @@
 }
 
 .moovie .controls .settings .moovie-checkbox + .moovie-label {
-    box-sizing: border-box;
     padding: 3px 8px;
     white-space: nowrap;
     width: 100%;

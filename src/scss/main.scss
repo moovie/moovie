@@ -23,6 +23,12 @@
     position: relative;
 }
 
+.moovie *,
+.moovie *::before,
+.moovie *::after {
+    box-sizing: border-box;
+}
+
 .moovie h1 {
     margin: 1.4em 0 0;
     font-family: GaramondItalic, 'Palatino Linotype', 'Lucida Sans Unicode', Arial, Helvetica, sans-serif;
