@@ -94,18 +94,6 @@
     }
 }
 
-.moovie .info-panel > dl {
-    margin: 1.5em 0;
-}
-
-.moovie .info-panel > dl > dt {
-    font-weight: bold;
-}
-
-.moovie .info-panel > dl > dd {
-    margin: 0 0 0 1.5em;
-}
-
 :fullscreen:not(:root) {
     position: fixed !important;
     top: 0 !important;

@@ -117,7 +117,7 @@ const Moovie = new Class({
         this.title.update(current.title);
         this.debugger = new Debugger(this.video, this.options.debugger);
 
-        this.buildPanels();
+        this.buildAboutPanel();
         this.buildControls();
 
         this.element.adopt(
@@ -125,7 +125,6 @@ const Moovie = new Class({
             this.overlay,
             this.title,
             this.playlist,
-            this.videoInfoPanel,
             this.aboutPanel,
             this.controls,
             this.debugger
@@ -161,7 +160,6 @@ const Moovie = new Class({
 
     attach: function () {
         this.playlist.addEvent('show', () => {
-            this.videoInfoPanel.set('hidden', '');
             this.aboutPanel.set('hidden', '');
             this.playlist.displayItem(this.playlist.index);
         });
@@ -174,8 +172,6 @@ const Moovie = new Class({
             }).empty();
 
             this.playlist.fireEvent('queuechange');
-            this.videoInfoPanel.getElement('dt.title + dd').set('html', current.title);
-            this.videoInfoPanel.getElement('dt.url + dd').set('html', current.src);
             this.title.update(current.title);
             this.title.show();
 
@@ -416,22 +412,7 @@ const Moovie = new Class({
         this.playlist = new Playlist(items);
     },
 
-    buildPanels: function () {
-        this.videoInfoPanel = new Element('div', {
-            class: 'moovie-panel info-panel',
-            html: `<header><h2>Video Information</h2></header>
-                <button class="close">✖</button>
-                <dl>
-                    <dt class="title">Title</dt>
-                    <dd>${this.playlist.current().title}</dd>
-                    <dt class="url">URL</dt>
-                    <dd>${this.video.src}</dd>
-                    <dt class="size">Size</dt>
-                    <dd>0 MB</dd>
-                </dl>`,
-            hidden: ''
-        });
-
+    buildAboutPanel: function () {
         this.aboutPanel = new Element('div', {
             class: 'moovie-panel about-panel',
             html: `<header><h2>About This Player</h2></header>
@@ -442,9 +423,8 @@ const Moovie = new Class({
             hidden: ''
         });
 
-        this.element.adopt(this.videoInfoPanel, this.aboutPanel);
-
-        $$(this.videoInfoPanel, this.aboutPanel).getElement('button.close')
+        this.element.grab(this.aboutPanel);
+        this.aboutPanel.getElement('button.close')
             .addEvent('click', function () {
                 this.getParent('.moovie-panel').set('hidden', '');
             });
@@ -677,16 +657,8 @@ const Moovie = new Class({
         more.popup = new Element('div.popup');
         more.about = new Element('div.about[aria-label=About Moovie]');
         more.about.addEvent('click', () => {
-            this.videoInfoPanel.set('hidden', '');
             this.playlist.hide();
             this.aboutPanel.removeAttribute('hidden');
-        });
-
-        more.info = new Element('div.info[aria-label=View Video Info]');
-        more.info.addEvent('click', () => {
-            this.aboutPanel.set('hidden', '');
-            this.playlist.hide();
-            this.videoInfoPanel.removeAttribute('hidden');
         });
 
         more.playlist = new Element('div.playlist[aria-label=Show Playlist]');
@@ -694,7 +666,7 @@ const Moovie = new Class({
             this.playlist.show();
         });
 
-        more.popup.adopt(more.about, more.info, more.playlist);
+        more.popup.adopt(more.about, more.playlist);
         more.grab(more.popup);
 
         return more;
