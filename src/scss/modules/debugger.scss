@@ -23,6 +23,12 @@
 .moovie .debug table {
     width:100%;
     border-spacing:5px;
+    border-collapse: collapse;
+}
+
+.moovie .debug td {
+    vertical-align: top;
+    padding: 3px 6px;
 }
 
 .moovie .debug td:first-child {

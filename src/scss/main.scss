@@ -3,7 +3,6 @@
  * @copyright 2010 Colin Aarts
  * @license MIT
  */
-@import 'base/_reset';
 @import 'component/checkbox';
 @import 'component/slider';
 @import 'component/tooltip';
@@ -23,8 +22,40 @@
     position: relative;
 }
 
+.moovie h1 {
+    margin: 1.4em 0 0;
+    font-family: GaramondItalic, 'Palatino Linotype', 'Lucida Sans Unicode', Arial, Helvetica, sans-serif;
+    font-weight: normal;
+    line-height: 1.4;
+    text-shadow: 1px 1px 3px #cbcbcb;
+    color: #83b834;
+    font-size: 3.5em;
+}
+
+.moovie h2 {
+    margin: 1.4em 0 0;
+    font-family: GaramondItalic, 'Palatino Linotype', 'Lucida Sans Unicode', Arial, Helvetica, sans-serif;
+    font-weight: normal;
+    line-height: 1.4;
+    text-shadow: 1px 1px 3px #cbcbcb;
+    color: #83b834;
+    font-size: 2.5em;
+}
+
+.moovie h3 {
+    margin: 1.4em 0 0;
+    font-weight: bold;
+    color: #666666;
+    font-size: 1.4em;
+}
+
+.moovie ol {
+    margin: 1.5em 0;
+    padding: 0 0 0 3em;
+}
+
 .moovie p {
-    text-indent:0;
+    margin: 1.3em 0;
 }
 
 .moovie button:focus {
@@ -42,6 +73,37 @@
     background-image: url('http://colinaarts.com/assets/code/moovie/moovie.png');
     background-position: bottom 2em right 2em;
     background-repeat: no-repeat;
+}
+
+.moovie .about-panel a {
+    color: #444444;
+    text-decoration: none;
+    display: inline-block;
+    text-indent: 0;
+    border-bottom: 1px solid #888888;
+    display: inline;
+
+    &:hover {
+        text-decoration: none;
+        border: 0;
+    }
+
+    &:visited {
+        color: #888888;
+        border-color: #cbcbcb;
+    }
+}
+
+.moovie .info-panel > dl {
+    margin: 1.5em 0;
+}
+
+.moovie .info-panel > dl > dt {
+    font-weight: bold;
+}
+
+.moovie .info-panel > dl > dd {
+    margin: 0 0 0 1.5em;
 }
 
 :fullscreen:not(:root) {
