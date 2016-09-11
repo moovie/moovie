@@ -187,8 +187,8 @@ const Moovie = new Class({
 
         this.playlist.addEvent('queuechange', () => {
             // hide appropriate playlist buttons
-            this.controls.previous.set('aria-disabled', !this.playlist.hasPrevious());
-            this.controls.next.set('aria-disabled', !this.playlist.hasNext());
+            this.controls.previous.set('disabled', !this.playlist.hasPrevious());
+            this.controls.next.set('disabled', !this.playlist.hasNext());
         });
 
         this.element.addEvent('mouseenter', () => {
@@ -502,8 +502,8 @@ const Moovie = new Class({
         };
 
         // hide appropriate playlist buttons
-        this.controls.previous.set('aria-disabled', !this.playlist.hasPrevious());
-        this.controls.next.set('aria-disabled', !this.playlist.hasNext());
+        this.controls.previous.set('disabled', !this.playlist.hasPrevious());
+        this.controls.next.set('disabled', !this.playlist.hasNext());
     },
 
     createSeekbar: function () {
