@@ -1,6 +1,6 @@
 @import '../components/_time-display';
 
-.moovie .controls {
+.moovie-controls {
     position: absolute;
     left: 0;
     right: 0;
@@ -12,46 +12,46 @@
     height: 3em;
 }
 
-.moovie .controls[aria-hidden="true"],
-.moovie[data-playbackstate="stopped"] .controls {
+.moovie-controls[hidden],
+.moovie[data-playbackstate="stopped"] .moovie-controls {
     opacity: 0;
     visibility: hidden;
 }
 
-.moovie .controls > button,
-.moovie .controls > .moovie-popup > button {
+.moovie-controls > button,
+.moovie-controls > .moovie-popup > button {
     background-position: 50% 50%;
     background-repeat: no-repeat;
     flex: 0 0 auto;
     width: 3em;
 }
 
-.moovie .controls .play {
+.moovie-controls .play {
     background-image: url("http://colinaarts.com/assets/player-play.png");
 }
 
-.moovie[data-playbackstate="playing"] .controls .play {
+.moovie[data-playbackstate="playing"] .moovie-controls .play {
     background-image: url("http://colinaarts.com/assets/player-pause.png");
 }
 
-.moovie .controls .stop {
+.moovie-controls .stop {
     background-image: url("http://colinaarts.com/assets/player-stop.png");
 }
 
-.moovie .controls .previous {
+.moovie-controls .previous {
     background-image: url("http://colinaarts.com/assets/player-previous.png");
 }
 
-.moovie .controls .next {
+.moovie-controls .next {
     background-image: url("http://colinaarts.com/assets/player-next.png");
 }
 
-.moovie .controls .elapsed {
+.moovie-controls .elapsed {
     @extend %time-display;
     padding: 0 1em 0 0.5em;
 }
 
-.moovie .controls .seekbar {
+.moovie-controls .seekbar {
     flex: 1 1 auto;
     display: flex;
     align-items: center;
@@ -59,7 +59,7 @@
     position: relative;
 }
 
-.moovie .controls .seekbar .moovie-tooltip {
+.moovie-controls .seekbar .moovie-tooltip {
     bottom: 100%;
     width: 4em;
     text-align: center;
@@ -68,7 +68,7 @@
     position: absolute;
 }
 
-.moovie .controls .seekbar .moovie-tooltip::after {
+.moovie-controls .seekbar .moovie-tooltip::after {
     content: "";
     position: absolute;
     width: 0px;
@@ -80,7 +80,7 @@
     margin-left: -1.5em;
 }
 
-.seekbar-buffered {
+.moovie-controls .seekbar-buffered {
     background-color: rgba(0, 255, 0,0.3);
     border-radius: 3px;
     box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.3) inset;
@@ -90,69 +90,69 @@
     width: 0;
 }
 
-.moovie .controls .duration {
+.moovie-controls .duration {
     @extend %time-display;
     padding: 0 0.5em 0 1em;
 }
 
-.moovie .controls .volume-control button {
+.moovie-controls .volume-control button {
     background-image: url("http://colinaarts.com/assets/player-volume.png");
 }
 
-.moovie .controls .volume-control[data-muted="true"] button {
+.moovie-controls .volume-control[data-muted="true"] button {
     background-image: url("http://colinaarts.com/assets/player-muted.png");
 }
 
-.moovie .controls .volume-control .popup-content {
+.moovie-controls .volume-control .popup-content {
     padding: 13px 0;
 }
 
-.moovie .controls .settings-control > button {
+.moovie-controls .settings-control > button {
     background-image: url("http://colinaarts.com/assets/player-settings.png");
 }
 
-.moovie .controls .settings-control .popup-content {
+.moovie-controls .settings-control .popup-content {
     padding-top: 4px;
 }
 
-.moovie .controls .settings-control .moovie-checkbox + .moovie-label {
+.moovie-controls .settings-control .moovie-checkbox + .moovie-label {
     padding: 3px 8px;
     white-space: nowrap;
     width: 100%;
 }
 
-.moovie .controls .settings-control .moovie-checkbox + .moovie-label:hover {
+.moovie-controls .settings-control .moovie-checkbox + .moovie-label:hover {
     background-color: #994004;
 }
 
-.moovie .controls .more-control > button {
+.moovie-controls .more-control > button {
     background-image: url("http://colinaarts.com/assets/player-more.png");
 }
 
-.moovie .controls .more-control .popup-content {
+.moovie-controls .more-control .popup-content {
     padding: 10px 7px;
 }
 
-.moovie .controls .more-control .popup-content button {
+.moovie-controls .more-control .popup-content button {
     display: block;
     height: 13px;
     width: 13px;
 }
 
-.moovie .controls .more-control .about {
+.moovie-controls .more-control .about {
     background-image: url("http://colinaarts.com/assets/player-about.png");
     margin-bottom: 10px;
 }
 
-.moovie .controls .more-control .info {
+.moovie-controls .more-control .info {
     background-image: url("http://colinaarts.com/assets/player-info.png");
     margin-bottom: 10px;
 }
 
-.moovie .controls .more-control .playlist {
+.moovie-controls .more-control .playlist {
     background-image: url("http://colinaarts.com/assets/player-playlist.png");
 }
 
-.moovie .controls .fullscreen {
+.moovie-controls .fullscreen {
     background-image: url("http://colinaarts.com/assets/player-close.png");
 }
