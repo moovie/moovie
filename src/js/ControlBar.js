@@ -103,17 +103,10 @@ const ControlBar = new Class({
     },
 
     createPlayControl: function () {
-        const video = this.player.video;
         const play = new Element('button.play[aria-label=Play Video]');
 
-        play.addEvent('click', function () {
-            if (video.paused && video.readyState >= 3) {
-                video.play();
-            } else if (!video.paused && video.ended) {
-                video.currentTime = 0;
-            } else if (!video.paused) {
-                video.pause();
-            }
+        play.addEvent('click', () => {
+            this.player.togglePlayback();
         });
 
         return play;

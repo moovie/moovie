@@ -346,6 +346,20 @@ const Moovie = new Class({
         return this;
     },
 
+    /**
+     * Toggles the video playback state.
+     * @return {Moovie} The current instance for method chaining.
+     */
+    togglePlayback: function () {
+        if (this.video.paused || this.video.ended) {
+            this.video.play();
+        } else {
+            this.video.pause();
+        }
+
+        return this;
+    },
+
     startProgressTracking: function () {
         this.stopProgressTracking();
         this.onProgress.id = setInterval(this.onProgress, 500);
