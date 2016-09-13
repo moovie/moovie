@@ -64,7 +64,7 @@ Releases are automatically published by  [semantic-release](https://github.com/s
 
 - [npm](https://www.npmjs.com/package/moovie)
 - [GitHub Releases](https://github.com/moovie/moovie/releases)
-- [unpkg](https://npmcdn.com/moovie) (CDN for the browser bundle)
+- [unpkg](https://unpkg.com/moovie) (CDN for the browser bundle)
 
 [Bower](https://bower.io/) is intentionally not supported. Read [this article](https://medium.com/@kentcdodds/why-i-don-t-commit-generated-files-to-master-a4d76382564#.p8c8vowtq) for the rationale behind this decision.
 
