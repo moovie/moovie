@@ -357,18 +357,19 @@ const Moovie = new Class({
 
     onProgress: function () {
         const buffered = this.video.buffered;
-        let length = buffered.length;
+        let total = 0;
 
-        while (length--) {
-            const start = buffered.start(length) / this.video.duration * 100;
-            const end = buffered.end(length) / this.video.duration * 100;
+        for (let i = 0, l = buffered.length; i < l; i++) {
+            total += (buffered.end(i) - buffered.start(i));
+        }
 
-            this.controls.seekbar.buffered.setStyle('width', `${end - start}%`);
-            this.fireEvent('progress');
+        total = total / this.video.duration * 100;
 
-            if (end - start === 100) {
-                this.stopProgressTracking();
-            }
+        this.controls.seekbar.buffered.setStyle('width', `${total}%`);
+        this.fireEvent('progress');
+
+        if (total === 100) {
+            this.stopProgressTracking();
         }
     },
 
