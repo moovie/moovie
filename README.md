@@ -12,23 +12,23 @@ You can include Moovie in your own project with [npm](https://www.npmjs.com/):
 $ npm install moovie
 ```
 
-Or include Moovie directly in your page using the [unpkg](https://npmcdn.com/#/) cdn:
+Or include Moovie directly in your page using the [unpkg](https://unpkg.com/#/) cdn:
 
 ```html
 <!-- with your own copy of MooTools... -->
 <script src="//vendor/mootools/mootools-core.min.js"></script>
-<script src="https://npmcdn.com/moovie?main=browser"></script>
+<script src="https://unpkg.com/moovie?main=browser"></script>
 ```
 
 ```html
 <!-- or bundled with MooTools... -->
-<script src="https://npmcdn.com/moovie?main=main"></script>
+<script src="https://unpkg.com/moovie?main=main"></script>
 ```
 
 Alternatively, if you must, you can install Moovie using [Bower](https://bower.io/) as well:
 
 ```bash
-$ bower install https://npmcdn.com/moovie/bower.zip
+$ bower install https://unpkg.com/moovie/bower.zip
 ```
 
 **Important Notes:**
