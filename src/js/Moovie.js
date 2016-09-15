@@ -374,7 +374,7 @@ const Moovie = new Class({
         let total = 0;
 
         for (let i = 0, l = buffered.length; i < l; i++) {
-            total += (buffered.end(i) - buffered.start(i));
+            total = total + buffered.end(i) - buffered.start(i);
         }
 
         total = total / this.video.duration * 100;
