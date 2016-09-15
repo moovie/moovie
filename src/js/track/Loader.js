@@ -20,6 +20,7 @@ const Loader = new Class({
 
     sendRequest: function () {
         const request = new Request({
+            method: 'GET',
             url: this.url,
 
             onSuccess: (data) => {
