@@ -317,9 +317,7 @@ const Moovie = new Class({
     },
 
     play: function () {
-        if (this.readyState === this.video.HAVE_FUTURE_DATA) {
-            this.video.play();
-        }
+        this.video.play();
 
         return this;
     },
