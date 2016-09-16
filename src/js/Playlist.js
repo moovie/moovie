@@ -49,6 +49,7 @@ const Playlist = new Class({
         item.index = index;
         item.title = item.title || basename(item.src, '.' + item.src.split('.').pop()).capitalize();
         item.summary = item.summary || 'Move along people. There\'s nothing to see here.';
+        item.tracks = Array.convert(item.tracks);
     },
 
     /**

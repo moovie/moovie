@@ -171,7 +171,7 @@ const Moovie = new Class({
             this.title.update(current.title);
             this.title.show();
 
-            Array.convert(current.tracks).forEach((trackObj) => {
+            current.tracks.forEach((trackObj) => {
                 this.loadTextTrack(trackObj);
             });
 
