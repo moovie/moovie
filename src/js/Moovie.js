@@ -85,7 +85,7 @@ const Moovie = new Class({
     },
 
     loadTextTrack: function (options) {
-        const track = this.addTextTrack(options.kind, options.label, options.language || options.srclang);
+        const track = this.addTextTrack(options.kind, options.label, options.srclang);
         const loader = new Loader(options.src, options.srclang, track.addCue);  // eslint-disable-line
 
         track.mode = options.default ? 'showing' : 'hidden';
