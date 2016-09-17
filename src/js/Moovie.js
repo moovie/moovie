@@ -7,7 +7,7 @@ import 'fullscreen-api-polyfill';
 import './core/MediaEvents.js';
 import { formatSeconds, getAttributes } from './Utility.js';
 import Loader from './track/Loader.js';
-import TextTrack from './track/TextTrack.js';
+import TextTrack from './core/track/TextTrack.js';
 import Renderer from './track/Renderer.js';
 import Debugger from './Debugger.js';
 import Title from './Title.js';
@@ -92,7 +92,7 @@ const Moovie = new Class({
     },
 
     addTextTrack: function (kind, label, language) {
-        const track = new TextTrack(kind, label, language, this.video);
+        const track = TextTrack.create(kind, label, language);
 
         this.textTracks.push(track);
 
@@ -107,7 +107,7 @@ const Moovie = new Class({
 
         const current = this.playlist.current();
 
-        this.renderer = new Renderer(window, this);
+        this.renderer = new Renderer(this);
         this.overlay = new Element('div.overlay');
         this.title = new Title(this.options.title);
         this.title.update(current.title);
@@ -282,6 +282,7 @@ const Moovie = new Class({
     onTimeUpdate: function () {
         this.controls.seekbar.slider.update(this.video.currentTime);
         this.controls.elapsed.set('text', formatSeconds(this.video.currentTime));
+        this.fireEvent('timeupdate');
     },
 
     onSeeking: function () {
