@@ -47,6 +47,7 @@
   },
   "dependencies": {
     "emune": "^1.0.0",
+    "event-target-shim": "1.1.1",
     "fullscreen-api-polyfill": "^1.1.2",
     "vtt.js": "^0.12.1"
   },
