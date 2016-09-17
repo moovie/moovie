@@ -6,9 +6,9 @@
 import 'fullscreen-api-polyfill';
 import './core/MediaEvents.js';
 import { formatSeconds, getAttributes } from './Utility.js';
-import Loader from './track/Loader.js';
+import Loader from './core/track/Loader.js';
 import TextTrack from './core/track/TextTrack.js';
-import Renderer from './track/Renderer.js';
+import Renderer from './core/track/Renderer.js';
 import Debugger from './Debugger.js';
 import Title from './Title.js';
 import Playlist from './Playlist.js';

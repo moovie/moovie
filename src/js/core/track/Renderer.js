@@ -14,7 +14,7 @@ const Renderer = new Class({
 
     options: {
         // Higher number means show cue faster
-        processingDelay: 0.24
+        processingDelay: 0.39
     },
 
     /**

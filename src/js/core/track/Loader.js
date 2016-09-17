@@ -3,8 +3,8 @@
  * @copyright 2010 Colin Aarts
  * @license MIT
  */
-import { WebSRT } from './WebSRT.js';
 import { WebVTT } from 'vtt.js';
+import WebSRT from './WebSRT.js';
 
 /**
  * Loads and parses the track based on the filetype.

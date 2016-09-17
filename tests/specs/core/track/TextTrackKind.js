@@ -1,5 +1,5 @@
 import expect from 'expectations';
-import TextTrackKind from '../../../src/js/track/TextTrackKind.js';
+import TextTrackKind from '../../../../src/js/core/track/TextTrackKind.js';
 
 describe('TextTrackKind', function () {
     it('gets exported as a default module', function () {

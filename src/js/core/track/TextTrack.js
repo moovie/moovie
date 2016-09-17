@@ -3,8 +3,8 @@
  * @copyright 2010 Colin Aarts
  * @license MIT
  */
-import TextTrackKind from '../../track/TextTrackKind.js';
-import TextTrackMode from '../../track/TextTrackMode.js';
+import TextTrackKind from './TextTrackKind.js';
+import TextTrackMode from './TextTrackMode.js';
 
 /**
  * An implementation of the W3C TextTrack IDL.

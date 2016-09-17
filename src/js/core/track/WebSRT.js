@@ -3,15 +3,8 @@
  * @copyright 2010 Colin Aarts
  * @license MIT
  */
-import { VTTCue } from 'vtt.js';
+import SRTCue from './SRTCue.js';
 
-/**
- * Provides an SRTCue object for the WebSRT parser. While the SRT standard
- * doesn't really support any of the VTT properties, it does make it easier to
- * process both .srt and .vtt inside Moovie when vtt.js uses the same cue type.
- * @type {SRTCue}
- */
-const SRTCue = VTTCue;
 const WebSRT = {};
 
 /**
@@ -19,6 +12,7 @@ const WebSRT = {};
  * @type {Class}
  */
 WebSRT.Parser = new Class({
+    // @todo implement EventTarget
     initialize: function () {
         this.oncue = Function.from();
         this.onflush = Function.from();
@@ -72,4 +66,4 @@ WebSRT.Parser = new Class({
     }
 });
 
-export { WebSRT, SRTCue };
+export default WebSRT;

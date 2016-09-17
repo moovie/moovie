@@ -42,25 +42,4 @@ describe('TextTrackCue', function () {
         expect(cue instanceof TextTrackCue).toBe(true);
         expect(cue instanceof TestCue).toBe(true);
     });
-
-    it('has the correct API', function () {
-        const cue = new TestCue();
-
-        expect(cue.track).toBe(undefined);
-        expect(cue.id).toBe(undefined);
-        expect(cue.startTime).toBe(undefined);
-        expect(cue.endTime).toBe(undefined);
-        expect(cue.pauseOnExit).toBe(undefined);
-    });
-
-    it('does not have any property conflicts when subclassing', function () {
-        const cueA = new TestCue();
-        const cueB = new TestCue();
-
-        cueA.id = 'a';
-        cueB.id = 'b';
-
-        expect(cueA.id).toEqual('a');
-        expect(cueB.id).toEqual('b');
-    });
 });

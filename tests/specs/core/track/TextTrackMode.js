@@ -1,5 +1,5 @@
 import expect from 'expectations';
-import TextTrackMode from '../../../src/js/track/TextTrackMode.js';
+import TextTrackMode from '../../../../src/js/core/track/TextTrackMode.js';
 
 describe('TextTrackMode', function () {
     it('gets exported as a default module', function () {
