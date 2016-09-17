@@ -16,7 +16,7 @@ describe('TextTrack', function () {
 
     it('cannot be called', function () {
         const actual = function () {
-            return new TextTrack();
+            TextTrack();
         };
 
         expect(actual).toThrow(TypeError);
