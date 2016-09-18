@@ -98,35 +98,27 @@ const Renderer = new Class({
     processTracks: function () {
         const currentCues = [];
         const time = this.player.video.currentTime + this.options.processingDelay;
-        const textTracks = this.player.textTracks;
 
         /* eslint-disable max-depth */
 
-        // Plain loops are being used here to keeps things as fast as possible.
-        for (let t = 0, l = textTracks.length; t < l; t++) {
-            const cues = textTracks[t].cues;
-            const activeCues = textTracks[t].activeCues;
-            let i = 0;
-
+        for (const textTrack of this.player.textTracks) {
             // cueexit
-            i = activeCues.length;
-            while (i--) {
-                if (activeCues[i].startTime > time || activeCues[i].endTime < time) {
-                    if (activeCues[i].pauseOnExit) {
+            for (const activeCue of textTrack.activeCues) {
+                if (activeCue.startTime > time || activeCue.endTime < time) {
+                    if (activeCue.pauseOnExit) {
                         this.player.pause();
                     }
 
-                    activeCues.splice(i, 1);
-                    currentCues.splice(i, 1);
+                    textTrack.activeCues.erase(activeCue);
+                    currentCues.erase(activeCue);
                 }
             }
 
             // cueenter
-            i = cues.length;
-            while (i--) {
-                if (cues[i].startTime <= time && cues[i].endTime >= time) {
-                    activeCues.include(cues[i]);
-                    currentCues.include(cues[i]);
+            for (const cue of textTrack.cues) {
+                if (cue.startTime <= time && cue.endTime >= time) {
+                    textTrack.activeCues.include(cue);
+                    currentCues.include(cue);
                 }
             }
         }
