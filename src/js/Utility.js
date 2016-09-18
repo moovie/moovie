@@ -16,7 +16,7 @@
  * @param  {string} suffix If specified, removes suffix from returned string.
  * @return {string}        [description]
  */
-const basename = function (path, suffix) {
+export function basename(path, suffix) {
     let b = path;
     const lastChar = b.charAt(b.length - 1);
 
@@ -33,21 +33,12 @@ const basename = function (path, suffix) {
     return b;
 };
 
-// as usual, add polyfills for IE
-Number.isNaN = Number.isNaN || function (value) {
-    return typeof value === 'number' && isNaN(value);
-};
-
-Number.isFinite = Number.isFinite || function (value) {
-    return typeof value === 'number' && isFinite(value);
-};
-
 /**
  * Converts a floating point value into a time string.
  * @param  {Number} value A floating point value represented as seconds.milliseconds.
  * @return {string} A string formatted to either: hh:mm:ss or mm:ss or m:ss
  */
-const formatSeconds = function (value) {
+export function formatSeconds(value) {
     const input = Math.round(value);
     let hours = Math.floor(input / 3600);
     let minutes = Math.floor(input % 3600 / 60);
@@ -73,7 +64,7 @@ const formatSeconds = function (value) {
  * @param  {Element} element An Element instance.
  * @return {Object} An object containing all defined element attributes.
  */
-const getAttributes = function getAttributes(element) {
+export function getAttributes(element) {
     const attributes = {};
 
     Array.convert(element.attributes).forEach((attribute) => {
@@ -92,7 +83,7 @@ const getAttributes = function getAttributes(element) {
  * @param  {Number}   timeout   How long to poll the DOM for. (Default is 2 seconds)
  * @return {undefined}
  */
-const isInDOM = function isInDOM(element, onsuccess, onerror, timeout) {
+export function isInDOM(element, onsuccess, onerror, timeout) {
     const expiry = Date.now() + (timeout || 2000);
     const condition = function () {
         return document.body.contains(element);
@@ -115,5 +106,3 @@ const isInDOM = function isInDOM(element, onsuccess, onerror, timeout) {
 
     // @todo return Promise
 };
-
-export { basename, formatSeconds, getAttributes, isInDOM };
