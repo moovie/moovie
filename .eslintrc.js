@@ -154,7 +154,7 @@ module.exports = {
         'eol-last': ['error', 'unix'],
         'func-call-spacing': ['error', 'never'],
         'func-names': ['off'],  // I've never needed it before...
-        'func-style': ['error', 'expression'],
+        'func-style': ['off'],
         'id-blacklist': ['off'],
         'id-length': ['warn', {     // Time to refactor names
             properties: 'never',

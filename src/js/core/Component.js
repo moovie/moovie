@@ -1,3 +1,8 @@
+/**
+ * Moovie: an advanced HTML5 video player for MooTools.
+ * @copyright 2010 Colin Aarts
+ * @license MIT
+ */
 
 /**
  * Base class that all UI components must extend.
@@ -154,7 +159,7 @@ const Component = new Class({
      * @param  {String} methodName The name of the bound method.
      * @return {Function} The bound method.
      */
-    getBound: function(methodName) {
+    getBound: function (methodName) {
         if (!(methodName in this.bound)) {
             this.bound[methodName] = this[methodName].bind(this);
         }

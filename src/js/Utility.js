@@ -31,7 +31,7 @@ export function basename(path, suffix) {
     }
 
     return b;
-};
+}
 
 /**
  * Converts a floating point value into a time string.
@@ -57,7 +57,7 @@ export function formatSeconds(value) {
     seconds = seconds < 10 ? '0' + seconds : seconds;
 
     return hours + minutes + seconds;
-};
+}
 
 /**
  * Retrieve attributes from an element.
@@ -72,7 +72,7 @@ export function getAttributes(element) {
     });
 
     return attributes;
-};
+}
 
 /**
  * Polls the DOM periodically to check for the existance of an element.
@@ -105,4 +105,4 @@ export function isInDOM(element, onsuccess, onerror, timeout) {
     })();
 
     // @todo return Promise
-};
+}
