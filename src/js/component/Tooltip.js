@@ -3,65 +3,47 @@
  * @copyright 2010 Colin Aarts
  * @license MIT
  */
+import Component from '../core/Component.js';
 
 /**
- * Component for creating aria-enabled tooltip elements.
- * @type {Class}
+ * UI component for creating aria-enabled tooltip elements.
+ * @class
  */
 const Tooltip = new Class({
-    Implements: [Events, Options],
+    Extends: Component,
 
     /**
-     * options.onShow = function () {}
-     * options.onHide = function () {}
-     * options.axis = 'none' || 'x' || 'y' || 'both'
+     * @inheritdoc
      */
     options: {
         hidden: true,
-        disabled: false,
+
+        // 'none' || 'x' || 'y' || 'both'
         axis: 'both',
+
+        // called everytime the tooltip is shown
         content: function (element) {
             return element.get('aria-label');
         }
     },
 
     /**
-     * Creates a new instance of `Tooltip`.
-     * @param  {Element} target [description]
-     * @param  {Object} options An object hash of options to further customize the Tooltip.
-     * @return {undefined}
+     * @inheritdoc
+     * @param {Element} target The element to use as the trigger for the tooltip.
      */
     initialize: function (target, options) {
         this.target = document.id(target);
-        this.setOptions(options);
-        this.build().bindListeners();
-        this[this.options.disabled ? 'disable' : 'enable']();
-        this[this.options.hidden ? 'hide' : 'show']();
+        this.parent(options);
     },
 
     /**
-     * Bind the methods used by the event handlers to the current instance.
-     * @return {Tooltip} The current instance for method chaining.
-     */
-    bindListeners: function () {
-        this.update = this.update.bind(this);
-        this.hide = this.hide.bind(this);
-
-        return this;
-    },
-
-    /**
-     * Builds the DOM structure that will be injected into the browser.
-     * @return {Tooltip} The current instance for method chaining.
+     * @inheritdoc
      */
     build: function () {
-        this.element = new Element('div', {
+        return new Element('div', {
             'class': 'moovie-tooltip',
-            'aria-disabled': this.options.disabled,
             'role': 'tooltip'
         });
-
-        return this;
     },
 
     /**
@@ -69,8 +51,8 @@ const Tooltip = new Class({
      * @return {Tooltip} The current instance for method chaining.
      */
     attach: function () {
-        this.target.addEvent('mousemove', this.update);
-        this.target.addEvent('mouseleave', this.hide);
+        this.target.addEvent('mousemove', this.getBound('update'));
+        this.target.addEvent('mouseleave', this.getBound('hide'));
 
         return this;
     },
@@ -80,72 +62,15 @@ const Tooltip = new Class({
      * @return {Tooltip} The current instance for method chaining.
      */
     detach: function () {
-        this.target.removeEvent('mousemove', this.update);
-        this.target.removeEvent('mouseleave', this.hide);
+        this.target.removeEvent('mousemove', this.getBound('update'));
+        this.target.removeEvent('mouseleave', this.getBound('hide'));
 
         return this;
-    },
-
-    /**
-     * Allows the tooltip to track the mouse or autoshow when hovering over a target.
-     * @return {Tooltip} The current instance for method chaining.
-     */
-    enable: function () {
-        this.disabled = false;
-        this.element.set('aria-disabled', false);
-        this.attach();
-
-        return this;
-    },
-
-    /**
-     * Prevent the tooltip from tracking the mouse or autoshowing when hovering over a target.
-     * @return {Tooltip} The current instance for method chaining.
-     */
-    disable: function () {
-        this.disabled = true;
-        this.element.set('aria-disabled', true);
-        this.detach().hide();
-
-        return this;
-    },
-
-    /**
-     * Shows the tooltip.
-     * @return {Tooltip} The current instance for method chaining.
-     */
-    show: function () {
-        this.hidden = false;
-        this.element.removeAttribute('hidden');
-        this.fireEvent('show');
-
-        return this;
-    },
-
-    /**
-     * Hides the tooltip
-     * @return {Tooltip} The current instance for method chaining.
-     */
-    hide: function () {
-        this.hidden = true;
-        this.element.set('hidden', '');
-        this.fireEvent('hide');
-
-        return this;
-    },
-
-    /**
-     * Convert the class to an element representation for use in DOM operations.
-     * @return {Element} The "tooltip" element.
-     */
-    toElement: function () {
-        return this.element;
     },
 
     /**
      * Handles the "mousemove" event.
      * @param  {Object} event The "mousemove" event.
-     * @return {undefined}
      */
     update: function (event) {
         const content = this.options.content.call(this, event.target);
@@ -167,5 +92,7 @@ const Tooltip = new Class({
         }
     }
 });
+
+Component.register('tooltip', Tooltip);
 
 export default Tooltip;
