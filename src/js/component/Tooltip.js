@@ -41,8 +41,8 @@ const Tooltip = new Class({
      */
     build: function () {
         return new Element('div', {
-            'class': 'moovie-tooltip',
-            'role': 'tooltip'
+            class: 'moovie-tooltip',
+            role: 'tooltip'
         });
     },
 
