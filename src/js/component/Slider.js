@@ -4,20 +4,17 @@
  * @license MIT
  */
 import { isInDOM } from '../Utility.js';
+import Component from '../core/Component.js';
 
 /**
- * [Slider description]
- * @type {Class}
+ * A soon to be UI component for creating aria-enabled sliders.
+ * @class
  */
 const Slider = new Class({
-    Implements: [Events, Options],
+    Extends: Component,
 
     /**
-     * options.onStart = function (val, pos) {}
-     * options.onMove = function (val, pos) {}
-     * options.onStop = function (val, pos) {}
-     * options.onChange: function (val) {}
-     * options.onUpdate: function (pos) {}
+     * @inheritdoc
      */
     options: {
         value: 0,
@@ -27,17 +24,14 @@ const Slider = new Class({
     },
 
     /**
-     * Creates a new instance of `Slider`.
-     * @param  {object} options An object hash of options to further customize the checkbox.
-     * @return {undefined}
+     * @inheritdoc
      */
     initialize: function (options) {
-        this.setOptions(options);
+        this.parent(options);
         this.axis = this.options.orientation === 'vertical' ? 'y' : 'x';
         this.dimensionModifier = this.axis === 'y' ? 'height' : 'width';
         this.positionModifier = this.axis === 'y' ? 'bottom' : 'left';
         this.dragging = false;
-        this.build().bindListeners().attach();
 
         isInDOM(this.element, () => {
             this.update(this.options.value);
@@ -45,31 +39,18 @@ const Slider = new Class({
     },
 
     /**
-     * Builds the DOM structure that will be injected into the browser.
-     * @return {Slider} The current instance for method chaining.
+     * @inheritdoc
      */
     build: function () {
-        this.element = new Element('div.moovie-slider');
+        const element = new Element('div.moovie-slider');
+
         this.track = new Element('div.slider-track');
         this.fill = new Element('div.slider-fill');
         this.thumb = new Element('div.slider-thumb');
+        element.set('aria-orientation', this.options.orientation);
+        element.adopt(this.track, this.fill, this.thumb);
 
-        this.element.set('aria-orientation', this.options.orientation);
-        this.element.adopt(this.track, this.fill, this.thumb);
-
-        return this;
-    },
-
-    /**
-     * Bind the methods used by the event handlers, to the current instance.
-     * @return {Slider} The current instance for method chaining.
-     */
-    bindListeners: function () {
-        this.start = this.start.bind(this);
-        this.move = this.move.bind(this);
-        this.stop = this.stop.bind(this);
-
-        return this;
+        return element;
     },
 
     /**
@@ -77,7 +58,7 @@ const Slider = new Class({
      * @return {Slider} The current instance for method chaining.
      */
     attach: function () {
-        this.element.addEvent('mousedown', this.start);
+        this.element.addEvent('mousedown', this.getBound('start'));
 
         return this;
     },
@@ -87,7 +68,7 @@ const Slider = new Class({
      * @return {Slider} The current instance for method chaining.
      */
     detach: function () {
-        this.element.removeEvent('mousedown', this.start);
+        this.element.removeEvent('mousedown', this.getBound('start'));
 
         return this;
     },
@@ -102,8 +83,8 @@ const Slider = new Class({
             return false;
         }
 
-        document.addEvent('mousemove', this.move);
-        document.addEvent('mouseup', this.stop);
+        document.addEvent('mousemove', this.getBound('move'));
+        document.addEvent('mouseup', this.getBound('stop'));
 
         this.setPositionFromEvent(event);
         this.setValueFromPosition(this.position);
@@ -117,7 +98,6 @@ const Slider = new Class({
     /**
      * Handles the "mousemove" event.
      * @param  {object} event The "mousemove" event.
-     * @return {undefined}
      */
     move: function (event) {
         this.setPositionFromEvent(event);
@@ -127,11 +107,10 @@ const Slider = new Class({
 
     /**
      * Handles the "mouseup" event.
-     * @return {undefined}
      */
     stop: function () {
-        document.removeEvent('mousemove', this.move);
-        document.removeEvent('mouseup', this.stop);
+        document.removeEvent('mousemove', this.getBound('move'));
+        document.removeEvent('mouseup', this.getBound('stop'));
 
         this.dragging = false;
         this.fireEvent('stop', [this.value, this.position]);
@@ -147,14 +126,6 @@ const Slider = new Class({
         this.setPositionFromValue(this.value);
 
         return this;
-    },
-
-    /**
-     * Convert the class to an element for use in DOM operations.
-     * @return {Element} The "slider" element.
-     */
-    toElement: function () {
-        return this.element;
     },
 
     /**
@@ -177,7 +148,6 @@ const Slider = new Class({
     /**
      * Set the slider's value from the position of the thumb/fill bar.
      * @param {number} position A value between `0` and the slider's track size.
-     * @return {undefined}
      */
     setValueFromPosition: function (position) {
         const limit = this.track.getSize()[this.axis];
@@ -188,7 +158,6 @@ const Slider = new Class({
     /**
      * Set the slider's thumb/fill bar position from an arbitrary value.
      * @param {number} value A value between `options.min` and `options.max`.
-     * @return {undefined}
      */
     setPositionFromValue: function (value) {
         const limit = this.track.getSize()[this.axis];
@@ -199,7 +168,6 @@ const Slider = new Class({
     /**
      * Sets the position of the thumb/fill bar based on the mouses' position within the document.
      * @param {object} event Either a "mousedown" or a "mousemove" event.
-     * @return {undefined}
      */
     setPositionFromEvent: function (event) {
         const limit = this.track.getSize()[this.axis];
@@ -211,7 +179,6 @@ const Slider = new Class({
     /**
      * Set the position of the thumb/fill bar.
      * @param {number} position A value between `0` and the slider's track size.
-     * @return {undefined}
      */
     setPosition: function (position) {
         const limit = this.track.getSize()[this.axis];
@@ -225,12 +192,13 @@ const Slider = new Class({
     /**
      * Set the slider's value.
      * @param {number} value A value between `options.min` and `options.max`.
-     * @return {undefined}
      */
     setValue: function (value) {
         this.value = value.limit(this.options.min, this.options.max);
         this.fireEvent('change', this.value);
     }
 });
+
+Component.register('slider', Slider);
 
 export default Slider;

@@ -19,15 +19,4 @@ describe('Tooltip', function () {
 
         expect(exists).toEqual('tooltip');
     });
-
-    it('#initialize()', function () {
-        it('should be in the hidden state by default', function () {
-            const target = new Element('button');
-            const tooltip = new Tooltip(target);
-
-            expect(tooltip.hidden).toBe(true);
-
-            target.destroy();
-        });
-    });
 });
