@@ -10,7 +10,6 @@ const Component = new Class({
     /**
      * Default options that are merged in with the constructor options.
      * @protected
-     * @readonly
      * @type {Object}
      */
     options: {
