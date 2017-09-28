@@ -47,7 +47,7 @@ const Title = new Class({
 
         // prevents a whole host of bugs
         if (this.id) {
-            clearTimeout(this.id);  // eslint-disable-line no-undef
+            clearTimeout(this.id);// eslint-disable-line no-undef
         }
 
         if (this.options.autohide) {
