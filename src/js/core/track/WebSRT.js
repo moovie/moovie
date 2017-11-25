@@ -21,11 +21,11 @@ WebSRT.Parser = new Class({
         this.cues = [];
     },
 
-    computeSeconds: function (h, m, s, f) {
-        const hours = h.toInt() * 3600;
-        const minutes = m.toInt() * 60;
-        const seconds = s.toInt();
-        const milliseconds = f.toInt() / 1000;
+    computeSeconds: function (hours, minutes, seconds, milliseconds) {
+        hours = hours.toInt() * 3600;
+        minutes = minutes.toInt() * 60;
+        seconds = seconds.toInt();
+        milliseconds = milliseconds.toInt() / 1000;
 
         return hours + minutes + seconds + milliseconds;
     },
