@@ -87,7 +87,7 @@ module.exports = {
         'no-new': ['error'],
         'no-octal-escape': ['error'],
         'no-octal': ['error'],
-        'no-param-reassign': ['warn', { props: true }],
+        'no-param-reassign': ['off', { props: true }],
         'no-proto': ['error'],
         'no-redeclare': ['warn', { builtinGlobals: true }],
         'no-return-assign': ['error', 'always'],
