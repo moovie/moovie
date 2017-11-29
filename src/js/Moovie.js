@@ -9,10 +9,10 @@ import { formatSeconds, getAttributes } from './Utility.js';
 import Loader from './core/track/Loader.js';
 import TextTrack from './core/track/TextTrack.js';
 import Renderer from './core/track/Renderer.js';
-import Debugger from './Debugger.js';
-import Title from './Title.js';
-import Playlist from './Playlist.js';
-import ControlBar from './ControlBar.js';
+import Debugger from './plugin/Debugger.js';
+import Title from './plugin/Title.js';
+import Playlist from './plugin/Playlist.js';
+import ControlBar from './plugin/ControlBar.js';
 
 const HAS_TRACK_SUPPORT = 'track' in document.createElement('track');
 
