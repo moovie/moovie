@@ -175,7 +175,7 @@ module.exports = {
             after: true
         }],
         'line-comment-position': ['off', 'above'],  // Rule not recognized by ESLint
-        'linebreak-style': ['error', 'unix'],
+        'linebreak-style': ['off', 'unix'],
         'lines-around-comment': ['error', {
             beforeBlockComment: true,
             afterBlockComment: false,
