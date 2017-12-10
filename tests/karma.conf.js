@@ -14,7 +14,14 @@ module.exports = function (config) {
         // list of files / patterns to load in the browser
         files: [
             'bower_components/mootools/dist/mootools-core.min.js',
-            'tests/**/*.js'
+            'tests/**/*.js',
+            {
+                pattern: 'assets/**/*',
+                watched: false,
+                included: false,
+                served: true,
+                nocache: false
+            }
         ],
 
         // list of files to exclude
