@@ -9,7 +9,7 @@
  * @abstract
  * @class
  */
-const Component = new Class({
+const Base = new Class({
     Implements: [Events, Options],
 
     /**
@@ -59,7 +59,7 @@ const Component = new Class({
      * @protected
      * @constructor
      * @param  {Object} options Additional options to configure instance.
-     * @return {Component} The constructed class.
+     * @return {Base} The constructed class.
      */
     initialize: function (options) {
         this.setOptions(options);
@@ -85,7 +85,7 @@ const Component = new Class({
 
     /**
      * Enables the component.
-     * @return {Component} The current instance for method chaining.
+     * @return {Base} The current instance for method chaining.
      */
     enable: function () {
         this.disabled = false;
@@ -100,7 +100,7 @@ const Component = new Class({
 
     /**
      * Disables the component.
-     * @return {Component} The current instance for method chaining.
+     * @return {Base} The current instance for method chaining.
      */
     disable: function () {
         this.disabled = true;
@@ -115,8 +115,8 @@ const Component = new Class({
 
     /**
      * Shows the element in the DOM.
-     * @fires Component#show
-     * @return {Component} The current instance for method chaining.
+     * @fires Base#show
+     * @return {Base} The current instance for method chaining.
      */
     show: function () {
         this.hidden = false;
@@ -128,8 +128,8 @@ const Component = new Class({
 
     /**
      * Hides the element in the DOM.
-     * @fires Component#hide
-     * @return {Component} The current instance for method chaining.
+     * @fires Base#hide
+     * @return {Base} The current instance for method chaining.
      */
     hide: function () {
         this.hidden = true;
@@ -168,44 +168,4 @@ const Component = new Class({
     }.protect()
 });
 
-/**
- * Hash of all registered components.
- * @private
- * @readonly
- * @type {Object}
- */
-Component.registered = {};
-
-/**
- * Used to create registered sub-components.
- * @param  {String} name Name of the sub-component.
- * @param  {Array} args Arguments to pass to constructor of sub-component.
- * @return {Component} A new instance of `name`.
- */
-Component.create = function (name, ...args) {
-    if (!(name in Component.registered)) {
-        throw new Error(`Component "${name}" could not be found.`);
-    }
-
-    return new Component.registered[name](...args);
-};
-
-/**
- * Registers a new component with Moovie.
- * @param  {String} name A unique name for the component being registered.
- * @param  {Component} component The class representing the component.
- * @return {undefined}
- */
-Component.register = function (name, component) {
-    if (!name) {
-        throw new Error('The component you are trying to register does not have a name.');
-    }
-
-    if (name in Component.registered) {
-        throw new Error(`Component "${name}" has already been registered.`);
-    }
-
-    Component.registered[name] = component;
-};
-
-export default Component;
+export default Base;

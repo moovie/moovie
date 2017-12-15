@@ -4,14 +4,14 @@
  * @license MIT
  */
 import { isInDOM } from '../Utility.js';
-import Component from '../core/Component.js';
+import Base from './Base.js';
 
 /**
  * A soon to be UI component for creating aria-enabled sliders.
  * @class
  */
 const Slider = new Class({
-    Extends: Component,
+    Extends: Base,
 
     /**
      * @inheritdoc
@@ -198,7 +198,5 @@ const Slider = new Class({
         this.fireEvent('change', this.value);
     }
 });
-
-Component.register('slider', Slider);
 
 export default Slider;

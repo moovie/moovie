@@ -3,14 +3,14 @@
  * @copyright 2010 Colin Aarts
  * @license MIT
  */
-import Component from '../core/Component.js';
+import Base from './Base.js';
 
 /**
  * UI component for creating aria-enabled tooltip elements.
  * @class
  */
 const Tooltip = new Class({
-    Extends: Component,
+    Extends: Base,
 
     /**
      * @inheritdoc
@@ -92,7 +92,5 @@ const Tooltip = new Class({
         }
     }
 });
-
-Component.register('tooltip', Tooltip);
 
 export default Tooltip;

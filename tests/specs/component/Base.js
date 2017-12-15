@@ -1,9 +1,9 @@
 import expect from 'expectations';
 import sinon from 'sinon';
-import Component from '../../../src/js/core/Component.js';
+import Base from '../../../src/js/component/Base.js';
 
 const ComponentMock = new Class({
-    Extends: Component,
+    Extends: Base,
     initialize: function (...args) {
         this.parent(...args);
     },
@@ -12,14 +12,14 @@ const ComponentMock = new Class({
     }
 });
 
-describe('Component', function () {
+describe('Base', function () {
     it('gets exported as a default module', function () {
-        expect(Component).toBeDefined();
+        expect(Base).toBeDefined();
     });
 
     it('is an abstract class', function () {
         const actual = function () {
-            return new Component();
+            return new Base();
         };
 
         expect(actual).toThrow(new Error('The method "initialize" cannot be called.'));
@@ -27,7 +27,7 @@ describe('Component', function () {
 
     it('throws an error if the child class does not implement the `build()` method', function () {
         const ComponentMock = new Class({
-            Extends: Component,
+            Extends: Base,
             initialize: function () {
                 this.parent();
             }
@@ -42,7 +42,7 @@ describe('Component', function () {
 
     it("throws an error if the `build()` method doesn't return an element", function () {
         const ComponentMock = new Class({
-            Extends: Component,
+            Extends: Base,
             initialize: function () {
                 this.parent();
             },

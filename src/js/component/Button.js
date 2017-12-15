@@ -3,14 +3,14 @@
  * @copyright 2010 Colin Aarts
  * @license MIT
  */
-import Component from '../core/Component.js';
+import Base from './Base.js';
 
 /**
  * UI component for creating aria-enabled button elements.
  * @class
  */
 const Button = new Class({
-    Extends: Component,
+    Extends: Base,
 
     /**
      * @inheritdoc
@@ -88,7 +88,5 @@ const Button = new Class({
         this.action.call(this, this);
     }
 });
-
-Component.register('button', Button);
 
 export default Button;

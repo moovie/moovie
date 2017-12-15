@@ -1,23 +1,17 @@
 import expect from 'expectations';
 import sinon from 'sinon';
 import Button from '../../../src/js/component/Button.js';
-import Component from '../../../src/js/core/Component.js';
+import Base from '../../../src/js/component/Base.js';
 
 describe('Button', function () {
     it('gets exported as a default module', function () {
         expect(Button).toBeDefined();
     });
 
-    it('extends the `Component` base class', function () {
+    it('extends the `Base` base class', function () {
         const testButton = new Button('Test button', Function.from());
 
-        expect(instanceOf(testButton, Component)).toBe(true);
-    });
-
-    it('is a registered `Component`', function () {
-        const exists = Object.keyOf(Component.registered, Button);
-
-        expect(exists).toEqual('button');
+        expect(instanceOf(testButton, Base)).toBe(true);
     });
 
     context('when creating a new instance', function () {
