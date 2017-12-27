@@ -3,7 +3,7 @@
  * @copyright 2010 Colin Aarts
  * @license MIT
  */
-import { basename } from '../Utility.js';
+import { basename } from 'path';
 
 /**
  * Manages lists of videos inside of Moovie.
