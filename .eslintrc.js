@@ -47,7 +47,7 @@ module.exports = {
         /* Best Practices */
         'array-callback-return': ['error'],
         'block-scoped-var': ['error'],
-        'class-methods-use-this': 'error',
+        'class-methods-use-this': 'off',
         'complexity': ['warn', 6],  // Probably time to start refactoring if this shows
         'consistent-return': ['error'],
         'curly': ['error', 'all'],  // If only this option was smarter...
