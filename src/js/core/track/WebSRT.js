@@ -5,47 +5,24 @@
  */
 import SRTCue from './SRTCue.js';
 
-const WebSRT = {};
-
 /**
  * Parses SRT (.srt) files.
- * @type {Class}
+ * @todo Make parser extend EventTarget.
  */
-WebSRT.Parser = new Class({
-    // @todo implement EventTarget
-    initialize: function () {
+export class Parser {
+    constructor() {
         this.oncue = Function.from();
         this.onflush = Function.from();
         this.onparsingerror = Function.from();
         this.buffer = '';
         this.cues = [];
-    },
+    }
 
-    computeSeconds: function (hours, minutes, seconds, milliseconds) {
-        hours = hours.toInt() * 3600;
-        minutes = minutes.toInt() * 60;
-        seconds = seconds.toInt();
-        milliseconds = milliseconds.toInt() / 1000;
-
-        return hours + minutes + seconds + milliseconds;
-    },
-
-    // Timestamp must take the form of [hours]:[minutes]:[seconds],[milliseconds]
-    parseTimeStamp: function (input) {
-        const matches = input.match(/^(\d{2}):(\d{2}):(\d{2}),(\d{3})/);
-
-        if (!matches) {
-            return null;
-        }
-
-        return this.computeSeconds(matches[1], matches[2], matches[3], matches[4]);
-    },
-
-    parse: function (data) {
+    parse(data) {
         this.buffer = this.buffer + data;
-    },
+    }
 
-    flush: function () {
+    flush() {
         const rawCues = this.buffer.replace(/\r?\n/gm, '\n').trim().split('\n\n');
 
         rawCues.each((rawCueBlock) => {
@@ -64,6 +41,28 @@ WebSRT.Parser = new Class({
 
         this.onflush();
     }
-});
 
-export default WebSRT;
+    /**
+     * Timestamp must take the form of [hours]:[minutes]:[seconds],[milliseconds]
+     */
+    parseTimeStamp(input) {
+        const matches = input.match(/^(\d{2}):(\d{2}):(\d{2}),(\d{3})/);
+
+        if (!matches) {
+            return null;
+        }
+
+        return this.computeSeconds(matches[1], matches[2], matches[3], matches[4]);
+    }
+
+    computeSeconds(hours, minutes, seconds, milliseconds) {
+        hours = hours.toInt() * 3600;
+        minutes = minutes.toInt() * 60;
+        seconds = seconds.toInt();
+        milliseconds = milliseconds.toInt() / 1000;
+
+        return hours + minutes + seconds + milliseconds;
+    }
+}
+
+export default { Parser };
