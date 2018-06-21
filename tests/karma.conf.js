@@ -1,7 +1,4 @@
 /* eslint-env node */
-const browserifyIstanbul = require('browserify-istanbul');
-const isparta = require('isparta');
-
 module.exports = function (config) {
     config.set({
         // base path that will be used to resolve all patterns (eg. files, exclude)
@@ -85,12 +82,7 @@ module.exports = function (config) {
 
         browserify: {
             debug: true,
-            transform: [
-                browserifyIstanbul({
-                    instrumenter: isparta,
-                    instrumenterConfig: { embedSource: true }
-                })
-            ]
+            transform: []
         },
 
         coverageReporter: {
