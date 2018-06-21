@@ -6,7 +6,7 @@ module.exports = function (config) {
 
         // frameworks to use
         // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-        frameworks: ['mocha', 'browserify', 'detectBrowsers'],
+        frameworks: ['mocha', 'browserify'],
 
         // list of files / patterns to load in the browser
         files: [
@@ -61,24 +61,6 @@ module.exports = function (config) {
         // Concurrency level
         // how many browser should be started simultaneous
         concurrency: Infinity,
-
-        detectBrowsers: {
-            // phantomjs does not support the <video> element
-            usePhantomJS: false,
-
-            postDetection: function (availableBrowsers) {
-                const result = availableBrowsers;
-
-                // There seems to be a problem with Chrome and Travis...
-                if (process.env.TRAVIS) {
-                    if (availableBrowsers.indexOf('Chrome') > -1) {
-                        result.splice(result.indexOf('Chrome'), 1);
-                    }
-                }
-
-                return result;
-            }
-        },
 
         browserify: {
             debug: true,
