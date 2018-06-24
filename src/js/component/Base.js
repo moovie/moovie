@@ -14,14 +14,13 @@ const defaultOptions = {
     hidden: false
 };
 
-export default class Base extends EventTarget
-{
+export default class Base extends EventTarget {
     /**
      * Indicates when the component is in the "disabled" state.
      * @type {Boolean}
      */
     get disabled() {
-        return this[disabled]
+        return this[disabled];
     }
 
     /**
@@ -43,6 +42,11 @@ export default class Base extends EventTarget
      */
     constructor(options = defaultOptions) {
         super();
+
+        if (this.constructor === Base) {
+            throw new Error('Abstract base class `Base` cannot be instantiated directly.');
+        }
+
         this[element] = this.build();
 
         if (!this[element]) {
