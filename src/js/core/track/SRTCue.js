@@ -9,6 +9,4 @@ import { VTTCue } from 'vtt.js';
  * Cue object used to represent the "cue"
  * sections inside of an SRT file.
  */
-class SRTCue extends VTTCue {}
-
-export default SRTCue;
+export default class SRTCue extends VTTCue {}
