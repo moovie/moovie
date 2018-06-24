@@ -6,7 +6,8 @@
 import 'fullscreen-api-polyfill';
 import './core/MediaEvents.js';
 import { formatSeconds, getAttributes } from './Utility.js';
-import Loader from './core/track/Loader.js';
+import { WebVTT } from 'vtt.js';
+import WebSRT from './core/track/WebSRT.js';
 import TextTrack from './core/track/TextTrack.js';
 import Renderer from './core/track/Renderer.js';
 import Debugger from './plugin/Debugger.js';
@@ -86,7 +87,30 @@ const Moovie = new Class({
 
     loadTextTrack: function (options) {
         const track = this.addTextTrack(options.kind, options.label, options.srclang);
-        const loader = new Loader(options.src, options.srclang, track.addCue);  // eslint-disable-line
+        const getParser = function () {
+            const ext = options.src.split('.').pop();
+
+            switch (ext) {
+                case 'srt':
+                    return new WebSRT.Parser();
+                case 'vtt':
+                    return new WebVTT.Parser(window, WebVTT.StringDecoder());
+                default:
+                    throw new Error(`Unsupported file type: ${ext}`);
+            }
+        };
+
+        fetch(options.src)
+            .then(function (response) {
+                return response.text();
+            })
+            .then(function (text) {
+                const parser = getParser();
+
+                parser.oncue = track.addCue;
+                parser.parse(text);
+                parser.flush(); // @todo make flush() method return a Promise
+            });
 
         track.mode = options.default ? 'showing' : 'hidden';
     },
