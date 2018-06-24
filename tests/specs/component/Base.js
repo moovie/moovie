@@ -2,241 +2,234 @@ import expect from 'expectations';
 import sinon from 'sinon';
 import Base from '../../../src/js/component/Base.js';
 
-const ComponentMock = new Class({
-    Extends: Base,
-    initialize: function (...args) {
-        this.parent(...args);
-    },
-    build: function () {
-        return new Element('div#test');
-    }
-});
+let mockElement = null;
+class ComponentMock extends Base { build() { return mockElement; } }
 
 describe('Base', function () {
-    it('gets exported as a default module', function () {
+    beforeEach(function () {
+        mockElement = new Element('div#test');
+    });
+
+    it('is a default export', function () {
         expect(Base).toBeDefined();
     });
 
-    it('is an abstract class', function () {
-        const actual = function () {
-            return new Base();
-        };
+    describe('#constructor', function () {
+        it('cannot be instantiated directly', function () {
+            const expectedError = new Error('Abstract base class `Base` cannot be instantiated directly.');
 
-        expect(actual).toThrow(new Error('The method "initialize" cannot be called.'));
-    });
+            const errorThrown = function () {
+                return new Base();
+            };
 
-    it('throws an error if the child class does not implement the `build()` method', function () {
-        const ComponentMock = new Class({
-            Extends: Base,
-            initialize: function () {
-                this.parent();
-            }
+            expect(errorThrown).toThrow(expectedError);
         });
 
-        const actual = function () {
-            return new ComponentMock();
-        };
+        it('throws an error if a child class does not implement the `build()` method', function () {
+            class ComponentMock extends Base {}
+            const expectedError = new Error('The `build()` method must be implemented by a child class.');
 
-        expect(actual).toThrow(new Error('The `build()` method must be implemented by a child class.'));
-    });
+            const errorThrown = function () {
+                return new ComponentMock();
+            };
 
-    it("throws an error if the `build()` method doesn't return an element", function () {
-        const ComponentMock = new Class({
-            Extends: Base,
-            initialize: function () {
-                this.parent();
-            },
-            build: function () {
-                return null;
-            }
+            expect(errorThrown).toThrow(expectedError);
         });
 
-        const actual = function () {
-            return new ComponentMock();
-        };
+        it("throws an error if the `build()` method doesn't return an element", function () {
+            class ComponentMock extends Base { build() {} }
+            const expectedError = new Error('The `build()` must return an element.');
 
-        expect(actual).toThrow(new Error('The `build()` must return an element.'));
+            const errorThrown = function () {
+                return new ComponentMock();
+            };
+
+            expect(errorThrown).toThrow(expectedError);
+        });
+
+        it('defaults to the "enabled" state', function () {
+            const instance = new ComponentMock();
+            const element = instance.toElement();
+
+            expect(instance.disabled).toBe(false);
+            expect(element.getAttribute('aria-disabled')).toEqual('false');
+        });
+
+        it('defaults to the "showing" state', function () {
+            const instance = new ComponentMock();
+            const element = instance.toElement();
+
+            expect(instance.hidden).toBe(false);
+            expect(element.hasAttribute('hidden')).toBe(false);
+        });
+
+        it('can be disabled by providing the "disabled" option', function () {
+            const instance = new ComponentMock({ disabled: true });
+            const element = instance.toElement();
+
+            expect(instance.disabled).toBe(true);
+            expect(element.getAttribute('aria-disabled')).toEqual('true');
+        });
+
+        it('can be hidden by providing the "hidden" option', function () {
+            const instance = new ComponentMock({ hidden: true });
+            const element = instance.toElement();
+
+            expect(instance.hidden).toBe(true);
+            expect(element.hasAttribute('hidden')).toBe(true);
+        });
     });
 
-    it('can be used like an element', function () {
-        const mock = new ComponentMock();
-        const mockElement = document.id(mock);
-
-        expect(typeOf(mockElement)).toEqual('element');
-        expect(instanceOf(mockElement, HTMLElement)).toBe(true);
-    });
-
-    describe('#disable()', function () {
+    describe('#disable', function () {
         it('can be chained', function () {
-            const mock = new ComponentMock();
+            const instance = new ComponentMock();
+            const returnValue = instance.disable();
 
-            expect(mock.disable()).toBe(mock);
+            expect(returnValue).toBe(instance);
         });
 
         it('updates the "disabled" property', function () {
-            const mock = new ComponentMock({ disabled: false });
+            const instance = new ComponentMock({ disabled: false });
 
-            mock.disable();
+            instance.disable();
 
-            expect(mock.disabled).toBe(true);
+            expect(instance.disabled).toBe(true);
         });
 
         it('updates the "aria-disabled" attribute', function () {
-            const mock = new ComponentMock({ disabled: false });
-            const mockElement = document.id(mock);
+            const instance = new ComponentMock({ disabled: false });
+            const element = instance.toElement();
 
-            mock.disable();
+            instance.disable();
 
-            expect(mockElement.get('aria-disabled')).toEqual('true');
+            expect(element.getAttribute('aria-disabled')).toEqual('true');
         });
 
         it('calls the detach() method if defined', function () {
-            const mock = new ComponentMock({ disabled: false });
+            const instance = new ComponentMock({ disabled: false });
             const spy = sinon.spy();
 
-            mock.detach = spy;
-            mock.disable();
+            instance.detach = spy;
+            instance.disable();
 
             expect(spy.calledOnce).toBe(true);
         });
     });
 
-    describe('#enable()', function () {
+    describe('#enable', function () {
         it('can be chained', function () {
-            const mock = new ComponentMock();
+            const instance = new ComponentMock();
+            const returnValue = instance.enable();
 
-            expect(mock.enable()).toBe(mock);
+            expect(returnValue).toBe(instance);
         });
 
         it('updates the "disabled" property', function () {
-            const mock = new ComponentMock({ disabled: true });
+            const instance = new ComponentMock({ disabled: true });
 
-            mock.enable();
+            instance.enable();
 
-            expect(mock.disabled).toBe(false);
+            expect(instance.disabled).toBe(false);
         });
 
-        it('updates the "aria-disabled" attribute', function () {
-            const mock = new ComponentMock({ disabled: true });
-            const mockElement = document.id(mock);
+        it('updates the "aria-disabled" attribute on the element', function () {
+            const instance = new ComponentMock({ disabled: true });
+            const element = instance.toElement();
 
-            mock.enable();
+            instance.enable();
 
-            expect(mockElement.get('aria-disabled')).toEqual('false');
+            expect(element.getAttribute('aria-disabled')).toEqual('false');
         });
 
         it('calls the attach() method if defined', function () {
-            const mock = new ComponentMock({ disabled: true });
+            const instance = new ComponentMock({ disabled: true });
             const spy = sinon.spy();
 
-            mock.attach = spy;
-            mock.enable();
+            instance.attach = spy;
+            instance.enable();
 
             expect(spy.calledOnce).toBe(true);
         });
     });
 
-    describe('#show()', function () {
+    describe('#show', function () {
         it('can be chained', function () {
-            const mock = new ComponentMock();
+            const instance = new ComponentMock();
+            const returnValue = instance.show();
 
-            expect(mock.show()).toBe(mock);
+            expect(returnValue).toBe(instance);
         });
 
         it('updates the "hidden" property', function () {
-            const mock = new ComponentMock({ hidden: true });
+            const instance = new ComponentMock({ hidden: true });
 
-            mock.show();
+            instance.show();
 
-            expect(mock.hidden).toBe(false);
+            expect(instance.hidden).toBe(false);
         });
 
-        it('updates the "hidden" attribute', function () {
-            const mock = new ComponentMock({ hidden: true });
-            const mockElement = document.id(mock);
+        it('removes the "hidden" attribute from the element', function () {
+            const instance = new ComponentMock({ hidden: true });
+            const element = instance.toElement();
 
-            mock.show();
+            instance.show();
 
-            expect(mockElement.hasAttribute('hidden')).toBe(false);
+            expect(element.hasAttribute('hidden')).toBe(false);
         });
 
         it('fires a "show" event', function () {
-            const mock = new ComponentMock({ hidden: true });
+            const instance = new ComponentMock({ hidden: true });
             const spy = sinon.spy();
 
-            mock.addEvent('show', spy);
-            mock.show();
+            instance.addEventListener('show', spy);
+            instance.show();
 
             expect(spy.calledOnce).toBe(true);
         });
     });
 
-    describe('#hide()', function () {
+    describe('#hide', function () {
         it('can be chained', function () {
-            const mock = new ComponentMock();
+            const instance = new ComponentMock();
+            const returnValue = instance.hide();
 
-            expect(mock.hide()).toBe(mock);
+            expect(returnValue).toBe(instance);
         });
 
         it('updates the "hidden" property', function () {
-            const mock = new ComponentMock({ hidden: false });
+            const instance = new ComponentMock({ hidden: false });
 
-            mock.hide();
+            instance.hide();
 
-            expect(mock.hidden).toBe(true);
+            expect(instance.hidden).toBe(true);
         });
 
-        it('updates the "hidden" attribute', function () {
-            const mock = new ComponentMock({ hidden: false });
-            const mockElement = document.id(mock);
+        it('adds a "hidden" attribute to the element', function () {
+            const instance = new ComponentMock({ hidden: false });
+            const element = instance.toElement();
 
-            mock.hide();
+            instance.hide();
 
-            expect(mockElement.hasAttribute('hidden')).toBe(true);
+            expect(element.hasAttribute('hidden')).toBe(true);
         });
 
         it('fires a "hide" event', function () {
-            const mock = new ComponentMock({ hidden: false });
+            const instance = new ComponentMock({ hidden: false });
             const spy = sinon.spy();
 
-            mock.addEvent('hide', spy);
-            mock.hide();
+            instance.addEventListener('hide', spy);
+            instance.hide();
 
             expect(spy.calledOnce).toBe(true);
         });
     });
 
-    describe('#initialize(options)', function () {
-        it('should be in the "disabled" state if `options.disabled` is true', function () {
-            const mock = new ComponentMock({ disabled: true });
-            const mockElement = document.id(mock);
+    describe('#toElement', function () {
+        it('returns the element created by the build() method', function () {
+            const instance = new ComponentMock();
+            const returnValue = instance.toElement();
 
-            expect(mock.disabled).toBe(true);
-            expect(mockElement.get('aria-disabled')).toEqual('true');
-        });
-
-        it('should not be in the "disabled" state if `options.disabled` is false', function () {
-            const mock = new ComponentMock({ disabled: false });
-            const mockElement = document.id(mock);
-
-            expect(mock.disabled).toBe(false);
-            expect(mockElement.get('aria-disabled')).toEqual('false');
-        });
-
-        it('should be in the "hidden" state if `options.hidden` is true', function () {
-            const mock = new ComponentMock({ hidden: true });
-            const mockElement = document.id(mock);
-
-            expect(mock.hidden).toBe(true);
-            expect(mockElement.hasAttribute('hidden')).toBe(true);
-        });
-
-        it('should not be in the "hidden" state if `options.hidden` is false', function () {
-            const mock = new ComponentMock({ hidden: false });
-            const mockElement = document.id(mock);
-
-            expect(mock.hidden).toBe(false);
-            expect(mockElement.hasAttribute('hidden')).toBe(false);
+            expect(returnValue).toBe(mockElement);
         });
     });
 });
