@@ -463,11 +463,4 @@ Moovie.registerPlugin = function (name, plugin) {
     }
 };
 
-Element.implement({
-    // method to polyfill <video> tags
-    toMoovie: function (options) {
-        this.store('moovie', new Moovie(this, options));
-    }
-});
-
 export { Moovie as default };
