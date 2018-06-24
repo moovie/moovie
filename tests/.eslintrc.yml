@@ -10,3 +10,13 @@ rules:
   max-nested-callbacks:
     - error
     - 4
+  newline-after-var:
+    - off
+  brace-style:
+    - off
+  max-statements-per-line:
+    - off
+  no-empty-function:
+    - off
+  max-lines:
+    - off
