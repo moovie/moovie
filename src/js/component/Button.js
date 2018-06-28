@@ -5,31 +5,25 @@
  */
 import Base from './Base.js';
 
+const symbolForLabel = Symbol('label');
+const symbolForAction = Symbol('action');
+const defaultOptions = {
+    label: '',
+    action: Function.from()
+};
+
 /**
  * UI component for creating aria-enabled button elements.
  * @class
  */
-const Button = new Class({
-    Extends: Base,
-
-    /**
-     * @inheritdoc
-     */
-    options: {},
-
+export default class Button extends Base {
     /**
      * The label for the button.
-     * @readonly
      * @type {String}
      */
-    label: '',
-
-    /**
-     * The function to call when the button is clicked.
-     * @readonly
-     * @type {Function}
-     */
-    action: Function.from(),
+    get label() {
+        return this[symbolForLabel];
+    }
 
     /**
      * @inheritdoc
@@ -37,56 +31,58 @@ const Button = new Class({
      * @param {Function} action The function to call when the button is clicked.
      * @param {Object} options Additional configuration options.
      */
-    initialize: function (label, action, options) {
-        if (typeOf(label) !== 'string') {
+    constructor(label, action, options = defaultOptions) {
+        super(options);
+
+        if (typeof label !== 'string') {
             throw new TypeError('`label` must be a string');
         }
 
-        if (typeOf(action) !== 'function') {
+        if (typeof action !== 'function') {
             throw new TypeError('`action` must be a function');
         }
 
-        this.label = label;
-        this.action = action;
-        this.parent(options);
-    },
+        this[symbolForLabel] = label;
+        this[symbolForAction] = action;
+        this.toElement().setAttribute('aria-label', this[symbolForLabel]);
+        this[this.options.disabled ? 'disable' : 'enable']();
+        this[this.options.hidden ? 'hide' : 'show']();
+    }
 
     /**
      * @inheritdoc
      */
-    build: function () {
+    build() {
         return new Element('button', {
             'class': 'moovie-button',
-            'aria-label': this.label
+            'aria-label': ''
         });
-    },
+    }
 
     /**
      * Attach event listeners.
      * @return {Button} The current instance for method chaining.
      */
-    attach: function () {
-        document.id(this).addEvent('click', this.getBound('click'));
+    attach() {
+        this.toElement().addEventListener('click', this.getBound('press'));
 
         return this;
-    },
+    }
 
     /**
      * Detach event listeners.
      * @return {Button} The current instance for method chaining.
      */
-    detach: function () {
-        document.id(this).removeEvent('click', this.getBound('click'));
+    detach() {
+        this.toElement().removeEventListener('click', this.getBound('press'));
 
         return this;
-    },
+    }
 
     /**
      * Handles the "click" event.
      */
-    click: function () {
-        this.action.call(this, this);
+    press() {
+        this[symbolForAction].call(this, this);
     }
-});
-
-export default Button;
+}
