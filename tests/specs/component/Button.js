@@ -9,94 +9,98 @@ describe('Button', function () {
     });
 
     it('extends the `Base` base class', function () {
-        const testButton = new Button('Test button', Function.from());
+        const button = new Button('Test button', Function.from());
 
-        expect(instanceOf(testButton, Base)).toBe(true);
+        expect(button instanceof Base).toBe(true);
     });
 
-    context('when creating a new instance', function () {
-        it('throws a TypeError if the label is not a string', function () {
-            const testButton = function () {
+    context('creating a new button', function () {
+        it('throws an error if label is not a string', function () {
+            const error = new TypeError('`label` must be a string');
+
+            const callback = function () {
                 return new Button(4, Function.from());
             };
 
-            expect(testButton).toThrow('`label` must be a string');
+            expect(callback).toThrow(error);
         });
 
         it('has a label', function () {
             const label = 'Test button';
-            const testButton = new Button(label, Function.from());
-            const buttonElement = document.id(testButton);
+            const button = new Button(label, Function.from());
+            const element = button.toElement();
 
-            expect(testButton.label).toEqual(label);
-            expect(buttonElement.get('aria-label')).toEqual(label);
+            expect(button.label).toEqual(label);
+            expect(element.getAttribute('aria-label')).toEqual(label);
         });
 
-        it('throws a TypeError if action is not a function', function () {
-            const testButton = function () {
+        it('throws an error if action is not a function', function () {
+            const error = new TypeError('`action` must be a function');
+
+            const callback = function () {
                 return new Button('Test button', 'a function');
             };
 
-            expect(testButton).toThrow('`action` must be a function');
+            expect(callback).toThrow(error);
         });
 
         it('is enabled by default', function () {
-            const testButton = new Button('Test button', Function.from());
-            const buttonElement = document.id(testButton);
+            const button = new Button('Test button', Function.from());
+            const element = button.toElement();
 
-            expect(testButton.disabled).toBe(false);
-            expect(buttonElement.get('aria-disabled')).toEqual('false');
+            expect(button.disabled).toBe(false);
+            expect(element.getAttribute('aria-disabled')).toEqual('false');
         });
 
         it('is visible by default', function () {
-            const testButton = new Button('Test button', Function.from());
-            const buttonElement = document.id(testButton);
+            const button = new Button('Test button', Function.from());
+            const element = button.toElement();
 
-            expect(testButton.hidden).toBe(false);
-            expect(buttonElement.hasAttribute('hidden')).toBe(false);
+            expect(button.hidden).toBe(false);
+            expect(element.hasAttribute('hidden')).toBe(false);
         });
 
         it('has the correct tag', function () {
-            const testButton = new Button('Test button', Function.from());
-            const buttonElement = document.id(testButton);
+            const button = new Button('Test button', Function.from());
+            const element = button.toElement();
 
-            expect(buttonElement.get('tag')).toEqual('button');
+            expect(element.get('tag')).toEqual('button');
         });
 
         it('has the correct class', function () {
-            const testButton = new Button('Test button', Function.from());
-            const buttonElement = document.id(testButton);
+            const button = new Button('Test button', Function.from());
+            const element = button.toElement();
 
-            expect(buttonElement.hasClass('moovie-button')).toBe(true);
+            expect(element.hasClass('moovie-button')).toBe(true);
         });
     });
 
-    context('when clicking the button', function () {
+    context('clicking the button', function () {
         it('calls the specified action', function () {
             const action = sinon.spy();
-            const testButton = new Button('Test button', action);
+            const button = new Button('Test button', action);
 
-            testButton.click();
+            button.press();
 
-            expect(action.called).toBe(true);
+            expect(action.calledOnce).toBe(true);
         });
 
-        it('gets passed the button as an argument', function () {
+        it('is passed the instance as an argument to the action', function () {
             const action = sinon.spy();
-            const testButton = new Button('Test button', action);
+            const button = new Button('Test button', action);
 
-            testButton.click();
+            button.press();
 
-            expect(action.calledWith(testButton)).toBe(true);
+            expect(action.calledWith(button)).toBe(true);
         });
 
-        it('provides the button as the action\'s context', function () {
+        it('provides the instance as the action\'s context', function () {
             const action = sinon.spy();
-            const testButton = new Button('Test button', action);
+            const button = new Button('Test button', action);
 
-            testButton.click();
+            button.press();
 
-            expect(action.calledOn(testButton)).toBe(true);
+            expect(action.calledOn(button)).toBe(true);
         });
     });
 });
