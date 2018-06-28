@@ -10,6 +10,6 @@ describe('Slider', function () {
     it('extends the `Base` class', function () {
         const slider = new Slider();
 
-        expect(instanceOf(slider, Base)).toEqual(true);
+        expect(slider instanceof Base).toEqual(true);
     });
 });
