@@ -9,7 +9,9 @@ const disabled = Symbol('disabled');
 const hidden = Symbol('hidden');
 const element = Symbol('element');
 const bound = Symbol('bound');
+const symbolForOptions = Symbol('options');
 const defaultOptions = {
+    context: null,
     disabled: false,
     hidden: false
 };
@@ -31,6 +33,10 @@ export default class Base extends EventTarget {
         return this[hidden];
     }
 
+    get options() {
+        return this[symbolForOptions];
+    }
+
     /**
      * Initializes the child class into a working state. This
      * MUST be called by child classes.
@@ -40,21 +46,20 @@ export default class Base extends EventTarget {
      * @param  {Object} options Additional options to configure instance.
      * @return {Base} The constructed class.
      */
-    constructor(options = defaultOptions) {
+    constructor(options = {}) {
         super();
 
         if (this.constructor === Base) {
             throw new Error('Abstract base class `Base` cannot be instantiated directly.');
         }
 
+        this[symbolForOptions] = Object.assign({}, defaultOptions, options);
+        this[bound] = {};
         this[element] = this.build();
 
         if (!this[element]) {
             throw new Error('The `build()` must return an element.');
         }
-
-        this[options.disabled ? 'disable' : 'enable']();
-        this[options.hidden ? 'hide' : 'show']();
     }
 
     /**
@@ -73,7 +78,7 @@ export default class Base extends EventTarget {
      */
     enable() {
         this[disabled] = false;
-        this[element].set('aria-disabled', false);
+        this[element].setAttribute('aria-disabled', false);
 
         if (typeof this.attach === 'function') {
             this.attach();
@@ -88,7 +93,7 @@ export default class Base extends EventTarget {
      */
     disable() {
         this[disabled] = true;
-        this[element].set('aria-disabled', true);
+        this[element].setAttribute('aria-disabled', true);
 
         if (typeof this.detach === 'function') {
             this.detach();
